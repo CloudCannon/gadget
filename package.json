@@ -1,0 +1,52 @@
+{
+  "name": "@cloudcannon/gadget",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Inpects a list of files to create configuration for the CloudCannon CMS.",
+  "keywords": [
+    "static site generator",
+    "cloudcannon"
+  ],
+  "homepage": "https://github.com/CloudCannon/gadget#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CloudCannon/gadget.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CloudCannon/gadget/issues",
+    "email": "support@cloudcannon.com"
+  },
+  "main": "index.js",
+  "files": [
+    "src/**/*.js"
+  ],
+  "bin": {
+    "cloudcannon-gadget": "src/index.js"
+  },
+  "scripts": {
+    "test": "ava",
+    "test:watch": "ava --watch --verbose",
+    "test:coverage": "c8 --all ava",
+    "lint": "npm run lint:eslint && npm run lint:tsc",
+    "lint:eslint": "eslint src",
+    "lint:tsc": "tsc"
+  },
+  "author": "CloudCannon <support@cloudcannon.com>",
+  "devDependencies": {
+    "@cloudcannon/configuration-types": "^0.0.1",
+    "@types/node": "^20.8.6",
+    "ava": "^5.3.1",
+    "c8": "^8.0.1",
+    "eslint": "^8.51.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@sindresorhus/slugify": "^2.2.1",
+    "fdir": "^6.1.0",
+    "leven": "^4.0.0",
+    "meow": "^12.1.1",
+    "titleize": "^4.0.0"
+  }
+}
