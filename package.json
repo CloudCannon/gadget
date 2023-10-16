@@ -33,7 +33,7 @@
   },
   "author": "CloudCannon <support@cloudcannon.com>",
   "devDependencies": {
-    "@cloudcannon/configuration-types": "^0.0.1",
+    "@cloudcannon/configuration-types": "^0.0.2",
     "@types/node": "^20.8.6",
     "ava": "^5.3.1",
     "c8": "^8.0.1",

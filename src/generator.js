@@ -29,7 +29,7 @@ function getCollectionPaths(filePath) {
  * Finds an icon closest to the query provided.
  *
  * @param query {string}
- * @returns {import('@cloudcannon/configuration-types/src/index.d.ts').Icon}
+ * @returns {import('@cloudcannon/configuration-types').Icon}
  */
 function findIcon(query) {
 	return icons.reduce((previous, current) =>
@@ -41,10 +41,10 @@ function findIcon(query) {
  * Generates collections config from a set of paths.
  *
  * @param collectionPaths {string[]}
- * @returns {Object.<string, import('@cloudcannon/configuration-types/src/index.d.ts').CollectionConfig>}
+ * @returns {Object.<string, import('@cloudcannon/configuration-types').CollectionConfig>}
  */
 function generateCollectionsConfig(collectionPaths) {
-	/** @type Object<string, import('@cloudcannon/configuration-types/src/index.d.ts').CollectionConfig> */
+	/** @type Object<string, import('@cloudcannon/configuration-types').CollectionConfig> */
 	const collectionsConfig = {};
 
 	for (let path of collectionPaths) {
@@ -157,7 +157,7 @@ function processCollectionPaths(collectionPathCounts) {
  * Generates a baseline configuration based on the files within the given folder.
  *
  * @param folderPath {string}
- * @returns {Promise<import('@cloudcannon/configuration-types/src/index.d.ts').Configuration>}
+ * @returns {Promise<import('@cloudcannon/configuration-types').Configuration>}
  */
 export async function generate(folderPath) {
 	const crawler = new fdir().withRelativePaths().filter((filePath) => !isIgnoredPath(filePath));

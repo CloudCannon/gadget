@@ -1,4 +1,4 @@
-/** @type {Array<import('@cloudcannon/configuration-types/src/index.d.ts').Icon>} */
+/** @type {Array<import('@cloudcannon/configuration-types').Icon>} */
 export const icons = [
 	'10k',
 	'10mp',
