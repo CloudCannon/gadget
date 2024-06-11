@@ -1,5 +1,5 @@
-import { guessSsg } from './ssg.js';
-import { last } from './utility.js';
+import { guessSsg } from './ssgs/ssgs.js';
+import { last, stripTopPath } from './utility.js';
 import {
 	getCollectionPaths,
 	generateCollectionsConfig,
@@ -9,11 +9,11 @@ import {
 /**
  * Provides a summary of a file at this path.
  *
- * @param filePath {string}
- * @param ssg {import('./ssg.js').Ssg}
- * @returns {import('./types.d.ts').FileSummary}
+ * @param filePath {string} The input file path.
+ * @param ssg {import('./ssgs/ssg').default} The associated SSG.
+ * @returns {import('./types').ParsedFile} Summary of the file.
  */
-function generateFile(filePath, ssg) {
+function parseFile(filePath, ssg) {
 	const type = ssg.getFileType(filePath);
 
 	return {
@@ -23,20 +23,19 @@ function generateFile(filePath, ssg) {
 }
 
 /**
- * Generates a baseline CLoudCannon configuration based on the file path provided.
+ * Provides a summary of files.
  *
- * @param filePaths {string[]} List of input file paths.
- * @param _options {import('./types.d.ts').GenerateOptions=} Options to aid generation.
- * @returns {Promise<import('@cloudcannon/configuration-types').Configuration>}
+ * @param filePaths {string[]} The input file path.
+ * @param ssg {import('./ssgs/ssg').default} The associated SSG.
+ * @param source {string} The site's source path.
+ * @returns {import('./types').ParsedFiles} The file summaries grouped by type.
  */
-export async function generate(filePaths, _options) {
-	const ssg = guessSsg(filePaths);
-
+function parseFiles(filePaths, ssg) {
 	/** @type {Record<string, number>} */
 	const collectionPathCounts = {};
 
-	/** @type {Record<import('./types.d.ts').FileType, import('./types.d.ts').FileSummary[]>} */
-	const files = {
+	/** @type {Record<import('./types').FileType, import('./types').ParsedFile[]>} */
+	const groups = {
 		config: [],
 		content: [],
 		partial: [],
@@ -46,7 +45,7 @@ export async function generate(filePaths, _options) {
 	};
 
 	for (let i = 0; i < filePaths.length; i++) {
-		const file = generateFile(filePaths[i], ssg);
+		const file = parseFile(filePaths[i], ssg);
 
 		if (file.type === 'content') {
 			const lastPath = last(getCollectionPaths(filePaths[i]));
@@ -57,18 +56,35 @@ export async function generate(filePaths, _options) {
 		}
 
 		if (file.type !== 'ignored') {
-			files[file.type].push(file);
+			groups[file.type].push(file);
 		}
 	}
 
-	const collectionPaths = processCollectionPaths(collectionPathCounts);
-	console.log('collectionPaths', collectionPaths);
+	return { collectionPathCounts, groups };
+}
+
+/**
+ * Generates a baseline CLoudCannon configuration based on the file path provided.
+ *
+ * @param filePaths {string[]} List of input file paths.
+ * @param options {import('./types').GenerateOptions=} Options to aid generation.
+ * @returns {Promise<import('@cloudcannon/configuration-types').Configuration & { ssg?: string; }>}
+ */
+export async function generate(filePaths, options) {
+	const ssg = guessSsg(filePaths);
+	const files = parseFiles(filePaths, ssg);
+	const collectionPaths = processCollectionPaths(files.collectionPathCounts);
+	const source =
+		options?.userConfig?.source ??
+		options?.buildConfig?.source ??
+		ssg.getSource(files, filePaths, collectionPaths);
 
 	return {
-		source: '',
-		collections_config: generateCollectionsConfig(collectionPaths),
+		ssg: ssg?.key,
+		source,
+		collections_config: generateCollectionsConfig(collectionPaths, source),
 		paths: {
-			collections: collectionPaths.basePath,
+			collections: stripTopPath(collectionPaths.basePath, source),
 		},
 	};
 }

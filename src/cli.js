@@ -5,6 +5,7 @@
 
 import meow from 'meow';
 import { exit } from 'process';
+import { readFile } from 'fs/promises';
 import { fdir } from 'fdir';
 import { generate } from './index.js';
 
@@ -61,8 +62,7 @@ if (!folderPath) {
 } else {
 	const crawler = new fdir().withRelativePaths().filter((filePath) => !isIgnoredPath(filePath));
 	const filePaths = await crawler.crawl(folderPath).withPromise();
-	const config = await generate(filePaths);
+	const config = await generate(filePaths, { readFile });
 
-	console.debug(filePaths);
 	console.log(JSON.stringify(config, undefined, 2));
 }

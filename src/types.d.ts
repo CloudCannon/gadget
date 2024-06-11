@@ -9,17 +9,28 @@ export type SsgKey =
 	| 'nextjs'
 	| 'unknown';
 
-interface FileSummary {
+export interface ParsedFile {
 	filePath: string;
 	type: FileType;
 	collectionPaths?: string[];
 }
 
-interface GenerateOptions {
+export interface GenerateOptions {
 	/** Custom user configuration. */
-	userConfig?: Record<string, any>;
+	userConfig?: {
+		source?: string;
+	};
 	/** SSG-specific build configuration. */
-	buildConfig?: Record<string, any>;
+	buildConfig?: {
+		source?: string;
+	};
 	/** Function to access the source contents a file. */
 	readFile?: (path: string) => Promise<string>;
 }
+
+export interface ParsedFiles {
+	groups: Record<FileType, ParsedFile[]>;
+	collectionPathCounts: Record<string, number>;
+}
+
+export type CollectionsConfig = Record<string, CollectionConfig>;

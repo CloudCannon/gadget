@@ -1,7 +1,8 @@
-import { basename, join, sep } from 'path';
-import { findIcon } from './icons.js';
+import { basename, join } from 'path';
 import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
+import { findIcon } from './icons.js';
+import { stripTopPath } from './utility.js';
 
 /**
  * Produces an ordered set of paths that a file at this path could belong to.
@@ -12,7 +13,7 @@ import titleize from 'titleize';
 export function getCollectionPaths(filePath) {
 	let builder = '';
 	const paths = [''];
-	const parts = filePath.split(sep);
+	const parts = filePath.split('/');
 
 	for (var i = 0; i < parts.length - 1; i++) {
 		builder = join(builder, parts[i]);
@@ -26,28 +27,30 @@ export function getCollectionPaths(filePath) {
  * Generates collections config from a set of paths.
  *
  * @param collectionPaths {{ basePath: string, paths: string[] }}
- * @returns {Record.<string, import('@cloudcannon/configuration-types').CollectionConfig>}
+ * @param source {string}
+ * @returns {import('./types').CollectionsConfig}
  */
-export function generateCollectionsConfig(collectionPaths) {
-	/** @type Record<string, import('@cloudcannon/configuration-types').CollectionConfig> */
+export function generateCollectionsConfig(collectionPaths, source) {
+	/** @type import('./types').CollectionsConfig */
 	const collectionsConfig = {};
+	const collectionPath = stripTopPath(collectionPaths.basePath, source);
 
 	for (let path of collectionPaths.paths) {
-		const key = slugify(path) || 'pages';
+		const sourcePath = stripTopPath(path, source);
+		const key = slugify(sourcePath) || 'pages';
 		const name = titleize(
-			basename(path || key)
+			basename(sourcePath || key)
 				.replace(/[_-]/g, ' ')
 				.trim(),
 		);
 
 		collectionsConfig[key] = {
-			path,
+			path: sourcePath,
 			name,
 			icon: findIcon(name.toLowerCase()),
 		};
 
-		console.log(path, collectionPaths.basePath);
-		if (path === collectionPaths.basePath) {
+		if (sourcePath === collectionPath) {
 			collectionsConfig[key].filter = {
 				base: 'strict',
 			};
@@ -68,11 +71,14 @@ export function processCollectionPaths(collectionPathCounts) {
 	let basePath = '';
 
 	if (paths.length) {
-		const checkParts = paths[0].split(sep);
+		const checkParts = paths[0].split('/');
 
 		for (var i = 0; i < checkParts.length; i++) {
-			const checkPath = join(...checkParts.slice(0, i));
-			const isSharedPath = paths.every((pathKey) => pathKey.startsWith(checkPath + sep));
+			const checkPath = join(...checkParts.slice(0, i + 1));
+
+			const isSharedPath =
+				checkPath &&
+				paths.every((pathKey) => pathKey === checkPath || pathKey.startsWith(checkPath + '/'));
 
 			if (isSharedPath) {
 				basePath = checkPath;
@@ -81,7 +87,7 @@ export function processCollectionPaths(collectionPathCounts) {
 	}
 
 	if (basePath) {
-		paths = paths.map((pathKey) => pathKey.substring(basePath.length + 1));
+		paths = paths.map((pathKey) => stripTopPath(pathKey, basePath));
 	}
 
 	return {
