@@ -1,0 +1,22 @@
+name: 11ty Config Setup
+type: reference
+
+steps:
+  - step: I have a ".eleventy.js" file with the content {js}
+    js: |-
+      const pluginRss = require("@11ty/eleventy-plugin-rss");
+
+      module.exports = function (eleventyConfig) {
+        eleventyConfig.setUseGitIgnore(false);
+        eleventyConfig.setDataDeepMerge(true);
+
+        eleventyConfig.addCollection('nav', function (collectionApi) {
+          return collectionApi.getAll()
+            .filter((page) => page.data.show_in_navigation === true)
+            .sort((a, b) => a.data.navigation_order - b.data.navigation_order);
+        });
+
+        eleventyConfig.addPassthroughCopy('images');
+
+        eleventyConfig.addPlugin(pluginRss);
+      };

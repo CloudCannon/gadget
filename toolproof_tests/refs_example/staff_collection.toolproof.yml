@@ -1,0 +1,24 @@
+name: Staff Collection Setup
+type: reference
+
+steps:
+  - step: I have a "staff-members/jane-doe.md" file with the content {md}
+    md: |-
+      ---
+      _uuid: 05589684-8d33-4d2f-8fde-460f9922d319
+      name: Jane Doe
+      image: "https://placekitten.com/440/440?a=.png"
+      description: Jane has 19 years of experience in law, and specialises in property and business.
+      credentials: LLB
+      phone_extension: "02"
+      ---
+  - step: I have a "staff-members/john-doe.md" file with the content {md}
+    md: |-
+      ---
+      _uuid: 8c6c132e-1c21-413e-be81-874091df1841
+      name: John Doe
+      image: "https://placebear.com/440/440?a=.png"
+      description: With an interest in employment law, John works tirelessly to improve workplaces.
+      credentials: LLB
+      phone_extension: "11"
+      ---
