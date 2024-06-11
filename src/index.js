@@ -1,34 +1,74 @@
-#!/usr/bin/env node
+import { guessSsg } from './ssg.js';
+import { last } from './utility.js';
+import {
+	getCollectionPaths,
+	generateCollectionsConfig,
+	processCollectionPaths,
+} from './collections.js';
 
-// Ignoring for non-es6 code
-// @ts-nocheck
+/**
+ * Provides a summary of a file at this path.
+ *
+ * @param filePath {string}
+ * @param ssg {import('./ssg.js').Ssg}
+ * @returns {import('./types.d.ts').FileSummary}
+ */
+function generateFile(filePath, ssg) {
+	const type = ssg.getFileType(filePath);
 
-import meow from 'meow';
-import { generate } from './generator.js';
-import { exit } from 'process';
+	return {
+		filePath,
+		type,
+	};
+}
 
-const cli = meow(
-	`
-  Usage
-    $ cloudcannon-gadget <input> [options]
+/**
+ * Generates a baseline CLoudCannon configuration based on the file path provided.
+ *
+ * @param filePaths {string[]} List of input file paths.
+ * @param _options {import('./types.d.ts').GenerateOptions=} Options to aid generation.
+ * @returns {Promise<import('@cloudcannon/configuration-types').Configuration>}
+ */
+export async function generate(filePaths, _options) {
+	const ssg = guessSsg(filePaths);
 
-  Options
-    --version     Print the current version
+	/** @type {Record<string, number>} */
+	const collectionPathCounts = {};
 
-  Examples
-    $ cloudcannon-gadget .
-    $ cloudcannon-gadget sites/my-jekyll-site
-`,
-	{
-		importMeta: import.meta,
-	},
-);
+	/** @type {Record<import('./types.d.ts').FileType, import('./types.d.ts').FileSummary[]>} */
+	const files = {
+		config: [],
+		content: [],
+		partial: [],
+		other: [],
+		template: [],
+		ignored: [],
+	};
 
-const folderPath = cli.input[0];
-if (!folderPath) {
-	console.error('⚠️ Please provide a folder path as input.');
-	cli.showHelp();
-	exit(1);
-} else {
-	console.log(await generate(folderPath));
+	for (let i = 0; i < filePaths.length; i++) {
+		const file = generateFile(filePaths[i], ssg);
+
+		if (file.type === 'content') {
+			const lastPath = last(getCollectionPaths(filePaths[i]));
+			if (lastPath || lastPath === '') {
+				collectionPathCounts[lastPath] = collectionPathCounts[lastPath] || 0;
+				collectionPathCounts[lastPath] += 1;
+			}
+		}
+
+		if (file.type !== 'ignored') {
+			files[file.type].push(file);
+		}
+	}
+
+	const collectionPaths = processCollectionPaths(collectionPathCounts);
+	console.log('collectionPaths', collectionPaths);
+
+	return {
+		source: '',
+		collections_config: generateCollectionsConfig(collectionPaths),
+		paths: {
+			collections: collectionPaths.basePath,
+		},
+	};
 }

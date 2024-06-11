@@ -1,5 +1,33 @@
+import leven from 'leven';
+
+/**
+ * Finds an icon closest to the query provided.
+ *
+ * @param query {string}
+ * @returns {import('@cloudcannon/configuration-types').Icon}
+ */
+export function findIcon(query) {
+	return (
+		overrides[query] ||
+		icons.reduce((previous, current) =>
+			leven(query, current) < leven(query, previous) ? current : previous,
+		)
+	);
+}
+
+/** @type {Record<string, import('@cloudcannon/configuration-types').Icon>} */
+const overrides = {
+	pages: 'wysiwyg',
+	posts: 'event_available',
+	post: 'event_available',
+	blog: 'event_available',
+	drafts: 'event',
+	draft: 'event',
+	data: 'data_usage',
+};
+
 /** @type {Array<import('@cloudcannon/configuration-types').Icon>} */
-export const icons = [
+const icons = [
 	'10k',
 	'10mp',
 	'11mp',

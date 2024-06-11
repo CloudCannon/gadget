@@ -1,10 +1,7 @@
 import { extname } from 'path';
 
-/** @typedef {'config' | 'content' | 'template' | 'partial' | 'ignored' | 'other'} FileType */
-/** @typedef {'jekyll' | 'bridgetown' | 'eleventy' | 'hugo' | 'sveltekit' | 'nextjs' | 'unknown' } SsgKey */
-
 export class Ssg {
-	/** @type {SsgKey} */
+	/** @type {import('./types.d.ts').SsgKey} */
 	key;
 
 	/** @type {string[]} */
@@ -23,7 +20,7 @@ export class Ssg {
 	ignoredFolders;
 
 	/**
-	 * @param key {SsgKey}
+	 * @param key {import('./types.d.ts').SsgKey}
 	 * @param configPaths {{ configPaths: string[], templateExtensions: string[], contentExtensions: string[], partialFolders: string[], ignoredFolders: string[] }}
 	 */
 	constructor(
@@ -106,7 +103,7 @@ export class Ssg {
 	 * Finds the likely type of the file at this path.
 	 *
 	 * @param filePath {string}
-	 * @returns {FileType}
+	 * @returns {import('./types.d.ts').FileType}
 	 */
 	getFileType(filePath) {
 		if (this.isIgnoredPath(filePath)) {
@@ -171,6 +168,7 @@ const ssgs = [
 		partialFolders: defaultIncludeFolders.concat(['archetypes/']),
 		ignoredFolders: [
 			'resources/', // cache
+			'archetypes/', // scaffolding templates
 		],
 	}),
 
@@ -244,7 +242,7 @@ const ssgs = [
  * @returns {Ssg}
  */
 export function guessSsg(filePaths) {
-	/** @type {Record<SsgKey, number>} */
+	/** @type {Record<import('./types.d.ts').SsgKey, number>} */
 	const scores = {
 		eleventy: 0,
 		jekyll: 0,

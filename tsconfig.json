@@ -1,17 +1,16 @@
 {
-  "compilerOptions": {
-    "target": "ES6",
-    "lib": ["ES6"],
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "isolatedModules": true,
-    "noEmit": true,
-    "checkJs": true,
-    "allowJs": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
-  },
-  "include": ["src"]
+	"compilerOptions": {
+		"target": "ES6",
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"isolatedModules": true,
+		"noEmit": true,
+		"checkJs": true,
+		"allowJs": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true
+	},
+	"include": ["src"]
 }
