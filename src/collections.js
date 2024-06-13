@@ -37,7 +37,7 @@ export function generateCollectionsConfig(collectionPaths, source) {
 
 	for (let path of collectionPaths.paths) {
 		const sourcePath = stripTopPath(path, source);
-		const key = slugify(sourcePath) || 'pages';
+		const key = slugify(sourcePath, { separator: '_' }) || 'pages';
 		const name = titleize(
 			basename(sourcePath || key)
 				.replace(/[_-]/g, ' ')

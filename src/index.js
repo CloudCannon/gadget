@@ -64,7 +64,7 @@ function parseFiles(filePaths, ssg) {
 }
 
 /**
- * Generates a baseline CLoudCannon configuration based on the file path provided.
+ * Generates a baseline CloudCannon configuration based on the file path provided.
  *
  * @param filePaths {string[]} List of input file paths.
  * @param options {import('./types').GenerateOptions=} Options to aid generation.

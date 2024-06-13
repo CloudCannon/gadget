@@ -59,7 +59,32 @@ export default class Ssg {
 	 * @returns {string[]}
 	 */
 	ignoredFolders() {
-		return [];
+		return ['.git/', '.github/', '.cloudcannon/', '_cloudcannon/', 'node_modules/'];
+	}
+
+	/**
+	 * @returns {string[]}
+	 */
+	ignoredFiles() {
+		return [
+			'.DS_Store',
+			'.eslintrc.json',
+			'tsconfig.json',
+			'jsconfig.json',
+			'.prettierrc.json',
+			'package-lock.json',
+			'package.json',
+			'.gitignore',
+			'README',
+			'README.md',
+			'LICENSE',
+			'LICENSE.md',
+			'cloudcannon.config.cjs',
+			'cloudcannon.config.js',
+			'cloudcannon.config.json',
+			'cloudcannon.config.yml',
+			'cloudcannon.config.yaml',
+		];
 	}
 
 	/**
@@ -91,7 +116,13 @@ export default class Ssg {
 	 * @returns {boolean}
 	 */
 	isIgnoredPath(filePath) {
-		return this.ignoredFolders().some((folder) => filePath.startsWith(folder));
+		return (
+			this.ignoredFolders().some(
+				(folder) => filePath.startsWith(folder) || filePath.includes(`/${folder}`),
+			) ||
+			this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`)) ||
+			filePath.includes('.config.')
+		);
 	}
 
 	/**

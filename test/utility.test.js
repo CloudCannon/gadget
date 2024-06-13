@@ -9,6 +9,8 @@ test('gets last element', (t) => {
 
 test('strips top path', (t) => {
 	t.is(stripTopPath('src/content/index.html', 'src'), 'content/index.html');
-	t.is(stripTopPath('src/content/index.html', ''), 'src/content/index.html');
+	t.is(stripTopPath('src/index.html', 'src'), 'index.html');
+	t.is(stripTopPath('src/index.html', ''), 'src/index.html');
 	t.is(stripTopPath('src', 'src'), '');
+	t.is(stripTopPath('src', ''), 'src');
 });

@@ -24,6 +24,9 @@ const overrides = {
 	drafts: 'event',
 	draft: 'event',
 	data: 'data_usage',
+	authors: 'person',
+	staff: 'people',
+	staff_members: 'people',
 };
 
 /** @type {Array<import('@cloudcannon/configuration-types').Icon>} */
