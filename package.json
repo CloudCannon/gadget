@@ -1,7 +1,7 @@
 {
   "name": "@cloudcannon/gadget",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Inpects a list of files to create configuration for the CloudCannon CMS.",
   "keywords": [
     "static site generator",
@@ -12,25 +12,29 @@
     "type": "git",
     "url": "https://github.com/CloudCannon/gadget.git"
   },
+  
   "bugs": {
     "url": "https://github.com/CloudCannon/gadget/issues",
     "email": "support@cloudcannon.com"
   },
   "main": "index.js",
+  "types": "src/types.d.ts",
   "files": [
     "src/**/*.js",
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "dist/**/*.d.ts"
   ],
   "bin": {
     "cloudcannon-gadget": "src/cli.js"
   },
   "scripts": {
+    "build": "tsc --emitDeclarationOnly",
     "test": "ava",
     "test:watch": "ava --watch --verbose",
     "test:coverage": "c8 --all --src src ava",
     "lint": "npm run lint:eslint && npm run lint:tsc && npm run lint:format",
     "lint:eslint": "eslint src",
-    "lint:tsc": "tsc",
+    "lint:tsc": "tsc --noEmit",
     "lint:format": "npx prettier . -c",
     "fix:format": "npx prettier . -w"
   },

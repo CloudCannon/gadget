@@ -1,10 +1,11 @@
 {
 	"compilerOptions": {
 		"target": "ES6",
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
+		"moduleResolution": "Bundler",
+		"lib": ["ES6", "DOM"],
 		"isolatedModules": true,
-		"noEmit": true,
+		"declaration": true,
+		"outDir": "dist",
 		"checkJs": true,
 		"allowJs": true,
 		"strict": true,
@@ -12,5 +13,6 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"exclude": ["src/cli.js"]
 }
