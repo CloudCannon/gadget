@@ -1,7 +1,7 @@
 {
   "name": "@cloudcannon/gadget",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Inpects a list of files to create configuration for the CloudCannon CMS.",
   "keywords": [
     "static site generator",
@@ -12,7 +12,6 @@
     "type": "git",
     "url": "https://github.com/CloudCannon/gadget.git"
   },
-  
   "bugs": {
     "url": "https://github.com/CloudCannon/gadget/issues",
     "email": "support@cloudcannon.com"

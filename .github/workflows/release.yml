@@ -2,24 +2,121 @@ name: Release
 
 on:
   push:
-    paths:
-      - 'package.json'
-    branches:
-      - 'main'
+    tags:
+      - v*
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - name: Clone
+        uses: actions/checkout@v3
+
+      - name: Install 
+        run: npm ci
+
+      - name: Unit Test 
+        run: npm run test
+
+      - name: Behavior Test
+        run: ./test_ci.sh
+
+  publish-github-release:
+    name: Publish to GitHub
+    runs-on: ubuntu-24.04
+    needs: test
+    steps:
+      - name: Get Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v2
         with:
-          node-version: 18
-          registry-url: https://npm.pkg.github.com/
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-      - uses: JS-DevTools/npm-publish@v1
+          application_id: ${{ secrets.CC_OSS_BOT_ID }}
+          application_private_key: ${{ secrets.CC_OSS_BOT_PEM }}
+
+      - name: Swap to main
+        uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          registry: https://npm.pkg.github.com/
+          ref: main
+          fetch-depth: 0 # Full fetch
+          token: ${{ steps.get_workflow_token.outputs.token }}
+
+      - name: Get Version
+        run: |
+          GIT_VERSION=$(node ./.backstage/get_tagged_version.cjs)
+          echo GIT_VERSION="$GIT_VERSION" >> $GITHUB_ENV
+      - name: Get Release Tag
+        run: |
+          NPM_TAG=$(node ./.backstage/get_npm_tag.cjs)
+          echo NPM_TAG="$NPM_TAG" >> $GITHUB_ENV
+
+      - name: Build CHANGELOG
+        if: env.NPM_TAG == 'latest'
+        run: |
+          node ./.backstage/changelog.cjs write
+          echo CHANGELOG=\"$(base64 -w 0 -i CHANGELOG.md)\" >> $GITHUB_ENV
+          echo SHA=\"$( git rev-parse main:CHANGELOG.md )\" >> $GITHUB_ENV
+      - name: Build CHANGELOG
+        if: env.NPM_TAG != 'latest'
+        run: |
+          echo "## Prerelease" > RELEASE.md
+          node ./.backstage/changelog.cjs write || true
+
+      - name: Commit new CHANGELOG
+        uses: octokit/request-action@v2.x
+        if: env.NPM_TAG == 'latest'
+        id: push_changes
+        with:
+          route: PUT /repos/{owner}/{repo}/contents/CHANGELOG.md
+          owner: cloudcannon
+          repo: gadget
+          branch: main
+          message: Changelog for ${{ env.GIT_VERSION }}
+          sha: ${{ env.SHA }}
+          content: ${{ env.CHANGELOG }}
+        env:
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+
+      - name: Stable Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') && env.NPM_TAG == 'latest'
+        with:
+          body_path: RELEASE.md
+        env:
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+
+      - name: Prerelease
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') && env.NPM_TAG != 'latest'
+        with:
+          body_path: RELEASE.md
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+
+  publish-npm-release:
+    runs-on: ubuntu-24.04
+    needs: publish-github-release
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+
+      - name: Get Version
+        run: |
+          GIT_VERSION=$(node ./.backstage/get_tagged_version.cjs)
+          echo GIT_VERSION="$GIT_VERSION" >> $GITHUB_ENV
+      - name: Get Release Tag
+        run: |
+          NPM_TAG=$(node ./.backstage/get_npm_tag.cjs)
+          echo NPM_TAG="$NPM_TAG" >> $GITHUB_ENV
+      
+      - name: Prepare package
+        run: |
+          npm version $GIT_VERSION
+
+      - name: Install 
+        run: npm ci
+
+      - name: Publish
+        run: npm publish --tag $NPM_TAG
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
