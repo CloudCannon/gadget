@@ -2,7 +2,7 @@ name: 11ty Config Setup
 type: reference
 
 steps:
-  - step: I have a ".eleventy.js" file with the content {js}
+  - step: I have a "src/.eleventy.js" file with the content {js}
     js: |-
       const pluginRss = require("@11ty/eleventy-plugin-rss");
 

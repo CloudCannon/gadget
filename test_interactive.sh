@@ -3,6 +3,6 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
-GADGET_CLI=$(realpath "$SCRIPT_DIR/src/cli.js")
+GADGET_DIR=$(realpath "$SCRIPT_DIR/src/")
 
-npx -y toolproof --placeholders gadget_cli="$GADGET_CLI" --all -i
+npx -y toolproof --placeholders gadget_dir="$GADGET_DIR" --all -i

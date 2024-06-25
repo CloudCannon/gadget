@@ -2,7 +2,7 @@ name: Staff Collection Setup
 type: reference
 
 steps:
-  - step: I have a "staff-members/jane-doe.md" file with the content {md}
+  - step: I have a "src/staff-members/jane-doe.md" file with the content {md}
     md: |-
       ---
       _uuid: 05589684-8d33-4d2f-8fde-460f9922d319
@@ -12,7 +12,7 @@ steps:
       credentials: LLB
       phone_extension: "02"
       ---
-  - step: I have a "staff-members/john-doe.md" file with the content {md}
+  - step: I have a "src/staff-members/john-doe.md" file with the content {md}
     md: |-
       ---
       _uuid: 8c6c132e-1c21-413e-be81-874091df1841

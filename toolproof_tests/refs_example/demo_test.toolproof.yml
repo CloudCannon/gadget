@@ -3,7 +3,7 @@ name: Demo Test with Refs
 steps:
   - ref: ./eleventy_config.toolproof.yml
   - ref: ./staff_collection.toolproof.yml
-  - step: I have a "pages/index.njk" file with the content {njk}
+  - step: I have a "src/pages/index.njk" file with the content {njk}
     njk: |-
       ---
       title:
@@ -15,13 +15,13 @@ steps:
 
         <p>Justice Law is professional representation. Practicing for over 50 years, our team have the knowledge and skills to get you results.</p>
       </div>
-  - I run "node %gadget_cli% ."
+  - ref: ../core/run_gadget.toolproof.yml
   - stdout should contain "eleventy"
   - snapshot: stdout
     snapshot_content: |-
       ╎{
       ╎  "ssg": "eleventy",
-      ╎  "source": "",
+      ╎  "source": "staff-members",
       ╎  "collections_config": {
       ╎    "pages": {
       ╎      "path": "",

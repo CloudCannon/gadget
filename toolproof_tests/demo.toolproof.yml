@@ -1,7 +1,7 @@
 name: Text Example 1
 
 steps:
-  - step: I have a ".eleventy.js" file with the content {js}
+  - step: I have a "src/.eleventy.js" file with the content {js}
     js: |-
       const pluginRss = require("@11ty/eleventy-plugin-rss");
 
@@ -19,7 +19,7 @@ steps:
 
         eleventyConfig.addPlugin(pluginRss);
       };
-  - step: I have a "pages/index.njk" file with the content {njk}
+  - step: I have a "src/pages/index.njk" file with the content {njk}
     njk: |-
       ---
       title:
@@ -31,7 +31,7 @@ steps:
 
         <p>Justice Law is professional representation. Practicing for over 50 years, our team have the knowledge and skills to get you results.</p>
       </div>
-  - step: I have a "staff-members/jane-doe.md" file with the content {md}
+  - step: I have a "src/staff-members/jane-doe.md" file with the content {md}
     md: |-
       ---
       _uuid: 05589684-8d33-4d2f-8fde-460f9922d319
@@ -41,7 +41,7 @@ steps:
       credentials: LLB
       phone_extension: "02"
       ---
-  - step: I have a "staff-members/john-doe.md" file with the content {md}
+  - step: I have a "src/staff-members/john-doe.md" file with the content {md}
     md: |-
       ---
       _uuid: 8c6c132e-1c21-413e-be81-874091df1841
@@ -51,13 +51,13 @@ steps:
       credentials: LLB
       phone_extension: "11"
       ---
-  - I run "node %gadget_cli% ."
+  - ref: ./core/run_gadget.toolproof.yml
   - stdout should contain "eleventy"
   - snapshot: stdout
     snapshot_content: |-
       ╎{
       ╎  "ssg": "eleventy",
-      ╎  "source": "",
+      ╎  "source": "staff-members",
       ╎  "collections_config": {
       ╎    "pages": {
       ╎      "path": "",
