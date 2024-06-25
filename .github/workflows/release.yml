@@ -52,38 +52,9 @@ jobs:
           NPM_TAG=$(node ./.backstage/get_npm_tag.cjs)
           echo NPM_TAG="$NPM_TAG" >> $GITHUB_ENV
 
-      - name: Build CHANGELOG
-        if: env.NPM_TAG == 'latest'
-        run: |
-          node ./.backstage/changelog.cjs write
-          echo CHANGELOG=\"$(base64 -w 0 -i CHANGELOG.md)\" >> $GITHUB_ENV
-          echo SHA=\"$( git rev-parse main:CHANGELOG.md )\" >> $GITHUB_ENV
-      - name: Build CHANGELOG
-        if: env.NPM_TAG != 'latest'
-        run: |
-          echo "## Prerelease" > RELEASE.md
-          node ./.backstage/changelog.cjs write || true
-
-      - name: Commit new CHANGELOG
-        uses: octokit/request-action@v2.x
-        if: env.NPM_TAG == 'latest'
-        id: push_changes
-        with:
-          route: PUT /repos/{owner}/{repo}/contents/CHANGELOG.md
-          owner: cloudcannon
-          repo: gadget
-          branch: main
-          message: Changelog for ${{ env.GIT_VERSION }}
-          sha: ${{ env.SHA }}
-          content: ${{ env.CHANGELOG }}
-        env:
-          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
-
       - name: Stable Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/') && env.NPM_TAG == 'latest'
-        with:
-          body_path: RELEASE.md
         env:
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
 
@@ -91,7 +62,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/') && env.NPM_TAG != 'latest'
         with:
-          body_path: RELEASE.md
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
@@ -111,18 +81,27 @@ jobs:
         run: |
           NPM_TAG=$(node ./.backstage/get_npm_tag.cjs)
           echo NPM_TAG="$NPM_TAG" >> $GITHUB_ENV
-      
+
       - name: Prepare package
         run: |
-          npm version $GIT_VERSION
+          npm --no-git-tag-version version $GIT_VERSION
 
       - name: Install 
         run: npm ci
 
       - name: Build 
         run: npm run build
-
-      - name: Publish
-        run: npm publish --tag $NPM_TAG
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Publish internal
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          tag: ${{ env.NPM_TAG }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          registry: "https://npm.pkg.github.com"
+      
+      - name: Publish external
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          tag: ${{ env.NPM_TAG }}
+          token: ${{ secrets.NPM_TOKEN }}
+          access: public
