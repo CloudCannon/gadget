@@ -14,5 +14,5 @@
 		"noFallthroughCasesInSwitch": true
 	},
 	"include": ["src"],
-	"exclude": ["src/cli.js"]
+	"exclude": ["src/cli.js", "dist", "node_modules"]
 }

@@ -1,11 +1,11 @@
 import { extname } from 'path';
 
 export default class Ssg {
-	/** @type {import('../types').SsgKey} */
+	/** @type {import('@cloudcannon/configuration-types').SsgKey} */
 	key;
 
 	/**
-	 * @param key {import('../types').SsgKey}
+	 * @param key {import('@cloudcannon/configuration-types').SsgKey}
 	 */
 	constructor(key) {
 		this.key = key;

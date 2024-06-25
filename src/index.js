@@ -1,4 +1,4 @@
-import { guessSsg } from './ssgs/ssgs.js';
+import { guessSsg, ssgs } from './ssgs/ssgs.js';
 import { last, stripTopPath } from './utility.js';
 import {
 	getCollectionPaths,
@@ -68,23 +68,29 @@ function parseFiles(filePaths, ssg) {
  *
  * @param filePaths {string[]} List of input file paths.
  * @param options {import('./types').GenerateOptions=} Options to aid generation.
- * @returns {Promise<import('@cloudcannon/configuration-types').Configuration & { ssg?: string; }>}
+ * @returns {Promise<import('@cloudcannon/configuration-types').Configuration>}
  */
 export async function generate(filePaths, options) {
-	const ssg = guessSsg(filePaths);
+	const ssgKey = options?.config?.ssg ?? options?.buildConfig?.ssg;
+	const ssg = ssgKey ? ssgs[ssgKey] : guessSsg(filePaths);
 	const files = parseFiles(filePaths, ssg);
 	const collectionPaths = processCollectionPaths(files.collectionPathCounts);
+
 	const source =
-		options?.userConfig?.source ??
+		options?.config?.source ??
 		options?.buildConfig?.source ??
 		ssg.getSource(files, filePaths, collectionPaths);
+
+	const collectionsConfig =
+		options?.config?.collections_config ?? generateCollectionsConfig(collectionPaths, source);
 
 	return {
 		ssg: ssg?.key,
 		source,
-		collections_config: generateCollectionsConfig(collectionPaths, source),
+		collections_config: collectionsConfig,
 		paths: {
 			collections: stripTopPath(collectionPaths.basePath, source),
+			...options?.config?.paths,
 		},
 	};
 }

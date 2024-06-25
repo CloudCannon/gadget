@@ -8,15 +8,27 @@ import Sveltekit from './sveltekit.js';
 
 const unknown = new Ssg('unknown');
 
-const ssgs = [
-	new Bridgetown(),
-	new Eleventy(),
-	new Hugo(),
-	new Jekyll(),
-	new NextJs(),
-	new Sveltekit(),
-	unknown,
-];
+/** @type {Record<import('@cloudcannon/configuration-types').SsgKey, Ssg>} */
+export const ssgs = {
+	hugo: new Hugo(),
+	jekyll: new Jekyll(),
+	eleventy: new Eleventy(),
+	nextjs: new NextJs(),
+	astro: new Ssg('astro'),
+	sveltekit: new Sveltekit(),
+	bridgetown: new Bridgetown(),
+	lume: new Ssg('lume'),
+	mkdocs: new Ssg('mkdocs'),
+	docusaurus: new Ssg('docusaurus'),
+	gatsby: new Ssg('gatsby'),
+	hexo: new Ssg('hexo'),
+	nuxtjs: new Ssg('nuxtjs'),
+	sphinx: new Ssg('sphinx'),
+	static: new Ssg('static'),
+	unknown: new Ssg('unknown'),
+};
+
+const ssgValues = Object.values(ssgs);
 
 /**
  * Finds the most likely SSG for a set of files.
@@ -25,24 +37,33 @@ const ssgs = [
  * @returns {Bridgetown | Eleventy | Hugo | Jekyll | NextJs | Sveltekit | Ssg} The assumed SSG.
  */
 export function guessSsg(filePaths) {
-	/** @type {Record<import('../types').SsgKey, number>} */
+	/** @type {Record<import('@cloudcannon/configuration-types').SsgKey, number>} */
 	const scores = {
-		eleventy: 0,
-		jekyll: 0,
-		bridgetown: 0,
 		hugo: 0,
-		sveltekit: 0,
+		jekyll: 0,
+		eleventy: 0,
 		nextjs: 0,
+		astro: 0,
+		sveltekit: 0,
+		bridgetown: 0,
+		lume: 0,
+		mkdocs: 0,
+		docusaurus: 0,
+		gatsby: 0,
+		hexo: 0,
+		nuxtjs: 0,
+		sphinx: 0,
+		static: 0,
 		unknown: 0,
 	};
 
 	for (let i = 0; i < filePaths.length; i++) {
-		for (let j = 0; j < ssgs.length; j++) {
-			scores[ssgs[j].key] += ssgs[j].getPathScore(filePaths[i]);
+		for (let j = 0; j < ssgValues.length; j++) {
+			scores[ssgValues[j].key] += ssgValues[j].getPathScore(filePaths[i]);
 		}
 	}
 
-	return ssgs.reduce(
+	return ssgValues.reduce(
 		(previous, current) => (scores[previous.key] < scores[current.key] ? current : previous),
 		unknown,
 	);

@@ -1,13 +1,10 @@
-export type FileType = 'config' | 'content' | 'template' | 'partial' | 'ignored' | 'other';
+import {
+	type Configuration,
+	type CollectionConfig,
+	type SsgKey,
+} from '@cloudcannon/configuration-types';
 
-export type SsgKey =
-	| 'jekyll'
-	| 'bridgetown'
-	| 'eleventy'
-	| 'hugo'
-	| 'sveltekit'
-	| 'nextjs'
-	| 'unknown';
+export type FileType = 'config' | 'content' | 'template' | 'partial' | 'ignored' | 'other';
 
 export interface ParsedFile {
 	filePath: string;
@@ -16,12 +13,11 @@ export interface ParsedFile {
 }
 
 export interface GenerateOptions {
-	/** Custom user configuration. */
-	userConfig?: {
-		source?: string;
-	};
-	/** SSG-specific build configuration. */
+	/** Current configuration, or user overrides for generation. */
+	config?: Configuration;
+	/** Build configuration, most likely the parsed CLI options for specific SSGs. */
 	buildConfig?: {
+		ssg?: SsgKey;
 		source?: string;
 	};
 	/** Function to access the source contents a file. */
