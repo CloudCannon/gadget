@@ -1,6 +1,6 @@
 # Gadget
 
-Reads file to create configuration for the [CloudCannon](https://cloudcannon.com/) CMS.
+Reads files to create configuration for the [CloudCannon](https://cloudcannon.com/) CMS.
 
 This is used as a library within the CMS itself, but you can use it to generate a configuration
 file locally.
