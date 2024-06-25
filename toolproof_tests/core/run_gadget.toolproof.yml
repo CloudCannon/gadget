@@ -1,0 +1,28 @@
+name: Run the Gadget library
+type: reference
+
+steps:
+  - step: I have a "package.json" file with the content {json}
+    json: |-
+      {
+        "name": "gadget-test-env",
+        "type": "module",
+        "private": "true",
+        "dependencies": {
+          "@cloudcannon/gadget": "file:%gadget_dir%",
+          "fdir": "^6.1.1"
+        }
+      }
+  - step: I have a "gadget.js" file with the content {js}
+    js: |-
+      import { fdir } from 'fdir';
+      import { readFile } from 'fs/promises';
+      import { generate } from '@cloudcannon/gadget';
+
+      const crawler = new fdir().withRelativePaths();
+      const filePaths = await crawler.crawl("src").withPromise();
+      const config = await generate(filePaths, { readFile });
+
+      console.log(JSON.stringify(config, undefined, 2));
+  - I run "npm i"
+  - I run "node gadget.js"
