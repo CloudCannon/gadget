@@ -16,8 +16,8 @@
     "url": "https://github.com/CloudCannon/gadget/issues",
     "email": "support@cloudcannon.com"
   },
-  "main": "index.js",
-  "types": "src/types.d.ts",
+  "main": "src/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "src/**/*.js",
     "src/**/*.d.ts",
