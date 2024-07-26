@@ -6,7 +6,7 @@ import NextJs from './next-js.js';
 import Ssg from './ssg.js';
 import Sveltekit from './sveltekit.js';
 
-const unknown = new Ssg('unknown');
+const unknown = new Ssg();
 
 /** @type {Record<import('@cloudcannon/configuration-types').SsgKey, Ssg>} */
 export const ssgs = {
@@ -25,7 +25,9 @@ export const ssgs = {
 	nuxtjs: new Ssg('nuxtjs'),
 	sphinx: new Ssg('sphinx'),
 	static: new Ssg('static'),
-	unknown: new Ssg('unknown'),
+	legacy: unknown,
+	other: unknown,
+	unknown,
 };
 
 const ssgValues = Object.values(ssgs);
@@ -54,6 +56,8 @@ export function guessSsg(filePaths) {
 		nuxtjs: 0,
 		sphinx: 0,
 		static: 0,
+		legacy: 0,
+		other: 0,
 		unknown: 0,
 	};
 

@@ -1,10 +1,8 @@
 import { guessSsg, ssgs } from './ssgs/ssgs.js';
 import { last, stripTopPath } from './utility.js';
-import {
-	getCollectionPaths,
-	generateCollectionsConfig,
-	processCollectionPaths,
-} from './collections.js';
+import { getCollectionPaths, processCollectionPaths } from './collections.js';
+
+export { ssgs } from './ssgs/ssgs.js';
 
 /**
  * Provides a summary of a file at this path.
@@ -64,6 +62,16 @@ function parseFiles(filePaths, ssg) {
 }
 
 /**
+ * Attempts to find the current timezone.
+ *
+ * @returns {import('@cloudcannon/configuration-types').Timezone | undefined}
+ */
+function getTimezone() {
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	return /** @type {import('@cloudcannon/configuration-types').Timezone | undefined} */ (timezone);
+}
+
+/**
  * Generates a baseline CloudCannon configuration based on the file path provided.
  *
  * @param filePaths {string[]} List of input file paths.
@@ -71,26 +79,27 @@ function parseFiles(filePaths, ssg) {
  * @returns {Promise<import('@cloudcannon/configuration-types').Configuration>}
  */
 export async function generate(filePaths, options) {
-	const ssgKey = options?.config?.ssg ?? options?.buildConfig?.ssg;
+	const ssgKey = options?.config?.ssg || options?.buildConfig?.ssg;
 	const ssg = ssgKey ? ssgs[ssgKey] : guessSsg(filePaths);
 	const files = parseFiles(filePaths, ssg);
 	const collectionPaths = processCollectionPaths(files.collectionPathCounts);
 
 	const source =
-		options?.config?.source ??
-		options?.buildConfig?.source ??
-		ssg.getSource(files, filePaths, collectionPaths);
+		options?.config?.source ?? options?.buildConfig?.source ?? ssg.getSource(files, filePaths);
 
 	const collectionsConfig =
-		options?.config?.collections_config ?? generateCollectionsConfig(collectionPaths, source);
+		options?.config?.collections_config || ssg.generateCollectionsConfig(collectionPaths, source);
 
 	return {
 		ssg: ssg?.key,
 		source,
 		collections_config: collectionsConfig,
 		paths: {
-			collections: stripTopPath(collectionPaths.basePath, source),
+			collections: source
+				? stripTopPath(collectionPaths.basePath, source)
+				: collectionPaths.basePath,
 			...options?.config?.paths,
 		},
+		timezone: getTimezone(),
 	};
 }

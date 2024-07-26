@@ -1,14 +1,19 @@
 import { extname } from 'path';
+import { basename } from 'path';
+import slugify from '@sindresorhus/slugify';
+import titleize from 'titleize';
+import { findIcon } from '../icons.js';
+import { stripTopPath } from '../utility.js';
 
 export default class Ssg {
 	/** @type {import('@cloudcannon/configuration-types').SsgKey} */
 	key;
 
 	/**
-	 * @param key {import('@cloudcannon/configuration-types').SsgKey}
+	 * @param key {import('@cloudcannon/configuration-types').SsgKey | undefined=}
 	 */
 	constructor(key) {
-		this.key = key;
+		this.key = key || 'unknown';
 	}
 
 	/**
@@ -59,7 +64,15 @@ export default class Ssg {
 	 * @returns {string[]}
 	 */
 	ignoredFolders() {
-		return ['.git/', '.github/', '.cloudcannon/', '_cloudcannon/', 'node_modules/'];
+		return [
+			'.git/',
+			'.github/',
+			'.cloudcannon/',
+			'_cloudcannon/',
+			'node_modules/',
+			'.vscode/',
+			'.zed/',
+		];
 	}
 
 	/**
@@ -195,12 +208,58 @@ export default class Ssg {
 	 *
 	 * @param _files {import('../types').ParsedFiles}
 	 * @param _filePaths {string[]} List of input file paths.
-	 * @param collectionPaths {{ basePath: string, paths: string[] }}
-	 * @returns {string}
+	 * @returns {string | undefined}
 	 */
-	getSource(_files, _filePaths, collectionPaths) {
-		// This is the technically the collections path, which is often the source path.
-		// It's preferable to override this with a more accurate SSG-specific approach.
-		return collectionPaths.basePath;
+	getSource(_files, _filePaths) {
+		return;
+	}
+
+	/**
+	 * Generates a collection config entry.
+	 *
+	 * @param key {string}
+	 * @param path {string}
+	 * @param _basePath {string}
+	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
+	 */
+	generateCollectionConfig(key, path, _basePath) {
+		const name = titleize(
+			basename(path || key)
+				.replace(/[_-]/g, ' ')
+				.trim(),
+		);
+
+		/** @type {import('@cloudcannon/configuration-types').CollectionConfig} */
+		const collectionConfig = {
+			path,
+			name,
+			icon: findIcon(name.toLowerCase()),
+		};
+
+		return collectionConfig;
+	}
+
+	/**
+	 * Generates collections config from a set of paths.
+	 *
+	 * @param collectionPaths {{ basePath: string, paths: string[] }}
+	 * @param source {string | undefined}
+	 * @returns {import('../types').CollectionsConfig}
+	 */
+	generateCollectionsConfig(collectionPaths, source) {
+		/** @type {import('../types').CollectionsConfig} */
+		const collectionsConfig = {};
+		const basePath = source
+			? stripTopPath(collectionPaths.basePath, source)
+			: collectionPaths.basePath;
+
+		for (const fullPath of collectionPaths.paths) {
+			const path = source ? stripTopPath(fullPath, source) : fullPath;
+			const key = slugify(path, { separator: '_' }) || 'pages';
+
+			collectionsConfig[key] = this.generateCollectionConfig(key, path, basePath);
+		}
+
+		return collectionsConfig;
 	}
 }
