@@ -229,14 +229,11 @@ export default class Ssg {
 				.trim(),
 		);
 
-		/** @type {import('@cloudcannon/configuration-types').CollectionConfig} */
-		const collectionConfig = {
+		return {
 			path,
 			name,
 			icon: findIcon(name.toLowerCase()),
 		};
-
-		return collectionConfig;
 	}
 
 	/**
