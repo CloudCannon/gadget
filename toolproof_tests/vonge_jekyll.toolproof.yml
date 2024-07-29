@@ -1,0 +1,53 @@
+name: Vonge Jekyll test site
+
+steps:
+  - I run "cp -R %test_sites%/vonge-jekyll src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "source": "site",
+      ╎  "collections_config": {
+      ╎    "pages": {
+      ╎      "path": "",
+      ╎      "name": "Pages",
+      ╎      "icon": "wysiwyg",
+      ╎      "output": true
+      ╎    },
+      ╎    "data": {
+      ╎      "path": "_data",
+      ╎      "name": "Data",
+      ╎      "icon": "data_usage",
+      ╎      "output": false
+      ╎    },
+      ╎    "collections_pages": {
+      ╎      "path": "collections/_pages",
+      ╎      "name": "Pages",
+      ╎      "icon": "wysiwyg",
+      ╎      "output": true
+      ╎    },
+      ╎    "collections_testimonials": {
+      ╎      "path": "collections/_testimonials",
+      ╎      "name": "Testimonials",
+      ╎      "icon": "festival",
+      ╎      "output": true
+      ╎    },
+      ╎    "collections_projects": {
+      ╎      "path": "collections/_projects",
+      ╎      "name": "Projects",
+      ╎      "icon": "eject",
+      ╎      "output": true
+      ╎    },
+      ╎    "collections_posts": {
+      ╎      "path": "collections/_posts",
+      ╎      "name": "Posts",
+      ╎      "icon": "event_available",
+      ╎      "output": true
+      ╎    }
+      ╎  },
+      ╎  "paths": {
+      ╎    "collections": ""
+      ╎  },
+      ╎  "timezone": "Pacific/Auckland"
+      ╎}
