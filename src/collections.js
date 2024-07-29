@@ -1,7 +1,4 @@
-import { basename, join } from 'path';
-import slugify from '@sindresorhus/slugify';
-import titleize from 'titleize';
-import { findIcon } from './icons.js';
+import { join } from 'path';
 import { stripTopPath } from './utility.js';
 
 /**
@@ -21,43 +18,6 @@ export function getCollectionPaths(filePath) {
 	}
 
 	return paths;
-}
-
-/**
- * Generates collections config from a set of paths.
- *
- * @param collectionPaths {{ basePath: string, paths: string[] }}
- * @param source {string}
- * @returns {import('./types').CollectionsConfig}
- */
-export function generateCollectionsConfig(collectionPaths, source) {
-	/** @type import('./types').CollectionsConfig */
-	const collectionsConfig = {};
-	const collectionPath = stripTopPath(collectionPaths.basePath, source);
-
-	for (let path of collectionPaths.paths) {
-		const sourcePath = stripTopPath(path, source);
-		const key = slugify(sourcePath, { separator: '_' }) || 'pages';
-		const name = titleize(
-			basename(sourcePath || key)
-				.replace(/[_-]/g, ' ')
-				.trim(),
-		);
-
-		collectionsConfig[key] = {
-			path: sourcePath,
-			name,
-			icon: findIcon(name.toLowerCase()),
-		};
-
-		if (sourcePath === collectionPath) {
-			collectionsConfig[key].filter = {
-				base: 'strict',
-			};
-		}
-	}
-
-	return collectionsConfig;
 }
 
 /**
@@ -88,6 +48,14 @@ export function processCollectionPaths(collectionPathCounts) {
 
 	if (basePath) {
 		paths = paths.map((pathKey) => stripTopPath(pathKey, basePath));
+	}
+
+	if (paths.length === 1) {
+		// If there is one collection, force it to have path.
+		return {
+			basePath: '',
+			paths: [basePath],
+		};
 	}
 
 	return {

@@ -24,4 +24,26 @@ export default class Hugo extends Ssg {
 			'resources/', // cache
 		]);
 	}
+
+	/**
+	 * Generates a collection config entry.
+	 *
+	 * @param key {string}
+	 * @param path {string}
+	 * @param basePath {string}
+	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
+	 */
+	generateCollectionConfig(key, path, basePath) {
+		const collectionConfig = super.generateCollectionConfig(key, path, basePath);
+
+		if (path !== basePath) {
+			collectionConfig.glob =
+				typeof collectionConfig.glob === 'string'
+					? [collectionConfig.glob]
+					: collectionConfig.glob || [];
+			collectionConfig.glob.push('!_index.md');
+		}
+
+		return collectionConfig;
+	}
 }

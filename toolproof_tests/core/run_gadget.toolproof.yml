@@ -19,9 +19,14 @@ steps:
       import { readFile } from 'fs/promises';
       import { generate } from '@cloudcannon/gadget';
 
-      const crawler = new fdir().withRelativePaths();
+      const crawler = new fdir().withRelativePaths().withFullPaths();
       const filePaths = await crawler.crawl("src").withPromise();
-      const config = await generate(filePaths, { readFile });
+      const config = await generate(filePaths, {
+        readFile,
+        config: {
+          timezone: 'Pacific/Auckland'
+        }
+      });
 
       console.log(JSON.stringify(config, undefined, 2));
   - I run "npm i"

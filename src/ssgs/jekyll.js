@@ -18,7 +18,7 @@ export default class Jekyll extends Ssg {
 	}
 
 	partialFolders() {
-		return super.partialFolders().concat(['_layouts/']);
+		return super.partialFolders().concat(['_layouts/', '_includes/']);
 	}
 
 	ignoredFolders() {
@@ -62,9 +62,9 @@ export default class Jekyll extends Ssg {
 	 * @param _files {import('../types').ParsedFiles}
 	 * @param filePaths {string[]} List of input file paths.
 	 * @param collectionPaths {{ basePath: string, paths: string[] }}
-	 * @returns {string}
+	 * @returns {string | undefined}
 	 */
-	getSource(_files, filePaths, collectionPaths) {
+	getSource(_files, filePaths) {
 		const { filePath, conventionPath } = this._findConventionPath(filePaths);
 
 		if (filePath && conventionPath) {
@@ -72,6 +72,21 @@ export default class Jekyll extends Ssg {
 			return filePath.substring(0, Math.max(0, conventionIndex - 1));
 		}
 
-		return super.getSource(_files, filePaths, collectionPaths);
+		return super.getSource(_files, filePaths);
+	}
+
+	/**
+	 * Generates a collection config entry.
+	 *
+	 * @param key {string}
+	 * @param path {string}
+	 * @param basePath {string}
+	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
+	 */
+	generateCollectionConfig(key, path, basePath) {
+		const collectionConfig = super.generateCollectionConfig(key, path, basePath);
+		// TODO: read contents of _config.yml to find which collections are output
+		collectionConfig.output = key !== 'data';
+		return collectionConfig;
 	}
 }
