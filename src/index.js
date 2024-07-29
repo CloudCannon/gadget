@@ -100,6 +100,6 @@ export async function generate(filePaths, options) {
 				: collectionPaths.basePath,
 			...options?.config?.paths,
 		},
-		timezone: getTimezone(),
+		timezone: options?.config?.timezone ?? getTimezone(),
 	};
 }
