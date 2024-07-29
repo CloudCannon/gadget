@@ -21,18 +21,15 @@ steps:
     snapshot_content: |-
       ╎{
       ╎  "ssg": "eleventy",
-      ╎  "source": "staff-members",
       ╎  "collections_config": {
-      ╎    "pages": {
-      ╎      "path": "",
-      ╎      "name": "Pages",
-      ╎      "icon": "wysiwyg",
-      ╎      "filter": {
-      ╎        "base": "strict"
-      ╎      }
+      ╎    "staff_members": {
+      ╎      "path": "staff-members",
+      ╎      "name": "Staff Members",
+      ╎      "icon": "card_membership"
       ╎    }
       ╎  },
       ╎  "paths": {
       ╎    "collections": ""
-      ╎  }
+      ╎  },
+      ╎  "timezone": "Pacific/Auckland"
       ╎}

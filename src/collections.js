@@ -50,6 +50,14 @@ export function processCollectionPaths(collectionPathCounts) {
 		paths = paths.map((pathKey) => stripTopPath(pathKey, basePath));
 	}
 
+	if (paths.length === 1) {
+		// If there is one collection, force it to have path.
+		return {
+			basePath: '',
+			paths: [basePath],
+		};
+	}
+
 	return {
 		basePath,
 		paths,

@@ -19,7 +19,7 @@ steps:
       import { readFile } from 'fs/promises';
       import { generate } from '@cloudcannon/gadget';
 
-      const crawler = new fdir().withRelativePaths();
+      const crawler = new fdir().withRelativePaths().withFullPaths();
       const filePaths = await crawler.crawl("src").withPromise();
       const config = await generate(filePaths, { readFile });
 
