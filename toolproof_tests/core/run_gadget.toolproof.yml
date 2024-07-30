@@ -21,6 +21,7 @@ steps:
 
       const crawler = new fdir().withRelativePaths().withFullPaths();
       const filePaths = await crawler.crawl("src").withPromise();
+      filePaths.sort();
       const config = await generate(filePaths, {
         readFile,
         config: {

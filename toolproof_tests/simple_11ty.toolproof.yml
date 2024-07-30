@@ -1,4 +1,4 @@
-name: Text Example 1
+name: Simple 11ty test site
 
 steps:
   - step: I have a "src/.eleventy.js" file with the content {js}
