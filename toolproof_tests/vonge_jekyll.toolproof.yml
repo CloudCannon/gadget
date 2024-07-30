@@ -9,12 +9,6 @@ steps:
       ╎  "ssg": "jekyll",
       ╎  "source": "site",
       ╎  "collections_config": {
-      ╎    "pages": {
-      ╎      "path": "",
-      ╎      "name": "Pages",
-      ╎      "icon": "wysiwyg",
-      ╎      "output": true
-      ╎    },
       ╎    "data": {
       ╎      "path": "_data",
       ╎      "name": "Data",
@@ -27,10 +21,10 @@ steps:
       ╎      "icon": "wysiwyg",
       ╎      "output": true
       ╎    },
-      ╎    "collections_testimonials": {
-      ╎      "path": "collections/_testimonials",
-      ╎      "name": "Testimonials",
-      ╎      "icon": "festival",
+      ╎    "collections_posts": {
+      ╎      "path": "collections/_posts",
+      ╎      "name": "Posts",
+      ╎      "icon": "event_available",
       ╎      "output": true
       ╎    },
       ╎    "collections_projects": {
@@ -39,10 +33,16 @@ steps:
       ╎      "icon": "eject",
       ╎      "output": true
       ╎    },
-      ╎    "collections_posts": {
-      ╎      "path": "collections/_posts",
-      ╎      "name": "Posts",
-      ╎      "icon": "event_available",
+      ╎    "collections_testimonials": {
+      ╎      "path": "collections/_testimonials",
+      ╎      "name": "Testimonials",
+      ╎      "icon": "festival",
+      ╎      "output": true
+      ╎    },
+      ╎    "pages": {
+      ╎      "path": "",
+      ╎      "name": "Pages",
+      ╎      "icon": "wysiwyg",
       ╎      "output": true
       ╎    }
       ╎  },
