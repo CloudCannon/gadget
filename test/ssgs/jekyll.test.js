@@ -11,5 +11,5 @@ test('gets source path from convention path', (t) => {
 		'sauce/_sass/_typography.scss',
 	];
 
-	t.deepEqual(jekyll.getSource(undefined, filePaths, { basePath: 'salsa' }), 'sauce');
+	t.deepEqual(jekyll.getSource(filePaths), 'sauce');
 });

@@ -3,7 +3,8 @@ import { basename } from 'path';
 import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
 import { findIcon } from '../icons.js';
-import { stripTopPath } from '../utility.js';
+import { last, stripTopPath } from '../utility.js';
+import { getCollectionPaths } from '../collections.js';
 
 export default class Ssg {
 	/** @type {import('@cloudcannon/configuration-types').SsgKey} */
@@ -14,6 +15,60 @@ export default class Ssg {
 	 */
 	constructor(key) {
 		this.key = key || 'unknown';
+	}
+
+	/**
+	 * Provides a summary of files.
+	 *
+	 * @param filePaths {string[]} The input file path.
+	 * @returns {import('../types').GroupedFileSummaries} The file summaries grouped by type.
+	 */
+	groupFiles(filePaths) {
+		/** @type {Record<string, number>} */
+		const collectionPathCounts = {};
+
+		/** @type {Record<import('../types').FileType, import('../types').FileSummary[]>} */
+		const groups = {
+			config: [],
+			content: [],
+			partial: [],
+			other: [],
+			template: [],
+			ignored: [],
+		};
+
+		for (let i = 0; i < filePaths.length; i++) {
+			const summary = {
+				filePath: filePaths[i],
+				type: this.getFileType(filePaths[i]),
+			};
+
+			if (summary.type === 'content') {
+				const lastPath = last(getCollectionPaths(filePaths[i]));
+				if (lastPath || lastPath === '') {
+					collectionPathCounts[lastPath] = collectionPathCounts[lastPath] || 0;
+					collectionPathCounts[lastPath] += 1;
+				}
+			}
+
+			if (summary.type !== 'ignored') {
+				groups[summary.type].push(summary);
+			}
+		}
+
+		return { collectionPathCounts, groups };
+	}
+
+	/**
+	 * Attempts to find the current timezone.
+	 *
+	 * @returns {import('@cloudcannon/configuration-types').Timezone | undefined}
+	 */
+	getTimezone() {
+		const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+		return /** @type {import('@cloudcannon/configuration-types').Timezone | undefined} */ (
+			timezone
+		);
 	}
 
 	/**
@@ -87,6 +142,7 @@ export default class Ssg {
 			'.prettierrc.json',
 			'package-lock.json',
 			'package.json',
+			'manifest.json',
 			'.gitignore',
 			'README',
 			'README.md',
@@ -206,11 +262,10 @@ export default class Ssg {
 	/**
 	 * Attempts to find the most likely source folder.
 	 *
-	 * @param _files {import('../types').ParsedFiles}
 	 * @param _filePaths {string[]} List of input file paths.
 	 * @returns {string | undefined}
 	 */
-	getSource(_files, _filePaths) {
+	getSource(_filePaths) {
 		return;
 	}
 
@@ -219,7 +274,7 @@ export default class Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param _basePath {string}
+	 * @param _basePath {string=}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, _basePath) {

@@ -6,7 +6,7 @@ import {
 
 export type FileType = 'config' | 'content' | 'template' | 'partial' | 'ignored' | 'other';
 
-export interface ParsedFile {
+export interface FileSummary {
 	filePath: string;
 	type: FileType;
 	collectionPaths?: string[];
@@ -18,14 +18,20 @@ export interface GenerateOptions {
 	/** Build configuration, most likely the parsed CLI options for specific SSGs. */
 	buildConfig?: {
 		ssg?: SsgKey;
-		source?: string;
 	};
 	/** Function to access the source contents a file. */
 	readFile?: (path: string) => Promise<string>;
 }
 
-export interface ParsedFiles {
-	groups: Record<FileType, ParsedFile[]>;
+export interface GenerateResult {
+	/** Identifies what SSG was used during config generation. */
+	ssg: SsgKey | undefined;
+	/** The generated configuration. */
+	config: Configuration;
+}
+
+export interface GroupedFileSummaries {
+	groups: Record<FileType, FileSummary[]>;
 	collectionPathCounts: Record<string, number>;
 }
 
