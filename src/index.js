@@ -42,7 +42,7 @@ export async function generate(filePaths, options) {
 		options?.config?.collections_config || ssg.generateCollectionsConfig(collectionPaths, source);
 
 	return {
-		ssg: ssg?.key,
+		ssg: ssg.key,
 		config: {
 			source,
 			collections_config: collectionsConfig,
