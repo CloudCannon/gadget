@@ -1,0 +1,11 @@
+markdown: CommonMark
+commonmark:
+  options:
+    - HARDBREAKS
+    - GFM_QUIRKS
+  extensions:
+    - strikethrough
+    - table
+    - autolink
+    - superscript
+    - header_ids
