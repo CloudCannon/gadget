@@ -1,3 +1,6 @@
+import yaml from 'js-yaml';
+import { parse as tomlParse } from '@iarna/toml';
+
 /**
  * Retrieves the last element from an array.
  *
@@ -22,4 +25,42 @@ export function stripTopPath(path, stripPath) {
 	}
 
 	return path.startsWith(`${stripPath}/`) ? path.substring(stripPath.length + 1) : path;
+}
+
+/**
+ * @param path {string}
+ * @param readFile {(path: string) => Promise<string>}
+ * @returns {Promise<Record<string, any> | null>}
+ */
+export async function parseDataFile(path, readFile) {
+	const lastDot = path.lastIndexOf('.');
+	const extension = (lastDot < 0 ? '' : path.substring(lastDot + 1)).toLowerCase();
+	if (!extension) {
+		return {};
+	}
+	
+	try {
+		const fileContents = await readFile(path);
+		if (!fileContents) {
+			return null;
+		}
+		let contents;
+		if (['yml', 'yaml'].includes(extension)) {
+			contents = yaml.load(fileContents);
+		}
+		if (extension === 'json') {
+			contents = JSON.parse(fileContents);
+		}
+		if (extension === 'toml') {
+			contents = tomlParse(fileContents);	
+		}
+		if (contents && typeof contents === 'object') {
+			return contents;
+		}
+
+	} catch (e) {
+		console.warn(e);
+	}
+
+	return null;
 }

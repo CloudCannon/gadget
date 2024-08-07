@@ -1,0 +1,31 @@
+[markup.goldmark.extensions]
+linkify = true
+strikethrough = true
+table = true
+
+  [markup.goldmark.extensions.typographer]
+  disable = false
+  leftDoubleQuote = "&ldquo;"
+  leftSingleQuote = "&lsquo;"
+  rightDoubleQuote = "&rdquo;"
+  rightSingleQuote = "&rsquo;"
+
+[markup.goldmark.extensions.extras.delete]
+enable = true
+
+[markup.goldmark.extensions.extras.subscript]
+enable = true
+
+[markup.goldmark.extensions.extras.superscript]
+enable = true
+
+[markup.goldmark.parser]
+autoHeadingID = true
+
+  [markup.goldmark.parser.attribute]
+  title = true
+  block = false
+
+[markup.goldmark.renderer]
+hardWraps = true
+xhtml = true

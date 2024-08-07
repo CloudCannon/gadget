@@ -37,6 +37,8 @@
 	"author": "CloudCannon <support@cloudcannon.com>",
 	"devDependencies": {
 		"@cloudcannon/configuration-types": "^0.0.8",
+		"@types/he": "^1.2.3",
+		"@types/js-yaml": "^4.0.9",
 		"@types/node": "^22.0.2",
 		"ava": "^6.1.3",
 		"c8": "^10.1.2",
@@ -46,7 +48,10 @@
 	},
 	"license": "MIT",
 	"dependencies": {
+		"@iarna/toml": "^2.2.5",
 		"@sindresorhus/slugify": "^2.2.1",
+		"he": "^1.2.0",
+		"js-yaml": "^4.1.0",
 		"leven": "^4.0.0",
 		"titleize": "^4.0.0"
 	}
