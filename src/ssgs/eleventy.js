@@ -27,4 +27,17 @@ export default class Eleventy extends Ssg {
 	contentExtensions() {
 		return super.contentExtensions().concat(['.html']);
 	}
+
+	/**
+	 * @param _config {Record<string, any>}
+	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
+	 */
+	generateMarkdownConfig(_config) {
+		return {
+            engine: 'commonmark',
+            options: {
+                html: true
+            }
+        }
+	}
 }

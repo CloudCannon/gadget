@@ -1,3 +1,4 @@
+import { decodeEntity } from '../utility.js';
 import Ssg from './ssg.js';
 
 /**
@@ -165,4 +166,67 @@ export default class Jekyll extends Ssg {
 
 		return collectionsConfig;
 	}
+
+	/**
+	 * @param config {Record<string, any> | undefined=}
+	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
+	 */
+	generateMarkdownConfig(config) {
+		const engine = config?.['markdown']?.includes('CommonMark') ? 'commonmark' : 'kramdown';
+		/** @type {import('@cloudcannon/configuration-types').MarkdownSettings['options']} */
+		const options = {};
+		
+		if (engine === 'kramdown') {
+			const kramdownConfig = config?.['kramdown'] || {};
+			// https://kramdown.gettalong.org/options.html
+			options.heading_ids = !!kramdownConfig.auto_ids;
+			options.gfm = (!kramdownConfig.input || kramdownConfig.input !== 'GFM') ? false : true;
+			options.breaks = !!kramdownConfig.hard_wrap;
+			const smartquotes = kramdownConfig.smart_quotes;
+			if (smartquotes && typeof smartquotes === 'string') {
+				options.quotes = smartquotes
+					.replace(/\s/g, '')
+					.split(',')
+					.map(decodeEntity)
+					.join('');
+			}
+			// https://github.com/kramdown/parser-gfm
+			options.typographer = options.gfm && !kramdownConfig.gfm_quirks?.includes?.('no_auto_typographic');
+
+			/**
+			 * Several options in Kramdown can be enabled implicitly if using GFM mode
+			 * Historically these options have been disabled in CloudCannon,
+			 * so I'm thinking we'll leave them disabled until explicitly set in CC config,
+			 * since there is no way to explicitly set them in Kramdown config.
+			 * e.g. strikethrough
+			 * attributes is a similar example
+			 */
+		} else if (config) {
+			const commonmarkConfig = config?.['commonmark'] || {};
+
+			/** @type {(name: string) => boolean} */
+			const checkOption = ((name) => {
+				return commonmarkConfig.options?.includes(name.toLowerCase()) || commonmarkConfig.options?.includes(name.toUpperCase());
+			})
+			/** @type {(name: string) => boolean} */
+			const checkExtension = ((name) => {
+				return commonmarkConfig.extensions?.includes(name.toLowerCase()) || commonmarkConfig.extensions?.includes(name.toUpperCase());
+			})
+
+			// https://github.com/gjtorikian/commonmarker?tab=readme-ov-file#options
+			options.gfm = checkOption('gfm_quirks');
+			options.breaks = checkOption('hardbreaks');
+			options.strikethrough = checkExtension('strikethrough');
+			options.table = checkExtension('table');
+			options.linkify = checkExtension('autolink');
+			options.superscript = checkExtension('superscript');
+			options.heading_ids = checkExtension('header_ids');
+		}
+
+		return {
+			engine,
+			options
+		}
+	}
 }
+

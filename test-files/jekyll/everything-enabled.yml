@@ -1,6 +1,0 @@
-kramdown:
-  input: GFM
-  hard_wrap: true
-  gfm_quirks: []
-  auto_ids: true
-  smart_quotes: lsquo,rsquo,ldquo,rdquo

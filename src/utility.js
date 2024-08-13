@@ -1,5 +1,6 @@
 import yaml from 'js-yaml';
 import { parse as tomlParse } from '@iarna/toml';
+import htmlEntities from 'he';
 
 /**
  * Retrieves the last element from an array.
@@ -10,6 +11,15 @@ import { parse as tomlParse } from '@iarna/toml';
  */
 export function last(array) {
 	return array[array.length - 1];
+}
+
+/**
+ * Joins strings with slashes.
+ * 
+ * @param {string[]} paths 
+ */
+export function joinPaths(paths) {
+	return paths.join('/').replace(/\/\//g, '/');
 }
 
 /**
@@ -63,4 +73,19 @@ export async function parseDataFile(path, readFile) {
 	}
 
 	return null;
+}
+
+/**
+ * @param entityString {string}
+ * @returns {string}
+ */
+export function decodeEntity(entityString) {
+    if (entityString.length === 1) {
+        // assumed already decoded
+        return entityString;
+    }
+    const entity = `&${entityString};`
+        .replace(/^&&/, '&')
+        .replace(/;;$/, ';'); // Jekyll config has entities without & or ;
+    return htmlEntities.decode(entity);
 }

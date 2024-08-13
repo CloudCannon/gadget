@@ -314,4 +314,15 @@ export default class Ssg {
 
 		return collectionsConfig;
 	}
+
+	/**
+	 * @param _config {import('../types').CollectionsConfig | undefined=}
+	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
+	 */
+	generateMarkdownConfig(_config) {
+		return {
+			engine: 'commonmark',
+			options: {}
+		};
+	}
 }

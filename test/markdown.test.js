@@ -1,42 +1,39 @@
 import test from 'ava';
-import { getMarkdownConfig } from '../src/markdown.js';
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
+import { ssgs } from '../src/ssgs/ssgs.js';
+import Ssg from '../src/ssgs/ssg.js';
 
 const readFilePromise = async (filePath) => readFile(filePath, { encoding: 'utf8'});
 const configFiles = (filePaths) => filePaths.map((path) => {
     return { filePath: resolve(path)}
 })
 
-test('Defaults to CommonMark', (t) => {
-    return getMarkdownConfig().then((config) => {
-        t.deepEqual(config, {
-            engine: 'commonmark',
-            options: {}
-        });
-    })
-});
+function getMarkdownConfig(ssgKey, config) {
+    const ssg = ssgs[ssgKey] ?? new Ssg();
+    return ssg.generateMarkdownConfig(config);
+}
 
-test('Use defaults if no config is found.', (t) => {
-    return getMarkdownConfig(
-        configFiles(['./not-a-real-file.yml']),
-        'jekyll',
-        readFilePromise
-    ).then((config) => {
-        t.deepEqual(config, {
-            engine: 'commonmark',
-            options: {}
-        });
-    })
+test('Defaults to CommonMark', (t) => {
+    t.deepEqual(getMarkdownConfig('', {}), {
+        engine: 'commonmark',
+        options: {}
+    });
 });
 
 test('Respects Jekyll Kramdown options enabled', (t) => {
-    return getMarkdownConfig(
-        configFiles(['./test-files/jekyll/everything-enabled.yml']),
-        'jekyll',
-        readFilePromise
-    ).then((config) => {
-        t.deepEqual(config, {
+        t.deepEqual(getMarkdownConfig(
+            'jekyll',
+            {
+                kramdown: {
+                    input: 'GFM',
+                    hard_wrap: true,
+                    gfm_quirks: [],
+                    auto_ids: true,
+                    smart_quotes: 'lsquo,rsquo,ldquo,rdquo'
+                }
+            }
+        ), {
             engine: 'kramdown',
             options: {
                 breaks: true,
@@ -46,86 +43,107 @@ test('Respects Jekyll Kramdown options enabled', (t) => {
                 quotes: '‘’“”',
             }
         })
-    });
 });
 
 test('Respects Jekyll Kramdown options disabled', (t) => {
-    return getMarkdownConfig(
-        configFiles(['./test-files/jekyll/everything-disabled.yml']),
+    t.deepEqual(getMarkdownConfig(
         'jekyll',
-        readFilePromise
-    ).then((config) => {
-        t.deepEqual(config, {
-            engine: 'kramdown',
-            options: {
-                breaks: false,
-                gfm: false,
-                heading_ids: false,
-                typographer: false,
+        {
+            kramdown: {
+                input: 'not_gfm',
+                hard_wrap: false,
+                gfm_quirks: ['no_auto_typographic'],
+                auto_ids: false,
             }
-        })
-    });
+        }), {
+        engine: 'kramdown',
+        options: {
+            breaks: false,
+            gfm: false,
+            heading_ids: false,
+            typographer: false,
+        }
+    })
 });
 
 test('Respects Jekyll CommonMark options', (t) => {
-    return getMarkdownConfig(
-        configFiles(['./test-files/jekyll/commonmark.yaml']),
-        'jekyll',
-        readFilePromise
-    ).then((config) => {
-        t.deepEqual(config, {
-            engine: 'commonmark',
-            options: {
-                breaks: true,
-                gfm: true,
-                strikethrough: true,
-                superscript: true,
-                linkify: true,
-                heading_ids: true,
-                table: true
-            }
-        })
-    });
+    t.deepEqual(getMarkdownConfig('jekyll', {
+        markdown: 'CommonMark',
+        commonmark: {
+            options: ['HARDBREAKS', 'GFM_QUIRKS'],
+            extensions: ['strikethrough','table','autolink','superscript','header_ids']
+        }
+    }), {
+        engine: 'commonmark',
+        options: {
+            breaks: true,
+            gfm: true,
+            strikethrough: true,
+            superscript: true,
+            linkify: true,
+            heading_ids: true,
+            table: true
+        }
+    })
 });
 
 test('Respects Hugo options', (t) => {
-    return getMarkdownConfig(
-        configFiles(['./test-files/hugo/goldmark.toml']),
+    t.deepEqual(getMarkdownConfig(
         'hugo',
-        readFilePromise
-    ).then((config) => {
-        t.deepEqual(config, {
-            engine: 'commonmark',
-            options: {
-                attributes: true,
-                linkify: true,
-                strikethrough: true,
-                table: true,
-                typographer: true,
-                quotes: '‘’“”',
-                breaks: true,
-                gfm: true,
-                subscript: true,
-                superscript: true,
-                heading_ids: true,
-                breaks: true,
-                xhtml: true,
+        { "markup": {
+            "goldmark": {
+            "extensions": {
+                "linkify": true,
+                "strikethrough": true,
+                "table": true,
+                "extras": {
+                "delete": { "enable": true },
+                "subscript": { "enable": true},
+                "superscript": { "enable": true }
+                },
+                "typographer": {
+                "disable": false,
+                "leftDoubleQuote": "&ldquo;",
+                "leftSingleQuote": "&lsquo;",
+                "rightDoubleQuote": "&rdquo;",
+                "rightSingleQuote": "&rsquo;"
+                }
+            },
+            "parser": {
+                "autoHeadingID": true,
+                "attribute": { "block": false, "title": true }
+            },
+            "renderer": { "hardWraps": true, "xhtml": true}
             }
-        })
-    });
+        }}
+    ), {
+        engine: 'commonmark',
+        options: {
+            attributes: true,
+            linkify: true,
+            strikethrough: true,
+            table: true,
+            typographer: true,
+            quotes: '‘’“”',
+            breaks: true,
+            gfm: true,
+            subscript: true,
+            superscript: true,
+            heading_ids: true,
+            breaks: true,
+            xhtml: true,
+        }
+    })
 });
 
 test('Has good 11ty defaults', (t) => {
-    return getMarkdownConfig(
-        configFiles([]),
+    t.deepEqual(getMarkdownConfig(
         'eleventy',
-        readFilePromise
-    ).then((config) => {
-        t.deepEqual(config, {
-            engine: 'commonmark',
-            options: {
-                html: true
-            }
-        })
-    });
+        undefined
+    ), {
+        engine: 'commonmark',
+        options: {
+            html: true
+        }
+    })
 });

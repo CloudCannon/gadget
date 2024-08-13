@@ -1,5 +1,0 @@
-kramdown:
-  input: not_gfm
-  hard_wrap: false
-  gfm_quirks: [no_auto_typographic]
-  auto_ids: false

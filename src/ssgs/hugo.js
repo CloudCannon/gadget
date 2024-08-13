@@ -1,3 +1,4 @@
+import { decodeEntity } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Hugo extends Ssg {
@@ -45,5 +46,43 @@ export default class Hugo extends Ssg {
 		}
 
 		return collectionConfig;
+	}
+
+	/**
+	 * @param config {Record<string, any>}
+	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
+	 */
+ 	generateMarkdownConfig(config) {
+		const goldmark = config.markup?.goldmark || {};
+		const { extensions, parser, renderer } = goldmark;
+		const extras = extensions?.extras || {};
+
+		/** @type {import('@cloudcannon/configuration-types').MarkdownSettings['options']} */
+		const options = {
+			gfm: true
+		};
+
+		// https://gohugo.io/getting-started/configuration-markup/#goldmark
+		options.linkify = !!extensions?.linkify;
+		options.table = !!extensions?.table;
+		options.strikethrough = !!extensions?.strikethrough || !!extras?.delete?.enable;
+		options.subscript = !!extras?.subscript?.enable;
+		options.superscript = !!extras?.superscript?.enable;
+		options.heading_ids = !!parser.autoHeadingID;
+		options.breaks = !!renderer.hardWraps;
+		options.xhtml = !!renderer.xhtml;
+		options.attributes = !!parser.attribute?.block || !!parser.attribute?.title;
+		options.typographer = !!extensions?.typographer && !extensions.typographer.disable;
+		if (options.typographer) {
+			const { leftDoubleQuote, leftSingleQuote, rightDoubleQuote, rightSingleQuote } = extensions.typographer
+			if (leftDoubleQuote && leftSingleQuote && rightDoubleQuote && rightSingleQuote) {
+				options.quotes = [leftSingleQuote, rightSingleQuote, leftDoubleQuote, rightDoubleQuote].map(decodeEntity).join('');
+			}
+		}
+
+		return {
+			engine: 'commonmark',
+			options
+		}
 	}
 }
