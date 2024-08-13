@@ -223,6 +223,8 @@ export default class Jekyll extends Ssg {
 			options.heading_ids = checkExtension('header_ids');
 		}
 
+		options.treat_indentation_as_code = true;
+
 		return {
 			engine,
 			options

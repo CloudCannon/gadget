@@ -81,6 +81,8 @@ export default class Hugo extends Ssg {
 				options.quotes = [leftSingleQuote, rightSingleQuote, leftDoubleQuote, rightDoubleQuote].map(decodeEntity).join('');
 			}
 		}
+		
+		options.treat_indentation_as_code = true;
 
 		return {
 			engine: 'commonmark',
