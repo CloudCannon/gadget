@@ -1,4 +1,4 @@
-import { decodeEntity } from '../utility.js';
+import { decodeEntity, joinPaths, parseDataFile } from '../utility.js';
 import Ssg from './ssg.js';
 
 /**
@@ -27,7 +27,7 @@ export default class Jekyll extends Ssg {
 	}
 
 	configPaths() {
-		return super.configPaths().concat(['_config.yml', '_config.yaml']);
+		return super.configPaths().concat(['_config.yml', '_config.yaml', '_config.toml']);
 	}
 
 	templateExtensions() {

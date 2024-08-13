@@ -7,7 +7,9 @@ export default class Hugo extends Ssg {
 	}
 
 	configPaths() {
-		return super.configPaths().concat(['config.toml', 'hugo.toml', 'hugo.yaml', 'hugo.json']);
+		return super.configPaths().concat(
+			['hugo.toml', 'hugo.yaml', 'hugo.json', 'config.toml', 'config.yaml', 'config.json']
+		);
 	}
 
 	templateExtensions() {

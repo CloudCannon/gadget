@@ -46,7 +46,7 @@ export async function parseDataFile(path, readFile) {
 	const lastDot = path.lastIndexOf('.');
 	const extension = (lastDot < 0 ? '' : path.substring(lastDot + 1)).toLowerCase();
 	if (!extension) {
-		return {};
+		return null;
 	}
 	
 	try {

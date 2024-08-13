@@ -5,6 +5,11 @@ export default class Sveltekit extends Ssg {
 		super('sveltekit');
 	}
 
+	async parseConfig() {
+		/** Unfortunately we can't read the JavaScript config files */
+		return null;
+	}
+
 	configPaths() {
 		return super.configPaths().concat(['svelte.config.js']);
 	}

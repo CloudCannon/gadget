@@ -1,13 +1,6 @@
 import test from 'ava';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
 import { ssgs } from '../src/ssgs/ssgs.js';
 import Ssg from '../src/ssgs/ssg.js';
-
-const readFilePromise = async (filePath) => readFile(filePath, { encoding: 'utf8'});
-const configFiles = (filePaths) => filePaths.map((path) => {
-    return { filePath: resolve(path)}
-})
 
 function getMarkdownConfig(ssgKey, config) {
     const ssg = ssgs[ssgKey] ?? new Ssg();

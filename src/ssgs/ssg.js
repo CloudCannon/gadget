@@ -3,7 +3,7 @@ import { basename } from 'path';
 import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
 import { findIcon } from '../icons.js';
-import { last, stripTopPath } from '../utility.js';
+import { last, parseDataFile, stripTopPath } from '../utility.js';
 import { getCollectionPaths } from '../collections.js';
 
 export default class Ssg {
@@ -76,6 +76,28 @@ export default class Ssg {
 	 */
 	configPaths() {
 		return [];
+	}
+
+	/**
+	 * @param filePaths {string[]} List of input file paths.
+	 * @param readFile {(path: string) => Promise<string>} Function to read files.
+	 * @param _options {import('../types').GenerateOptions=} Options to aid generation.
+	 * @returns {Promise<Record<string, any> | null>}
+	 */
+	async parseConfig(filePaths, readFile, _options) {
+		const configFiles = this.groupFiles(filePaths).groups.config;
+		const configPaths = this.configPaths();
+		for (const configPath of configPaths) {
+			for (const configFile of configFiles) {
+				if (configFile.filePath.endsWith(configPath)) {
+					const contents = await parseDataFile(configFile.filePath, readFile);
+					if (contents) {
+						return contents;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -189,8 +211,7 @@ export default class Ssg {
 			this.ignoredFolders().some(
 				(folder) => filePath.startsWith(folder) || filePath.includes(`/${folder}`),
 			) ||
-			this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`)) ||
-			filePath.includes('.config.')
+			this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`))
 		);
 	}
 
@@ -316,7 +337,7 @@ export default class Ssg {
 	}
 
 	/**
-	 * @param _config {import('../types').CollectionsConfig | undefined=}
+	 * @param _config {Record<string, any> | undefined=}
 	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
 	 */
 	generateMarkdownConfig(_config) {

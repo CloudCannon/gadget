@@ -6,7 +6,7 @@ export default class Bridgetown extends Ssg {
 	}
 
 	configPaths() {
-		return super.configPaths().concat(['_config.yml', '_config.yaml']);
+		return super.configPaths().concat(['bridgetown.config.yml', 'bridgetown.config.yaml']);
 	}
 
 	templateExtensions() {

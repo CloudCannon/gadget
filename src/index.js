@@ -1,7 +1,6 @@
 import { guessSsg, ssgs } from './ssgs/ssgs.js';
 import { stripTopPath } from './utility.js';
 import { processCollectionPaths } from './collections.js';
-import { getMarkdownConfig } from './markdown.js';
 
 export { ssgs } from './ssgs/ssgs.js';
 
@@ -42,7 +41,13 @@ export async function generate(filePaths, options) {
 	const collectionsConfig =
 		options?.config?.collections_config || ssg.generateCollectionsConfig(collectionPaths, source);
 
-	const markdownConfig = await getMarkdownConfig(files.groups['config'], ssg.key, options?.readFile)
+	let markdownConfig;
+	if (options?.readFile) {
+		const config = await ssg.parseConfig(filePaths, options?.readFile);
+		if (config) {
+			markdownConfig = await ssg.generateMarkdownConfig(config);
+		}
+	}
 
 	return {
 		ssg: ssg.key,

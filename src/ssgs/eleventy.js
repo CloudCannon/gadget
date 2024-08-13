@@ -18,6 +18,12 @@ export default class Eleventy extends Ssg {
 			]);
 	}
 
+
+	async parseConfig() {
+		/** Unfortunately we can't read the JavaScript config files */
+		return null;
+	}
+
 	templateExtensions() {
 		return super
 			.templateExtensions()
