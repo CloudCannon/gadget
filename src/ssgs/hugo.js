@@ -70,10 +70,10 @@ export default class Hugo extends Ssg {
 		options.strikethrough = !!extensions?.strikethrough || !!extras?.delete?.enable;
 		options.subscript = !!extras?.subscript?.enable;
 		options.superscript = !!extras?.superscript?.enable;
-		options.heading_ids = !!parser.autoHeadingID;
-		options.breaks = !!renderer.hardWraps;
-		options.xhtml = !!renderer.xhtml;
-		options.attributes = !!parser.attribute?.block || !!parser.attribute?.title;
+		options.heading_ids = !!parser?.autoHeadingID;
+		options.breaks = !!renderer?.hardWraps;
+		options.xhtml = !!renderer?.xhtml;
+		options.attributes = !!parser?.attribute?.block || !!parser?.attribute?.title;
 		options.typographer = !!extensions?.typographer && !extensions.typographer.disable;
 		if (options.typographer) {
 			const { leftDoubleQuote, leftSingleQuote, rightDoubleQuote, rightSingleQuote } = extensions.typographer
