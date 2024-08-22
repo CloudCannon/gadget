@@ -27,6 +27,7 @@ const overrides = {
 	authors: 'person',
 	staff: 'people',
 	staff_members: 'people',
+	recipes: 'local_dining',
 };
 
 /** @type {Array<import('@cloudcannon/configuration-types').Icon>} */

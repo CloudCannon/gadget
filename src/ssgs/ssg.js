@@ -14,7 +14,7 @@ export default class Ssg {
 	 * @param key {import('@cloudcannon/configuration-types').SsgKey | undefined=}
 	 */
 	constructor(key) {
-		this.key = key || 'unknown';
+		this.key = key || 'other';
 	}
 
 	/**

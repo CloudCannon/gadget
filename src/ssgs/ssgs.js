@@ -5,8 +5,7 @@ import Jekyll from './jekyll.js';
 import NextJs from './next-js.js';
 import Ssg from './ssg.js';
 import Sveltekit from './sveltekit.js';
-
-const unknown = new Ssg();
+import Static from './static.js';
 
 /** @type {Record<import('@cloudcannon/configuration-types').SsgKey, Ssg>} */
 export const ssgs = {
@@ -24,10 +23,9 @@ export const ssgs = {
 	hexo: new Ssg('hexo'),
 	nuxtjs: new Ssg('nuxtjs'),
 	sphinx: new Ssg('sphinx'),
-	static: new Ssg('static'),
-	legacy: unknown,
-	other: unknown,
-	unknown,
+	static: new Static(),
+	legacy: new Ssg('legacy'),
+	other: new Ssg(),
 };
 
 const ssgValues = Object.values(ssgs);
@@ -58,7 +56,6 @@ export function guessSsg(filePaths) {
 		static: 0,
 		legacy: 0,
 		other: 0,
-		unknown: 0,
 	};
 
 	for (let i = 0; i < filePaths.length; i++) {
@@ -69,6 +66,6 @@ export function guessSsg(filePaths) {
 
 	return ssgValues.reduce(
 		(previous, current) => (scores[previous.key] < scores[current.key] ? current : previous),
-		unknown,
+		ssgs.other,
 	);
 }
