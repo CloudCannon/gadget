@@ -65,9 +65,6 @@ steps:
       ╎        "icon": "card_membership"
       ╎      }
       ╎    },
-      ╎    "paths": {
-      ╎      "collections": ""
-      ╎    },
       ╎    "timezone": "Pacific/Auckland"
       ╎  }
       ╎}
