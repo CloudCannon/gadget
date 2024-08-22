@@ -14,41 +14,46 @@ test('gets source path from convention path', (t) => {
 	t.deepEqual(jekyll.getSource(filePaths), 'sauce');
 });
 
-const readFileMock = (path) => {
+const readFileMock = async (path) => {
 	if (path.endsWith('.yml') || path.endsWith('.yaml')) {
-		return Promise.resolve(`path: ${path}`);
+		return `path: ${path}`;
 	}
+
 	if (path.endsWith('toml')) {
-		return Promise.resolve(`path = "${path}"`);
+		return `path = "${path}"`;
 	}
+
+	return '';
 }
 
-test('reads config', (t) => {
+test('reads config', async (t) => {
 	const jekyll = new Jekyll();
 	const filePaths = [
 		'_config.toml',
 	];
-	return jekyll.parseConfig(filePaths, readFileMock)
-		.then((result) => t.deepEqual(result, { path: '_config.toml'}))
+	const config = await jekyll.parseConfig(filePaths, readFileMock);
+	t.deepEqual(config, { path: '_config.toml' });
 });
 
-test('prefers yaml over toml config', (t) => {
+test('prefers yaml over toml config', async (t) => {
 	const jekyll = new Jekyll();
 	const filePaths = [
 		'_config.toml',
 		'_config.yaml',
 	];
-	return jekyll.parseConfig(filePaths, readFileMock)
-		.then((result) => t.deepEqual(result, { path: '_config.yaml'}))
+
+	const config = await jekyll.parseConfig(filePaths, readFileMock);
+	t.deepEqual(config, { path: '_config.yaml' });
 });
 
-test('prefers yml over yaml config', (t) => {
+test('prefers yml over yaml config', async (t) => {
 	const jekyll = new Jekyll();
 	const filePaths = [
 		'_config.toml',
 		'_config.yml',
 		'_config.yaml',
 	];
-	return jekyll.parseConfig(filePaths, readFileMock)
-		.then((result) => t.deepEqual(result, { path: '_config.yml'}))
+
+	const config = await jekyll.parseConfig(filePaths, readFileMock);
+	t.deepEqual(config, { path: '_config.yml' });
 });

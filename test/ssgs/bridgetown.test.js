@@ -1,18 +1,20 @@
 import test from 'ava';
 import Bridgetown from '../../src/ssgs/bridgetown.js';
 
-const readFileMock = (path) => {
+const readFileMock = async (path) => {
 	if (path.endsWith('.yml') || path.endsWith('.yaml')) {
-		return Promise.resolve(`path: ${path}`);
+		return `path: ${path}`;
 	}
-    return Promise.resolve(null);
+
+	return '';
 }
 
-test('bridge', (t) => {
+test('bridge', async (t) => {
 	const bridgetown = new Bridgetown();
 	const filePaths = [
 		'bridgetown.config.yml',
 	];
-	return bridgetown.parseConfig(filePaths, readFileMock)
-		.then((result) => t.deepEqual(result, { path: 'bridgetown.config.yml'}))
+
+	const config = await bridgetown.parseConfig(filePaths, readFileMock);
+	t.deepEqual(config, { path: 'bridgetown.config.yml' });
 });
