@@ -1,5 +1,4 @@
 import { guessSsg, ssgs } from './ssgs/ssgs.js';
-import { stripTopPath } from './utility.js';
 import { processCollectionPaths } from './collections.js';
 
 export { ssgs } from './ssgs/ssgs.js';
@@ -46,12 +45,7 @@ export async function generate(filePaths, options) {
 		config: {
 			source,
 			collections_config: collectionsConfig,
-			paths: {
-				collections: source
-					? stripTopPath(collectionPaths.basePath, source)
-					: collectionPaths.basePath,
-				...options?.config?.paths,
-			},
+			paths: options?.config?.paths ?? undefined,
 			timezone: options?.config?.timezone ?? ssg.getTimezone(),
 		},
 	};
