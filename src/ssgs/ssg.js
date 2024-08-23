@@ -3,7 +3,8 @@ import { basename } from 'path';
 import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
 import { findIcon } from '../icons.js';
-import { stripTopPath } from '../utility.js';
+import { last, parseDataFile, stripTopPath } from '../utility.js';
+import { getCollectionPaths } from '../collections.js';
 
 export default class Ssg {
 	/** @type {import('@cloudcannon/configuration-types').SsgKey} */
@@ -13,7 +14,61 @@ export default class Ssg {
 	 * @param key {import('@cloudcannon/configuration-types').SsgKey | undefined=}
 	 */
 	constructor(key) {
-		this.key = key || 'unknown';
+		this.key = key || 'other';
+	}
+
+	/**
+	 * Provides a summary of files.
+	 *
+	 * @param filePaths {string[]} The input file path.
+	 * @returns {import('../types').GroupedFileSummaries} The file summaries grouped by type.
+	 */
+	groupFiles(filePaths) {
+		/** @type {Record<string, number>} */
+		const collectionPathCounts = {};
+
+		/** @type {Record<import('../types').FileType, import('../types').FileSummary[]>} */
+		const groups = {
+			config: [],
+			content: [],
+			partial: [],
+			other: [],
+			template: [],
+			ignored: [],
+		};
+
+		for (let i = 0; i < filePaths.length; i++) {
+			const summary = {
+				filePath: filePaths[i],
+				type: this.getFileType(filePaths[i]),
+			};
+
+			if (summary.type === 'content') {
+				const lastPath = last(getCollectionPaths(filePaths[i]));
+				if (lastPath || lastPath === '') {
+					collectionPathCounts[lastPath] = collectionPathCounts[lastPath] || 0;
+					collectionPathCounts[lastPath] += 1;
+				}
+			}
+
+			if (summary.type !== 'ignored') {
+				groups[summary.type].push(summary);
+			}
+		}
+
+		return { collectionPathCounts, groups };
+	}
+
+	/**
+	 * Attempts to find the current timezone.
+	 *
+	 * @returns {import('@cloudcannon/configuration-types').Timezone | undefined}
+	 */
+	getTimezone() {
+		const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+		return /** @type {import('@cloudcannon/configuration-types').Timezone | undefined} */ (
+			timezone
+		);
 	}
 
 	/**
@@ -21,6 +76,38 @@ export default class Ssg {
 	 */
 	configPaths() {
 		return [];
+	}
+
+	/**
+	 * Returns a prioritised list of config file paths from the provided set.
+	 *
+	 * @param configFilePaths {string[]} List of config files.
+	 * @returns {string[]}
+	 */
+	sortConfigFilePaths(configFilePaths) {
+		const configPaths = this.configPaths();
+		return configFilePaths.sort((a, b) => configPaths.indexOf(a) - configPaths.indexOf(b));
+	}
+
+	/**
+	 * Returns the parsed contents of the first readable configuration file provided.
+	 *
+	 * @param configFilePaths {string[]} List of config files.
+	 * @param readFile {(path: string) => Promise<string>} Function to read files.
+	 * @returns {Promise<Record<string, any> | undefined>}
+	 */
+	async parseConfig(configFilePaths, readFile) {
+		const sorted = this.sortConfigFilePaths(configFilePaths);
+		for (const configFilePath of sorted) {
+			try {
+				const config = await parseDataFile(configFilePath, readFile);
+				if (config) {
+					return config;
+				}
+			} catch (_e) {
+				// Intentionally ignored
+			}
+		}
 	}
 
 	/**
@@ -87,6 +174,7 @@ export default class Ssg {
 			'.prettierrc.json',
 			'package-lock.json',
 			'package.json',
+			'manifest.json',
 			'.gitignore',
 			'README',
 			'README.md',
@@ -132,9 +220,7 @@ export default class Ssg {
 		return (
 			this.ignoredFolders().some(
 				(folder) => filePath.startsWith(folder) || filePath.includes(`/${folder}`),
-			) ||
-			this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`)) ||
-			filePath.includes('.config.')
+			) || this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`))
 		);
 	}
 
@@ -206,11 +292,10 @@ export default class Ssg {
 	/**
 	 * Attempts to find the most likely source folder.
 	 *
-	 * @param _files {import('../types').ParsedFiles}
 	 * @param _filePaths {string[]} List of input file paths.
 	 * @returns {string | undefined}
 	 */
-	getSource(_files, _filePaths) {
+	getSource(_filePaths) {
 		return;
 	}
 
@@ -219,7 +304,7 @@ export default class Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param _basePath {string}
+	 * @param _basePath {string=}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, _basePath) {
@@ -258,5 +343,16 @@ export default class Ssg {
 		}
 
 		return collectionsConfig;
+	}
+
+	/**
+	 * @param _config {Record<string, any> | undefined}
+	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
+	 */
+	generateMarkdown(_config) {
+		return {
+			engine: 'commonmark',
+			options: {},
+		};
 	}
 }

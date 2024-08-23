@@ -1,74 +1,23 @@
 import { guessSsg, ssgs } from './ssgs/ssgs.js';
-import { last, stripTopPath } from './utility.js';
-import { getCollectionPaths, processCollectionPaths } from './collections.js';
+import { processCollectionPaths } from './collections.js';
 
 export { ssgs } from './ssgs/ssgs.js';
 
 /**
- * Provides a summary of a file at this path.
+ * Filters out file paths not in the provided source.
  *
- * @param filePath {string} The input file path.
- * @param ssg {import('./ssgs/ssg').default} The associated SSG.
- * @returns {import('./types').ParsedFile} Summary of the file.
+ * @param filePaths {string[]} List of input file paths.
+ * @param source {string | undefined} The source path.
  */
-function parseFile(filePath, ssg) {
-	const type = ssg.getFileType(filePath);
+function filterPaths(filePaths, source) {
+	source = `${source || ''}/`.replace(/\/+/, '/').replace(/^\//, '');
+	source = source === '/' ? '' : source;
 
-	return {
-		filePath,
-		type,
-	};
-}
-
-/**
- * Provides a summary of files.
- *
- * @param filePaths {string[]} The input file path.
- * @param ssg {import('./ssgs/ssg').default} The associated SSG.
- * @param source {string} The site's source path.
- * @returns {import('./types').ParsedFiles} The file summaries grouped by type.
- */
-function parseFiles(filePaths, ssg) {
-	/** @type {Record<string, number>} */
-	const collectionPathCounts = {};
-
-	/** @type {Record<import('./types').FileType, import('./types').ParsedFile[]>} */
-	const groups = {
-		config: [],
-		content: [],
-		partial: [],
-		other: [],
-		template: [],
-		ignored: [],
-	};
-
-	for (let i = 0; i < filePaths.length; i++) {
-		const file = parseFile(filePaths[i], ssg);
-
-		if (file.type === 'content') {
-			const lastPath = last(getCollectionPaths(filePaths[i]));
-			if (lastPath || lastPath === '') {
-				collectionPathCounts[lastPath] = collectionPathCounts[lastPath] || 0;
-				collectionPathCounts[lastPath] += 1;
-			}
-		}
-
-		if (file.type !== 'ignored') {
-			groups[file.type].push(file);
-		}
+	if (!source) {
+		return filePaths;
 	}
 
-	return { collectionPathCounts, groups };
-}
-
-/**
- * Attempts to find the current timezone.
- *
- * @returns {import('@cloudcannon/configuration-types').Timezone | undefined}
- */
-function getTimezone() {
-	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	return /** @type {import('@cloudcannon/configuration-types').Timezone | undefined} */ (timezone);
+	return filePaths.filter((filePath) => filePath.startsWith(source));
 }
 
 /**
@@ -76,30 +25,35 @@ function getTimezone() {
  *
  * @param filePaths {string[]} List of input file paths.
  * @param options {import('./types').GenerateOptions=} Options to aid generation.
- * @returns {Promise<import('@cloudcannon/configuration-types').Configuration>}
+ * @returns {Promise<import('./types').GenerateResult>}
  */
 export async function generate(filePaths, options) {
-	const ssgKey = options?.config?.ssg || options?.buildConfig?.ssg;
-	const ssg = ssgKey ? ssgs[ssgKey] : guessSsg(filePaths);
-	const files = parseFiles(filePaths, ssg);
+	const ssg = options?.buildConfig?.ssg
+		? ssgs[options.buildConfig.ssg]
+		: guessSsg(filterPaths(filePaths, options?.config?.source));
+
+	const source = options?.config?.source ?? ssg.getSource(filePaths);
+	filePaths = filterPaths(filePaths, source);
+
+	const files = ssg.groupFiles(filePaths);
+
+	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
+	const config = options?.readFile
+		? await ssg.parseConfig(configFilePaths, options.readFile)
+		: undefined;
+
 	const collectionPaths = processCollectionPaths(files.collectionPathCounts);
 
-	const source =
-		options?.config?.source ?? options?.buildConfig?.source ?? ssg.getSource(files, filePaths);
-
-	const collectionsConfig =
-		options?.config?.collections_config || ssg.generateCollectionsConfig(collectionPaths, source);
-
 	return {
-		ssg: ssg?.key,
-		source,
-		collections_config: collectionsConfig,
-		paths: {
-			collections: source
-				? stripTopPath(collectionPaths.basePath, source)
-				: collectionPaths.basePath,
-			...options?.config?.paths,
+		ssg: ssg.key,
+		config: {
+			source,
+			collections_config:
+				options?.config?.collections_config ||
+				ssg.generateCollectionsConfig(collectionPaths, source),
+			paths: options?.config?.paths ?? undefined,
+			timezone: options?.config?.timezone ?? ssg.getTimezone(),
+			markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
 		},
-		timezone: options?.config?.timezone ?? getTimezone(),
 	};
 }

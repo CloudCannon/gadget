@@ -57,15 +57,20 @@ steps:
     snapshot_content: |-
       ╎{
       ╎  "ssg": "eleventy",
-      ╎  "collections_config": {
-      ╎    "staff_members": {
-      ╎      "path": "staff-members",
-      ╎      "name": "Staff Members",
-      ╎      "icon": "card_membership"
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "staff_members": {
+      ╎        "path": "staff-members",
+      ╎        "name": "Staff Members",
+      ╎        "icon": "card_membership"
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "html": true
+      ╎      }
       ╎    }
-      ╎  },
-      ╎  "paths": {
-      ╎    "collections": ""
-      ╎  },
-      ╎  "timezone": "Pacific/Auckland"
+      ╎  }
       ╎}
