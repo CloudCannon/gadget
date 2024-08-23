@@ -36,17 +36,24 @@ export async function generate(filePaths, options) {
 	filePaths = filterPaths(filePaths, source);
 
 	const files = ssg.groupFiles(filePaths);
+
+	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
+	const config = options?.readFile
+		? await ssg.parseConfig(configFilePaths, options.readFile)
+		: undefined;
+
 	const collectionPaths = processCollectionPaths(files.collectionPathCounts);
-	const collectionsConfig =
-		options?.config?.collections_config || ssg.generateCollectionsConfig(collectionPaths, source);
 
 	return {
 		ssg: ssg.key,
 		config: {
 			source,
-			collections_config: collectionsConfig,
+			collections_config:
+				options?.config?.collections_config ||
+				ssg.generateCollectionsConfig(collectionPaths, source),
 			paths: options?.config?.paths ?? undefined,
 			timezone: options?.config?.timezone ?? ssg.getTimezone(),
+			markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
 		},
 	};
 }

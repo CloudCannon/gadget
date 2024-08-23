@@ -3,7 +3,7 @@ import { basename } from 'path';
 import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
 import { findIcon } from '../icons.js';
-import { last, stripTopPath } from '../utility.js';
+import { last, parseDataFile, stripTopPath } from '../utility.js';
 import { getCollectionPaths } from '../collections.js';
 
 export default class Ssg {
@@ -76,6 +76,38 @@ export default class Ssg {
 	 */
 	configPaths() {
 		return [];
+	}
+
+	/**
+	 * Returns a prioritised list of config file paths from the provided set.
+	 *
+	 * @param configFilePaths {string[]} List of config files.
+	 * @returns {string[]}
+	 */
+	sortConfigFilePaths(configFilePaths) {
+		const configPaths = this.configPaths();
+		return configFilePaths.sort((a, b) => configPaths.indexOf(a) - configPaths.indexOf(b));
+	}
+
+	/**
+	 * Returns the parsed contents of the first readable configuration file provided.
+	 *
+	 * @param configFilePaths {string[]} List of config files.
+	 * @param readFile {(path: string) => Promise<string>} Function to read files.
+	 * @returns {Promise<Record<string, any> | undefined>}
+	 */
+	async parseConfig(configFilePaths, readFile) {
+		const sorted = this.sortConfigFilePaths(configFilePaths);
+		for (const configFilePath of sorted) {
+			try {
+				const config = await parseDataFile(configFilePath, readFile);
+				if (config) {
+					return config;
+				}
+			} catch (_e) {
+				// Intentionally ignored
+			}
+		}
 	}
 
 	/**
@@ -188,9 +220,7 @@ export default class Ssg {
 		return (
 			this.ignoredFolders().some(
 				(folder) => filePath.startsWith(folder) || filePath.includes(`/${folder}`),
-			) ||
-			this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`)) ||
-			filePath.includes('.config.')
+			) || this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`))
 		);
 	}
 
@@ -313,5 +343,16 @@ export default class Ssg {
 		}
 
 		return collectionsConfig;
+	}
+
+	/**
+	 * @param _config {Record<string, any> | undefined}
+	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
+	 */
+	generateMarkdown(_config) {
+		return {
+			engine: 'commonmark',
+			options: {},
+		};
 	}
 }
