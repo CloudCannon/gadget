@@ -1,0 +1,84 @@
+name: Vonge Jekyll test site
+
+steps:
+  - I run "cp -R %test_sites%/vonge-jekyll src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "config": {
+      ╎    "source": "site",
+      ╎    "collections_config": {
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "collections_pages": {
+      ╎        "path": "collections/_pages",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "collections_posts": {
+      ╎        "path": "collections/_posts",
+      ╎        "name": "Posts",
+      ╎        "icon": "event_available",
+      ╎        "output": true,
+      ╎        "create": {
+      ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎        },
+      ╎        "add_options": [
+      ╎          {
+      ╎            "name": "Add Post"
+      ╎          },
+      ╎          {
+      ╎            "name": "Add Draft",
+      ╎            "collection": "collections_drafts"
+      ╎          }
+      ╎        ]
+      ╎      },
+      ╎      "collections_projects": {
+      ╎        "path": "collections/_projects",
+      ╎        "name": "Projects",
+      ╎        "icon": "eject",
+      ╎        "output": true
+      ╎      },
+      ╎      "collections_testimonials": {
+      ╎        "path": "collections/_testimonials",
+      ╎        "name": "Testimonials",
+      ╎        "icon": "festival",
+      ╎        "output": true
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "collections_drafts": {
+      ╎        "path": "collections/_drafts",
+      ╎        "name": "Drafts",
+      ╎        "icon": "event",
+      ╎        "output": true,
+      ╎        "create": {
+      ╎          "path": "",
+      ╎          "publish_to": "collections_posts"
+      ╎        }
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "kramdown",
+      ╎      "options": {
+      ╎        "heading_ids": false,
+      ╎        "gfm": false,
+      ╎        "breaks": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}
