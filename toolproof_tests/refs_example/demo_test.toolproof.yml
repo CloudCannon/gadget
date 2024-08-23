@@ -29,6 +29,12 @@ steps:
       ╎        "icon": "card_membership"
       ╎      }
       ╎    },
-      ╎    "timezone": "Pacific/Auckland"
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "html": true
+      ╎      }
+      ╎    }
       ╎  }
       ╎}

@@ -79,25 +79,35 @@ export default class Ssg {
 	}
 
 	/**
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param readFile {(path: string) => Promise<string>} Function to read files.
-	 * @param _options {import('../types').GenerateOptions=} Options to aid generation.
-	 * @returns {Promise<Record<string, any> | null>}
+	 * Returns a prioritised list of config file paths from the provided set.
+	 *
+	 * @param configFilePaths {string[]} List of config files.
+	 * @returns {string[]}
 	 */
-	async parseConfig(filePaths, readFile, _options) {
-		const configFiles = this.groupFiles(filePaths).groups.config;
+	sortConfigFilePaths(configFilePaths) {
 		const configPaths = this.configPaths();
-		for (const configPath of configPaths) {
-			for (const configFile of configFiles) {
-				if (configFile.filePath.endsWith(configPath)) {
-					const contents = await parseDataFile(configFile.filePath, readFile);
-					if (contents) {
-						return contents;
-					}
+		return configFilePaths.sort((a, b) => configPaths.indexOf(a) - configPaths.indexOf(b));
+	}
+
+	/**
+	 * Returns the parsed contents of the first readable configuration file provided.
+	 *
+	 * @param configFilePaths {string[]} List of config files.
+	 * @param readFile {(path: string) => Promise<string>} Function to read files.
+	 * @returns {Promise<Record<string, any> | undefined>}
+	 */
+	async parseConfig(configFilePaths, readFile) {
+		const sorted = this.sortConfigFilePaths(configFilePaths);
+		for (const configFilePath of sorted) {
+			try {
+				const config = await parseDataFile(configFilePath, readFile);
+				if (config) {
+					return config;
 				}
+			} catch (_e) {
+				// Intentionally ignored
 			}
 		}
-		return null;
 	}
 
 	/**
@@ -210,8 +220,7 @@ export default class Ssg {
 		return (
 			this.ignoredFolders().some(
 				(folder) => filePath.startsWith(folder) || filePath.includes(`/${folder}`),
-			) ||
-			this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`))
+			) || this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`))
 		);
 	}
 
@@ -337,13 +346,13 @@ export default class Ssg {
 	}
 
 	/**
-	 * @param _config {Record<string, any> | undefined=}
+	 * @param _config {Record<string, any> | undefined}
 	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
 	 */
 	generateMarkdownConfig(_config) {
 		return {
 			engine: 'commonmark',
-			options: {}
+			options: {},
 		};
 	}
 }

@@ -1,4 +1,4 @@
-import { decodeEntity, joinPaths, parseDataFile } from '../utility.js';
+import { decodeEntity } from '../utility.js';
 import Ssg from './ssg.js';
 
 /**
@@ -168,30 +168,27 @@ export default class Jekyll extends Ssg {
 	}
 
 	/**
-	 * @param config {Record<string, any> | undefined=}
+	 * @param config {Record<string, any> | undefined}
 	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
 	 */
 	generateMarkdownConfig(config) {
 		const engine = config?.['markdown']?.includes('CommonMark') ? 'commonmark' : 'kramdown';
 		/** @type {import('@cloudcannon/configuration-types').MarkdownSettings['options']} */
 		const options = {};
-		
+
 		if (engine === 'kramdown') {
 			const kramdownConfig = config?.['kramdown'] || {};
 			// https://kramdown.gettalong.org/options.html
 			options.heading_ids = !!kramdownConfig.auto_ids;
-			options.gfm = (!kramdownConfig.input || kramdownConfig.input !== 'GFM') ? false : true;
+			options.gfm = !kramdownConfig.input || kramdownConfig.input !== 'GFM' ? false : true;
 			options.breaks = !!kramdownConfig.hard_wrap;
 			const smartquotes = kramdownConfig.smart_quotes;
 			if (smartquotes && typeof smartquotes === 'string') {
-				options.quotes = smartquotes
-					.replace(/\s/g, '')
-					.split(',')
-					.map(decodeEntity)
-					.join('');
+				options.quotes = smartquotes.replace(/\s/g, '').split(',').map(decodeEntity).join('');
 			}
 			// https://github.com/kramdown/parser-gfm
-			options.typographer = options.gfm && !kramdownConfig.gfm_quirks?.includes?.('no_auto_typographic');
+			options.typographer =
+				options.gfm && !kramdownConfig.gfm_quirks?.includes?.('no_auto_typographic');
 
 			/**
 			 * Several options in Kramdown can be enabled implicitly if using GFM mode
@@ -205,13 +202,19 @@ export default class Jekyll extends Ssg {
 			const commonmarkConfig = config?.['commonmark'] || {};
 
 			/** @type {(name: string) => boolean} */
-			const checkOption = ((name) => {
-				return commonmarkConfig.options?.includes(name.toLowerCase()) || commonmarkConfig.options?.includes(name.toUpperCase());
-			})
+			const checkOption = (name) => {
+				return (
+					commonmarkConfig.options?.includes(name.toLowerCase()) ||
+					commonmarkConfig.options?.includes(name.toUpperCase())
+				);
+			};
 			/** @type {(name: string) => boolean} */
-			const checkExtension = ((name) => {
-				return commonmarkConfig.extensions?.includes(name.toLowerCase()) || commonmarkConfig.extensions?.includes(name.toUpperCase());
-			})
+			const checkExtension = (name) => {
+				return (
+					commonmarkConfig.extensions?.includes(name.toLowerCase()) ||
+					commonmarkConfig.extensions?.includes(name.toUpperCase())
+				);
+			};
 
 			// https://github.com/gjtorikian/commonmarker?tab=readme-ov-file#options
 			options.gfm = checkOption('gfm_quirks');
@@ -227,8 +230,7 @@ export default class Jekyll extends Ssg {
 
 		return {
 			engine,
-			options
-		}
+			options,
+		};
 	}
 }
-

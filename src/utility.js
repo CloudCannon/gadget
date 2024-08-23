@@ -15,8 +15,8 @@ export function last(array) {
 
 /**
  * Joins strings with slashes.
- * 
- * @param {string[]} paths 
+ *
+ * @param {string[]} paths
  */
 export function joinPaths(paths) {
 	return paths.join('/').replace(/\/\//g, '/');
@@ -40,39 +40,38 @@ export function stripTopPath(path, stripPath) {
 /**
  * @param path {string}
  * @param readFile {(path: string) => Promise<string>}
- * @returns {Promise<Record<string, any> | null>}
+ * @returns {Promise<Record<string, any> | undefined>}
+ * @throws {Error} When file fails to read or parse.
  */
 export async function parseDataFile(path, readFile) {
 	const lastDot = path.lastIndexOf('.');
 	const extension = (lastDot < 0 ? '' : path.substring(lastDot + 1)).toLowerCase();
 	if (!extension) {
-		return null;
-	}
-	
-	try {
-		const fileContents = await readFile(path);
-		if (!fileContents) {
-			return null;
-		}
-		let contents;
-		if (['yml', 'yaml'].includes(extension)) {
-			contents = yaml.load(fileContents);
-		}
-		if (extension === 'json') {
-			contents = JSON.parse(fileContents);
-		}
-		if (extension === 'toml') {
-			contents = tomlParse(fileContents);	
-		}
-		if (contents && typeof contents === 'object') {
-			return contents;
-		}
-
-	} catch (e) {
-		console.warn(e);
+		return;
 	}
 
-	return null;
+	/** @type {Record<string, (contents: string) => unknown>} */
+	const parsers = {
+		yml: yaml.load,
+		yaml: yaml.load,
+		json: JSON.parse,
+		toml: tomlParse,
+	};
+
+	const parser = parsers[extension];
+	if (!parser) {
+		return;
+	}
+
+	const fileContents = await readFile(path);
+	if (!fileContents) {
+		return;
+	}
+
+	const contents = parser(fileContents);
+	if (contents && typeof contents === 'object') {
+		return contents;
+	}
 }
 
 /**
@@ -80,12 +79,12 @@ export async function parseDataFile(path, readFile) {
  * @returns {string}
  */
 export function decodeEntity(entityString) {
-    if (entityString.length === 1) {
-        // assumed already decoded
-        return entityString;
-    }
-    const entity = `&${entityString};`
-        .replace(/^&&/, '&')
-        .replace(/;;$/, ';'); // Jekyll config has entities without & or ;
-    return htmlEntities.decode(entity);
+	if (entityString.length === 1) {
+		// assumed already decoded
+		return entityString;
+	}
+
+	// Jekyll config has entities without & or ;
+	const entity = `&${entityString};`.replace(/^&&/, '&').replace(/;;$/, ';');
+	return htmlEntities.decode(entity);
 }
