@@ -19,7 +19,7 @@ export function last(array) {
  * @param {string[]} paths
  */
 export function joinPaths(paths) {
-	return paths.join('/').replace(/\/\//g, '/');
+	return paths.join('/').replace(/\/+/g, '/');
 }
 
 /**
