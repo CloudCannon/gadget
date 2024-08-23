@@ -54,7 +54,7 @@ export default class Hugo extends Ssg {
 	 * @param config {Record<string, any> | undefined}
 	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
 	 */
-	generateMarkdownConfig(config) {
+	generateMarkdown(config) {
 		const goldmark = config?.markup?.goldmark || {};
 		const { extensions, parser, renderer } = goldmark;
 		const extras = extensions?.extras || {};

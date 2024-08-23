@@ -349,7 +349,7 @@ export default class Ssg {
 	 * @param _config {Record<string, any> | undefined}
 	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
 	 */
-	generateMarkdownConfig(_config) {
+	generateMarkdown(_config) {
 		return {
 			engine: 'commonmark',
 			options: {},

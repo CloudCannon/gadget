@@ -53,7 +53,7 @@ export async function generate(filePaths, options) {
 				ssg.generateCollectionsConfig(collectionPaths, source),
 			paths: options?.config?.paths ?? undefined,
 			timezone: options?.config?.timezone ?? ssg.getTimezone(),
-			markdown: options?.config?.markdown ?? ssg.generateMarkdownConfig(config),
+			markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
 		},
 	};
 }

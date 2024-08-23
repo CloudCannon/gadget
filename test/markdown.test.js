@@ -2,13 +2,13 @@ import test from 'ava';
 import { ssgs } from '../src/ssgs/ssgs.js';
 import Ssg from '../src/ssgs/ssg.js';
 
-function getMarkdownConfig(ssgKey, config) {
+function generateMarkdown(ssgKey, config) {
 	const ssg = ssgs[ssgKey] ?? new Ssg();
-	return ssg.generateMarkdownConfig(config);
+	return ssg.generateMarkdown(config);
 }
 
 test('Defaults to CommonMark', (t) => {
-	t.deepEqual(getMarkdownConfig('', {}), {
+	t.deepEqual(generateMarkdown('', {}), {
 		engine: 'commonmark',
 		options: {},
 	});
@@ -16,7 +16,7 @@ test('Defaults to CommonMark', (t) => {
 
 test('Respects Jekyll Kramdown options enabled', (t) => {
 	t.deepEqual(
-		getMarkdownConfig('jekyll', {
+		generateMarkdown('jekyll', {
 			kramdown: {
 				input: 'GFM',
 				hard_wrap: true,
@@ -41,7 +41,7 @@ test('Respects Jekyll Kramdown options enabled', (t) => {
 
 test('Respects Jekyll Kramdown options disabled', (t) => {
 	t.deepEqual(
-		getMarkdownConfig('jekyll', {
+		generateMarkdown('jekyll', {
 			kramdown: {
 				input: 'not_gfm',
 				hard_wrap: false,
@@ -64,7 +64,7 @@ test('Respects Jekyll Kramdown options disabled', (t) => {
 
 test('Respects Jekyll CommonMark options', (t) => {
 	t.deepEqual(
-		getMarkdownConfig('jekyll', {
+		generateMarkdown('jekyll', {
 			markdown: 'CommonMark',
 			commonmark: {
 				options: ['HARDBREAKS', 'GFM_QUIRKS'],
@@ -89,7 +89,7 @@ test('Respects Jekyll CommonMark options', (t) => {
 
 test('Respects Hugo options', (t) => {
 	t.deepEqual(
-		getMarkdownConfig('hugo', {
+		generateMarkdown('hugo', {
 			markup: {
 				goldmark: {
 					extensions: {
@@ -140,7 +140,7 @@ test('Respects Hugo options', (t) => {
 });
 
 test('Has good 11ty defaults', (t) => {
-	t.deepEqual(getMarkdownConfig('eleventy', undefined), {
+	t.deepEqual(generateMarkdown('eleventy', undefined), {
 		engine: 'commonmark',
 		options: {
 			html: true,

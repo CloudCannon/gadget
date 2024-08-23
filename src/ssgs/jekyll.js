@@ -171,7 +171,7 @@ export default class Jekyll extends Ssg {
 	 * @param config {Record<string, any> | undefined}
 	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
 	 */
-	generateMarkdownConfig(config) {
+	generateMarkdown(config) {
 		const engine = config?.['markdown']?.includes('CommonMark') ? 'commonmark' : 'kramdown';
 		/** @type {import('@cloudcannon/configuration-types').MarkdownSettings['options']} */
 		const options = {};

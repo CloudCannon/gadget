@@ -32,7 +32,7 @@ export default class Eleventy extends Ssg {
 	 * @param _config {Record<string, any>}
 	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
 	 */
-	generateMarkdownConfig(_config) {
+	generateMarkdown(_config) {
 		return {
 			engine: 'commonmark',
 			options: {
