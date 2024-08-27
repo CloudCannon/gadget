@@ -27,7 +27,7 @@ function filterPaths(filePaths, source) {
  * @param options {import('./types').GenerateOptions=} Options to aid generation.
  * @returns {Promise<import('./types').GenerateResult>}
  */
-export async function generate(filePaths, options) {
+export async function generateConfiguration(filePaths, options) {
 	const ssg = options?.buildConfig?.ssg
 		? ssgs[options.buildConfig.ssg]
 		: guessSsg(filterPaths(filePaths, options?.config?.source));
@@ -50,10 +50,35 @@ export async function generate(filePaths, options) {
 			source,
 			collections_config:
 				options?.config?.collections_config ||
-				ssg.generateCollectionsConfig(collectionPaths, source),
+				ssg.generateCollectionsConfig(collectionPaths, { source, config }),
 			paths: options?.config?.paths ?? undefined,
 			timezone: options?.config?.timezone ?? ssg.getTimezone(),
 			markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
 		},
 	};
+}
+
+/**
+ * Generates a baseline CloudCannon configuration based on the file path provided.
+ *
+ * @param filePaths {string[]} List of input file paths.
+ * @param options {import('./types').GenerateOptions=} Options to aid generation.
+ * @returns {Promise<import('./types').BuildCommands>}
+ */
+export async function generateBuildCommands(filePaths, options) {
+	const ssg = options?.buildConfig?.ssg
+		? ssgs[options.buildConfig.ssg]
+		: guessSsg(filterPaths(filePaths, options?.config?.source));
+
+	const source = options?.config?.source ?? ssg.getSource(filePaths);
+	filePaths = filterPaths(filePaths, source);
+
+	const files = ssg.groupFiles(filePaths);
+
+	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
+	const config = options?.readFile
+		? await ssg.parseConfig(configFilePaths, options.readFile)
+		: undefined;
+
+	return ssg.generateBuildCommands(filePaths, { config, source, readFile: options?.readFile });
 }

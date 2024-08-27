@@ -17,13 +17,13 @@ steps:
     js: |-
       import { fdir } from 'fdir';
       import { readFile } from 'fs/promises';
-      import { generate } from '@cloudcannon/gadget';
+      import { generateConfiguration } from '@cloudcannon/gadget';
 
       const crawler = new fdir().withRelativePaths().withFullPaths();
       const filePaths = await crawler.crawl("src").withPromise();
       filePaths.sort();
-      const config = await generate(filePaths, {
-        readFile,
+      const config = await generateConfiguration(filePaths, {
+        readFile: (path) => path ? readFile('src/' + path) : '',
         config: {
           timezone: 'Pacific/Auckland'
         }

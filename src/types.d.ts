@@ -20,7 +20,7 @@ export interface GenerateOptions {
 		ssg?: SsgKey;
 	};
 	/** Function to access the source contents a file. */
-	readFile?: (path: string) => Promise<string>;
+	readFile?: (path: string) => Promise<string | undefined>;
 }
 
 export interface GenerateResult {
@@ -36,3 +36,9 @@ export interface GroupedFileSummaries {
 }
 
 export type CollectionsConfig = Record<string, CollectionConfig>;
+
+export interface BuildCommands {
+	install: string[];
+	build: string[];
+	output: string[];
+}

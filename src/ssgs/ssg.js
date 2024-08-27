@@ -3,7 +3,7 @@ import { basename } from 'path';
 import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
 import { findIcon } from '../icons.js';
-import { last, parseDataFile, stripTopPath } from '../utility.js';
+import { joinPaths, last, parseDataFile, stripTopPath } from '../utility.js';
 import { getCollectionPaths } from '../collections.js';
 
 export default class Ssg {
@@ -93,7 +93,7 @@ export default class Ssg {
 	 * Returns the parsed contents of the first readable configuration file provided.
 	 *
 	 * @param configFilePaths {string[]} List of config files.
-	 * @param readFile {(path: string) => Promise<string>} Function to read files.
+	 * @param readFile {(path: string) => Promise<string | undefined>} Function to read files.
 	 * @returns {Promise<Record<string, any> | undefined>}
 	 */
 	async parseConfig(configFilePaths, readFile) {
@@ -304,10 +304,10 @@ export default class Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param _basePath {string=}
+	 * @param _options {{ basePath?: string; }=}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
-	generateCollectionConfig(key, path, _basePath) {
+	generateCollectionConfig(key, path, _options) {
 		const name = titleize(
 			basename(path || key)
 				.replace(/[_-]/g, ' ')
@@ -322,24 +322,42 @@ export default class Ssg {
 	}
 
 	/**
+	 * Generates a collections config key from a path, avoiding existing keys.
+	 *
+	 * @param path {string}
+	 * @param collectionsConfig {Record<string, any>}
+	 * @returns {string}
+	 */
+	generateCollectionsConfigKey(path, collectionsConfig) {
+		let key = slugify(path, { separator: '_' }) || 'pages';
+		let suffix = 1;
+
+		while (Object.prototype.hasOwnProperty.call(collectionsConfig, key)) {
+			key = `${key.replace(/_\d+$/, '')}_${suffix++}`;
+		}
+
+		return key;
+	}
+
+	/**
 	 * Generates collections config from a set of paths.
 	 *
 	 * @param collectionPaths {{ basePath: string, paths: string[] }}
-	 * @param source {string | undefined}
+	 * @param options {{ config?: Record<string, any>; source?: string; }=}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
-	generateCollectionsConfig(collectionPaths, source) {
+	generateCollectionsConfig(collectionPaths, options) {
 		/** @type {import('../types').CollectionsConfig} */
 		const collectionsConfig = {};
-		const basePath = source
-			? stripTopPath(collectionPaths.basePath, source)
+		const basePath = options?.source
+			? stripTopPath(collectionPaths.basePath, options.source)
 			: collectionPaths.basePath;
 
 		for (const fullPath of collectionPaths.paths) {
-			const path = source ? stripTopPath(fullPath, source) : fullPath;
-			const key = slugify(path, { separator: '_' }) || 'pages';
+			const path = stripTopPath(fullPath, options?.source);
+			const key = this.generateCollectionsConfigKey(path, collectionsConfig);
 
-			collectionsConfig[key] = this.generateCollectionConfig(key, path, basePath);
+			collectionsConfig[key] = this.generateCollectionConfig(key, path, { basePath });
 		}
 
 		return collectionsConfig;
@@ -354,5 +372,33 @@ export default class Ssg {
 			engine: 'commonmark',
 			options: {},
 		};
+	}
+
+	/**
+	 * Generates a list of build suggestions.
+	 *
+	 * @param filePaths {string[]} List of input file paths.
+	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
+	 * @returns {Promise<import('../types').BuildCommands>}
+	 */
+	async generateBuildCommands(filePaths, options) {
+		/** @type {import('../types').BuildCommands} */
+		const commands = { install: [], build: [], output: [] };
+
+		const packageJsonPath = joinPaths([options.source, 'package.json']);
+		if (filePaths.includes(packageJsonPath)) {
+			commands.install.push('npm i');
+
+			try {
+				const raw = options.readFile ? await options.readFile(packageJsonPath) : undefined;
+				const parsed = raw ? JSON.parse(raw) : undefined;
+
+				if (parsed?.scripts?.build) {
+					commands.build.push('npm run build');
+				}
+			} catch (_e) {}
+		}
+
+		return commands;
 	}
 }

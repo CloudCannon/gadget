@@ -1,0 +1,33 @@
+name: Jekyll with defined, empty collections
+
+steps:
+  - step: I have a "src/_config.yml" file with the content {yaml}
+    yaml: |-
+      collections:
+        has_no_files:
+          output: true
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "has_no_files": {
+      ╎        "path": "_has_no_files",
+      ╎        "output": true
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "kramdown",
+      ╎      "options": {
+      ╎        "heading_ids": false,
+      ╎        "gfm": false,
+      ╎        "breaks": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

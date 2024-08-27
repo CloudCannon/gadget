@@ -1,0 +1,164 @@
+name: Jekyll with collections and data
+
+steps:
+  - step: I have a "src/_config.yml" file with the content {yaml}
+    yaml: |-
+      collections_dir: collections
+      collections:
+        - staff
+  - step: I have a "src/collections/_posts/1999-12-31-partying.md" file with the content {md}
+    md: |-
+      ---
+      title: Partying
+      ---
+      Yee haw
+  - step: I have a "src/collections/news/_posts/2000-01-01-a-new-age.md" file with the content {md}
+    md: |-
+      ---
+      title: No more partying
+      ---
+  - step: I have a "src/collections/data/clash.md" file with the content {md}
+    md: |-
+      ---
+      title: Not site.data
+      ---
+  - step: I have a "src/collections/staff/jane-doe.md" file with the content {md}
+    md: |-
+      ---
+      _uuid: 05589684-8d33-4d2f-8fde-460f9922d319
+      name: Jane Doe
+      image: "https://placekitten.com/440/440?a=.png"
+      description: Jane has 19 years of experience in law, and specialises in property and business.
+      credentials: LLB
+      phone_extension: "02"
+      ---
+  - step: I have a "src/index.html" file with the content {html}
+    html: |-
+      <!DOCTYPE html>
+      <html>
+        <head>
+       	  <title>Home</title>
+        </head>
+        <body>
+       	  <h1>Home</h1>
+       	  <p>Hello.</p>
+        </body>
+      </html>
+  - step: I have a "src/_data/tags.yml" file with the content {yaml}
+    yaml: |-
+      - party
+      - news
+  - step: I have a "src/_data/animals/cat.yml" file with the content {yaml}
+    yaml: |-
+      name: Cat
+  - step: I have a "src/_data/animals/dog.yml" file with the content {yaml}
+    yaml: |-
+      name: Dog
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "config": {
+      ╎    "source": "",
+      ╎    "collections_config": {
+      ╎      "data_animals": {
+      ╎        "path": "_data/animals",
+      ╎        "name": "Animals",
+      ╎        "icon": "animation",
+      ╎        "output": false
+      ╎      },
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "posts": {
+      ╎        "path": "collections/_posts",
+      ╎        "name": "Posts",
+      ╎        "icon": "event_available",
+      ╎        "output": true,
+      ╎        "create": {
+      ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎        },
+      ╎        "add_options": [
+      ╎          {
+      ╎            "name": "Add Post"
+      ╎          },
+      ╎          {
+      ╎            "name": "Add Draft",
+      ╎            "collection": "drafts"
+      ╎          }
+      ╎        ]
+      ╎      },
+      ╎      "data_1": {
+      ╎        "path": "collections/data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "news_posts": {
+      ╎        "path": "collections/news/_posts",
+      ╎        "name": "Posts",
+      ╎        "icon": "event_available",
+      ╎        "output": true,
+      ╎        "create": {
+      ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎        },
+      ╎        "add_options": [
+      ╎          {
+      ╎            "name": "Add Post"
+      ╎          },
+      ╎          {
+      ╎            "name": "Add Draft",
+      ╎            "collection": "news_drafts"
+      ╎          }
+      ╎        ]
+      ╎      },
+      ╎      "staff": {
+      ╎        "path": "collections/staff",
+      ╎        "name": "Staff",
+      ╎        "icon": "people",
+      ╎        "output": false
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "drafts": {
+      ╎        "path": "collections/_drafts",
+      ╎        "name": "Drafts",
+      ╎        "icon": "event",
+      ╎        "output": false,
+      ╎        "create": {
+      ╎          "path": "",
+      ╎          "publish_to": "posts"
+      ╎        }
+      ╎      },
+      ╎      "news_drafts": {
+      ╎        "path": "collections/news/_drafts",
+      ╎        "name": "Drafts",
+      ╎        "icon": "event",
+      ╎        "output": false,
+      ╎        "create": {
+      ╎          "path": "",
+      ╎          "publish_to": "news_posts"
+      ╎        }
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "kramdown",
+      ╎      "options": {
+      ╎        "heading_ids": false,
+      ╎        "gfm": false,
+      ╎        "breaks": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

@@ -1,4 +1,4 @@
-import { decodeEntity } from '../utility.js';
+import { decodeEntity, joinPaths, stripTopPath } from '../utility.js';
 import Ssg from './ssg.js';
 
 /**
@@ -19,6 +19,85 @@ function isDraftsPath(path) {
  */
 function isPostsPath(path) {
 	return !!path?.match(/\b_posts$/);
+}
+
+/**
+ * Transforms a Jekyll drafts collection path into a posts path.
+ *
+ * @param path {string} The drafts path.
+ * @returns {string}
+ */
+function toDraftsPath(path) {
+	return path.replace(/\b_posts$/, '_drafts');
+}
+
+/**
+ * Transforms a Jekyll posts collection path into a drafts path.
+ *
+ * @param path {string} The posts path.
+ * @returns {string}
+ */
+function toPostsPath(path) {
+	return path.replace(/\b_drafts$/, '_posts');
+}
+
+/**
+ * Transforms a drafts collection key into a posts key.
+ *
+ * @param key {string} The drafts key.
+ * @returns {string}
+ */
+function toDraftsKey(key) {
+	return key.replace('posts', 'drafts');
+}
+
+/**
+ * Transforms a posts collection key into a drafts key.
+ *
+ * @param key {string} The posts key.
+ * @returns {string}
+ */
+function toPostsKey(key) {
+	return key.replace('drafts', 'posts');
+}
+
+/**
+ * Gets `collections` from Jekyll configuration in a standard format.
+ *
+ * @param collections {Record<string, any> | undefined} The `collections` object from Jekyll config
+ * @returns {Record<string, any>}
+ */
+function getJekyllCollections(collections) {
+	/** @type {Record<string, any>} */
+	let formatted = {};
+
+	if (Array.isArray(collections)) {
+		return collections.reduce((memo, key) => {
+			memo[key] = {};
+			return memo;
+		}, formatted);
+	}
+
+	if (typeof collections === 'object') {
+		return collections;
+	}
+
+	return formatted;
+}
+
+/**
+ * Checks if a Jekyll collection is output.
+ *
+ * @param key {string}
+ * @param collection {Record<string, any> | undefined}
+ * @returns {boolean}
+ */
+function isCollectionOutput(key, collection) {
+	if (key === 'data' || key === 'drafts' || key.endsWith('_drafts')) {
+		return false;
+	}
+
+	return key === 'pages' || key === 'posts' || key.endsWith('_posts') || !!collection?.output;
 }
 
 export default class Jekyll extends Ssg {
@@ -99,12 +178,17 @@ export default class Jekyll extends Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
+	 * @param options {{ basePath?: string; collection: Record<string, any> | undefined; }}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
-	generateCollectionConfig(key, path) {
+	generateCollectionConfig(key, path, options) {
 		const collectionConfig = super.generateCollectionConfig(key, path);
-		// TODO: read contents of _config.yml to find which collections are output
-		collectionConfig.output = key !== 'data';
+
+		collectionConfig.output = isCollectionOutput(key, options.collection);
+
+		if (options.collection?.sort_by) {
+			collectionConfig.sort = { key: options.collection.sort_by };
+		}
 
 		if (isPostsPath(collectionConfig.path)) {
 			collectionConfig.create ||= {
@@ -112,20 +196,15 @@ export default class Jekyll extends Ssg {
 			};
 
 			collectionConfig.add_options ||= [
-				{
-					name: `Add ${collectionConfig.singular_name || 'Post'}`,
-				},
-				{
-					name: 'Add Draft',
-					collection: key.replace('posts', 'drafts'),
-				},
+				{ name: `Add ${collectionConfig.singular_name || 'Post'}` },
+				{ name: 'Add Draft', collection: toDraftsKey(key) },
 			];
 		}
 
 		if (isDraftsPath(collectionConfig.path)) {
 			collectionConfig.create ||= {
 				path: '', // TODO: this should not be required if publish_to is set
-				publish_to: key.replace('drafts', 'posts'),
+				publish_to: toPostsKey(key),
 			};
 		}
 
@@ -136,30 +215,54 @@ export default class Jekyll extends Ssg {
 	 * Generates collections config from a set of paths.
 	 *
 	 * @param collectionPaths {{ basePath: string, paths: string[] }}
-	 * @param source {string | undefined}
+	 * @param options {{ config?: Record<string, any>; source?: string; }=}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
-	generateCollectionsConfig(collectionPaths, source) {
-		const collectionsConfig = super.generateCollectionsConfig(collectionPaths, source);
+	generateCollectionsConfig(collectionPaths, options) {
+		/** @type {import('../types').CollectionsConfig} */
+		const collectionsConfig = {};
+		const collectionsDir = options?.config?.collections_dir || '';
+		const collections = getJekyllCollections(options?.config?.collections);
 
-		const keys = Object.keys(collectionsConfig);
+		// Content folder to collections_config mapping.
+		for (const fullPath of collectionPaths.paths) {
+			const path = stripTopPath(fullPath, options?.source);
+			const pathInCollectionsDir = collectionsDir ? stripTopPath(path, collectionsDir) : path;
+			const key = this.generateCollectionsConfigKey(pathInCollectionsDir, collectionsConfig);
+			const collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
+			collectionsConfig[key] = this.generateCollectionConfig(key, path, { collection });
+		}
 
-		for (const key of keys) {
+		// Handle defined collections without files.
+		for (const key of Object.keys(collections)) {
+			collectionsConfig[key] ||= {
+				path: joinPaths([collectionsDir, `_${key}`]),
+				output: isCollectionOutput(key, collections[key]),
+			};
+		}
+
+		// Add matching post/draft collections
+		for (const key of Object.keys(collectionsConfig)) {
 			const collectionConfig = collectionsConfig[key];
+			if (!collectionConfig.path) {
+				continue;
+			}
 
-			if (isDraftsPath(collectionConfig.path) && collectionConfig.path) {
+			if (isDraftsPath(collectionConfig.path)) {
 				// Ensure there is a matching posts collection
-				const postsKey = key.replace('drafts', 'posts');
+				const postsKey = toPostsKey(key);
 				collectionsConfig[postsKey] ||= this.generateCollectionConfig(
 					postsKey,
-					collectionConfig.path?.replace(/\b_drafts$/, '_posts'),
+					toPostsPath(collectionConfig.path),
+					{ collection: collections?.posts },
 				);
-			} else if (isPostsPath(collectionConfig.path) && collectionConfig.path) {
+			} else if (isPostsPath(collectionConfig.path)) {
 				// Ensure there is a matching drafts collection
-				const draftsKey = key.replace('posts', 'drafts');
+				const draftsKey = toDraftsKey(key);
 				collectionsConfig[draftsKey] ||= this.generateCollectionConfig(
 					draftsKey,
-					collectionConfig.path?.replace(/\b_posts$/, '_drafts'),
+					toDraftsPath(collectionConfig.path),
+					{ collection: collections?.drafts || collections?.posts },
 				);
 			}
 		}
@@ -232,5 +335,27 @@ export default class Jekyll extends Ssg {
 			engine,
 			options,
 		};
+	}
+
+	/**
+	 * Generates a list of build suggestions.
+	 *
+	 * @param filePaths {string[]} List of input file paths.
+	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
+	 * @returns {Promise<import('../types').BuildCommands>}
+	 */
+	async generateBuildCommands(filePaths, options) {
+		const commands = await super.generateBuildCommands(filePaths, options);
+
+		if (filePaths.includes(joinPaths([options.source, 'Gemfile']))) {
+			commands.install.unshift('bundle install');
+			commands.build.unshift('bundle exec jekyll build');
+		} else {
+			commands.build.unshift('jekyll build');
+		}
+
+		commands.output.unshift('_site');
+
+		return commands;
 	}
 }

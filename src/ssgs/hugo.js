@@ -33,13 +33,13 @@ export default class Hugo extends Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param basePath {string}
+	 * @param options {{ basePath: string; }=}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
-	generateCollectionConfig(key, path, basePath) {
-		const collectionConfig = super.generateCollectionConfig(key, path, basePath);
+	generateCollectionConfig(key, path, options) {
+		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
-		if (path !== basePath) {
+		if (path !== options?.basePath) {
 			collectionConfig.glob =
 				typeof collectionConfig.glob === 'string'
 					? [collectionConfig.glob]
@@ -91,5 +91,21 @@ export default class Hugo extends Ssg {
 			engine: 'commonmark',
 			options,
 		};
+	}
+
+	/**
+	 * Generates a list of build suggestions.
+	 *
+	 * @param filePaths {string[]} List of input file paths.
+	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
+	 * @returns {Promise<import('../types').BuildCommands>}
+	 */
+	async generateBuildCommands(filePaths, options) {
+		const commands = await super.generateBuildCommands(filePaths, options);
+
+		commands.build.unshift('hugo');
+		commands.output.unshift('public');
+
+		return commands;
 	}
 }

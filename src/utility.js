@@ -16,17 +16,17 @@ export function last(array) {
 /**
  * Joins strings with slashes.
  *
- * @param {string[]} paths
+ * @param {(string | undefined)[]} paths
  */
 export function joinPaths(paths) {
-	return paths.join('/').replace(/\/+/g, '/');
+	return normalisePath(paths.filter(Boolean).join('/'));
 }
 
 /**
  * Removes the first section of a path if it exists.
  *
  * @param path {string}
- * @param stripPath {string}
+ * @param stripPath {string | undefined}
  * @returns {string}
  */
 export function stripTopPath(path, stripPath) {
@@ -34,12 +34,26 @@ export function stripTopPath(path, stripPath) {
 		return '';
 	}
 
+	if (!stripPath) {
+		return path;
+	}
+
 	return path.startsWith(`${stripPath}/`) ? path.substring(stripPath.length + 1) : path;
 }
 
 /**
+ * Removes duplicate, leading, and trailing slashes.
+ *
  * @param path {string}
- * @param readFile {(path: string) => Promise<string>}
+ * @returns {string}
+ */
+export function normalisePath(path) {
+	return path.replace(/\/+/g, '/').replace(/^\//, '').replace(/\/$/, '');
+}
+
+/**
+ * @param path {string}
+ * @param readFile {(path: string) => Promise<string | undefined>}
  * @returns {Promise<Record<string, any> | undefined>}
  * @throws {Error} When file fails to read or parse.
  */
