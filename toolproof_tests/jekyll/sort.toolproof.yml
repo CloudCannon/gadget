@@ -6,7 +6,7 @@ steps:
       collections:
         staff:
           sort_by: credentials
-  - step: I have a "src/staff/jane-doe.md" file with the content {md}
+  - step: I have a "src/_staff/jane-doe.md" file with the content {md}
     md: |-
       ---
       _uuid: 05589684-8d33-4d2f-8fde-460f9922d319
@@ -24,7 +24,7 @@ steps:
       ╎  "config": {
       ╎    "collections_config": {
       ╎      "staff": {
-      ╎        "path": "staff",
+      ╎        "path": "_staff",
       ╎        "name": "Staff",
       ╎        "icon": "people",
       ╎        "output": false,
