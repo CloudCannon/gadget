@@ -7,13 +7,11 @@ const readFileMock = async (path) => {
 	}
 
 	return '';
-}
+};
 
 test('bridge', async (t) => {
 	const bridgetown = new Bridgetown();
-	const filePaths = [
-		'bridgetown.config.yml',
-	];
+	const filePaths = ['bridgetown.config.yml'];
 
 	const config = await bridgetown.parseConfig(filePaths, readFileMock);
 	t.deepEqual(config, { path: 'bridgetown.config.yml' });
