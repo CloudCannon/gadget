@@ -383,12 +383,23 @@ export default class Ssg {
 	 */
 	async generateBuildCommands(filePaths, options) {
 		/** @type {import('../types').BuildCommands} */
-		const commands = { install: [], build: [], output: [] };
+		const commands = {
+			install: [],
+			build: [],
+			output: [],
+			preserved: [],
+			environment: {},
+		};
 
 		const packageJsonPath = joinPaths([options.source, 'package.json']);
 		if (filePaths.includes(packageJsonPath)) {
 			commands.install.push({
 				value: 'npm i',
+				attribution: 'because of your `package.json` file',
+			});
+
+			commands.preserved.push({
+				value: 'node_modules/',
 				attribution: 'because of your `package.json` file',
 			});
 

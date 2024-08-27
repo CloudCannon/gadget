@@ -47,4 +47,6 @@ export interface BuildCommands {
 	install: BuildCommandSuggestion[];
 	build: BuildCommandSuggestion[];
 	output: BuildCommandSuggestion[];
+	environment: Record<string, BuildCommandSuggestion>;
+	preserved: BuildCommandSuggestion[];
 }

@@ -368,6 +368,11 @@ export default class Jekyll extends Ssg {
 			attribution: 'most common for Jekyll sites',
 		});
 
+		commands.environment['JEKYLL_ENV'] = {
+			value: 'production',
+			attribution: 'recommended for hosted Jekyll sites',
+		};
+
 		return commands;
 	}
 }

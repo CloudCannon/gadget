@@ -112,6 +112,16 @@ export default class Hugo extends Ssg {
 			attribution: 'most common for Hugo sites',
 		});
 
+		commands.environment['HUGO_CACHEDIR'] = {
+			value: '/usr/local/__site/src/.hugo_cache/',
+			attribution: 'recommended for Hugo sites',
+		};
+
+		commands.preserved.push({
+			value: '.hugo_cache/,resources/',
+			attribution: 'recommended for speeding up Hugo builds',
+		});
+
 		return commands;
 	}
 }
