@@ -37,8 +37,14 @@ export interface GroupedFileSummaries {
 
 export type CollectionsConfig = Record<string, CollectionConfig>;
 
+export interface BuildCommandSuggestion {
+	value: string;
+	/** Describes why this build suggestion was made */
+	attribution: string;
+}
+
 export interface BuildCommands {
-	install: string[];
-	build: string[];
-	output: string[];
+	install: BuildCommandSuggestion[];
+	build: BuildCommandSuggestion[];
+	output: BuildCommandSuggestion[];
 }

@@ -387,14 +387,20 @@ export default class Ssg {
 
 		const packageJsonPath = joinPaths([options.source, 'package.json']);
 		if (filePaths.includes(packageJsonPath)) {
-			commands.install.push('npm i');
+			commands.install.push({
+				value: 'npm i',
+				attribution: 'because of your package.json file',
+			});
 
 			try {
 				const raw = options.readFile ? await options.readFile(packageJsonPath) : undefined;
 				const parsed = raw ? JSON.parse(raw) : undefined;
 
 				if (parsed?.scripts?.build) {
-					commands.build.push('npm run build');
+					commands.build.push({
+						value: 'npm run build',
+						attribution: 'found in your package.json file',
+					});
 				}
 			} catch (_e) {}
 		}

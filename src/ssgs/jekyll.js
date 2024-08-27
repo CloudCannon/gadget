@@ -348,13 +348,25 @@ export default class Jekyll extends Ssg {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		if (filePaths.includes(joinPaths([options.source, 'Gemfile']))) {
-			commands.install.unshift('bundle install');
-			commands.build.unshift('bundle exec jekyll build');
+			commands.install.unshift({
+				value: 'bundle install',
+				attribution: 'because of your Gemfile',
+			});
+			commands.build.unshift({
+				value: 'bundle exec jekyll build',
+				attribution: 'because of your Gemfile',
+			});
 		} else {
-			commands.build.unshift('jekyll build');
+			commands.build.unshift({
+				value: 'jekyll build',
+				attribution: 'most common for Jekyll sites',
+			});
 		}
 
-		commands.output.unshift('_site');
+		commands.output.unshift({
+			value: '_site',
+			attribution: 'most common for Jekyll sites',
+		});
 
 		return commands;
 	}

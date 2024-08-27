@@ -103,8 +103,14 @@ export default class Hugo extends Ssg {
 	async generateBuildCommands(filePaths, options) {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.unshift('hugo');
-		commands.output.unshift('public');
+		commands.build.unshift({
+			value: 'hugo',
+			attribution: 'most common for Hugo sites',
+		});
+		commands.output.unshift({
+			value: 'public',
+			attribution: 'most common for Hugo sites',
+		});
 
 		return commands;
 	}

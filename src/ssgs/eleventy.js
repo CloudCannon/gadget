@@ -51,8 +51,14 @@ export default class Eleventy extends Ssg {
 	async generateBuildCommands(filePaths, options) {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.unshift('npx @11ty/eleventy');
-		commands.output.unshift('_site');
+		commands.build.unshift({
+			value: 'npx @11ty/eleventy',
+			attribution: 'most common for 11ty sites',
+		});
+		commands.output.unshift({
+			value: '_site',
+			attribution: 'most common for 11ty sites',
+		});
 
 		return commands;
 	}
