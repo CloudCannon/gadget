@@ -16,13 +16,13 @@ steps:
       ╎        "icon": "data_usage",
       ╎        "output": false
       ╎      },
-      ╎      "collections_pages": {
+      ╎      "pages": {
       ╎        "path": "collections/_pages",
       ╎        "name": "Pages",
       ╎        "icon": "wysiwyg",
       ╎        "output": true
       ╎      },
-      ╎      "collections_posts": {
+      ╎      "posts": {
       ╎        "path": "collections/_posts",
       ╎        "name": "Posts",
       ╎        "icon": "event_available",
@@ -36,36 +36,36 @@ steps:
       ╎          },
       ╎          {
       ╎            "name": "Add Draft",
-      ╎            "collection": "collections_drafts"
+      ╎            "collection": "drafts"
       ╎          }
       ╎        ]
       ╎      },
-      ╎      "collections_projects": {
+      ╎      "projects": {
       ╎        "path": "collections/_projects",
       ╎        "name": "Projects",
       ╎        "icon": "eject",
       ╎        "output": true
       ╎      },
-      ╎      "collections_testimonials": {
+      ╎      "testimonials": {
       ╎        "path": "collections/_testimonials",
       ╎        "name": "Testimonials",
       ╎        "icon": "festival",
-      ╎        "output": true
+      ╎        "output": false
       ╎      },
-      ╎      "pages": {
+      ╎      "pages_1": {
       ╎        "path": "",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
+      ╎        "name": "Pages 1",
+      ╎        "icon": "pages",
+      ╎        "output": false
       ╎      },
-      ╎      "collections_drafts": {
+      ╎      "drafts": {
       ╎        "path": "collections/_drafts",
       ╎        "name": "Drafts",
       ╎        "icon": "event",
-      ╎        "output": true,
+      ╎        "output": false,
       ╎        "create": {
       ╎          "path": "",
-      ╎          "publish_to": "collections_posts"
+      ╎          "publish_to": "posts"
       ╎        }
       ╎      }
       ╎    },

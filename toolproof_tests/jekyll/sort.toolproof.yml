@@ -1,0 +1,48 @@
+name: Jekyll collection using sort
+
+steps:
+  - step: I have a "src/_config.yml" file with the content {yaml}
+    yaml: |-
+      collections:
+        staff:
+          sort_by: credentials
+  - step: I have a "src/staff/jane-doe.md" file with the content {md}
+    md: |-
+      ---
+      _uuid: 05589684-8d33-4d2f-8fde-460f9922d319
+      name: Jane Doe
+      image: "https://placekitten.com/440/440?a=.png"
+      description: Jane has 19 years of experience in law, and specialises in property and business.
+      credentials: LLB
+      phone_extension: "02"
+      ---
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "staff": {
+      ╎        "path": "staff",
+      ╎        "name": "Staff",
+      ╎        "icon": "people",
+      ╎        "output": false,
+      ╎        "sort": {
+      ╎          "key": "credentials"
+      ╎        }
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "kramdown",
+      ╎      "options": {
+      ╎        "heading_ids": false,
+      ╎        "gfm": false,
+      ╎        "breaks": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

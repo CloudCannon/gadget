@@ -15,17 +15,13 @@ export default class Static extends Ssg {
 	/**
 	 * Generates collections config from a set of paths.
 	 *
-	 * @param collectionPaths {{ basePath: string, paths: string[] }}
-	 * @param source {string | undefined}
+	 * @param _collectionPaths {{ basePath: string, paths: string[] }}
+	 * @param options {{ config?: Record<string, any>; source?: string; }=}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
-	generateCollectionsConfig(collectionPaths, source) {
-		const collectionsConfig = super.generateCollectionsConfig(collectionPaths, source);
-
-		if (!Object.keys(collectionsConfig).length) {
-			collectionsConfig.pages = this.generateCollectionConfig('pages', '');
-		}
-
-		return collectionsConfig;
+	generateCollectionsConfig(_collectionPaths, options) {
+		return {
+			pages: this.generateCollectionConfig('pages', options?.source ?? ''),
+		};
 	}
 }

@@ -1,0 +1,131 @@
+name: Jekyll with default collections and data
+
+steps:
+  - step: I have a "src/_config.yml" file with the content {yaml}
+    yaml: ''
+  - step: I have a "src/_posts/1999-12-31-partying.md" file with the content {md}
+    md: |-
+      ---
+      title: Partying
+      ---
+      Yee haw
+  - step: I have a "src/news/_posts/2000-01-01-a-new-age.md" file with the content {md}
+    md: |-
+      ---
+      title: No more partying
+      ---
+  - step: I have a "src/index.html" file with the content {html}
+    html: |-
+      <!DOCTYPE html>
+      <html>
+        <head>
+       	  <title>Home</title>
+        </head>
+        <body>
+       	  <h1>Home</h1>
+       	  <p>Hello.</p>
+        </body>
+      </html>
+  - step: I have a "src/_data/tags.yml" file with the content {yaml}
+    yaml: |-
+      - party
+      - news
+  - step: I have a "src/_data/animals/cat.yml" file with the content {yaml}
+    yaml: |-
+      name: Cat
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "config": {
+      ╎    "source": "",
+      ╎    "collections_config": {
+      ╎      "data_animals": {
+      ╎        "path": "_data/animals",
+      ╎        "name": "Animals",
+      ╎        "icon": "animation",
+      ╎        "output": false
+      ╎      },
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "posts": {
+      ╎        "path": "_posts",
+      ╎        "name": "Posts",
+      ╎        "icon": "event_available",
+      ╎        "output": true,
+      ╎        "create": {
+      ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎        },
+      ╎        "add_options": [
+      ╎          {
+      ╎            "name": "Add Post"
+      ╎          },
+      ╎          {
+      ╎            "name": "Add Draft",
+      ╎            "collection": "drafts"
+      ╎          }
+      ╎        ]
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "news_posts": {
+      ╎        "path": "news/_posts",
+      ╎        "name": "Posts",
+      ╎        "icon": "event_available",
+      ╎        "output": true,
+      ╎        "create": {
+      ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎        },
+      ╎        "add_options": [
+      ╎          {
+      ╎            "name": "Add Post"
+      ╎          },
+      ╎          {
+      ╎            "name": "Add Draft",
+      ╎            "collection": "news_drafts"
+      ╎          }
+      ╎        ]
+      ╎      },
+      ╎      "drafts": {
+      ╎        "path": "_drafts",
+      ╎        "name": "Drafts",
+      ╎        "icon": "event",
+      ╎        "output": false,
+      ╎        "create": {
+      ╎          "path": "",
+      ╎          "publish_to": "posts"
+      ╎        }
+      ╎      },
+      ╎      "news_drafts": {
+      ╎        "path": "news/_drafts",
+      ╎        "name": "Drafts",
+      ╎        "icon": "event",
+      ╎        "output": false,
+      ╎        "create": {
+      ╎          "path": "",
+      ╎          "publish_to": "news_posts"
+      ╎        }
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "kramdown",
+      ╎      "options": {
+      ╎        "heading_ids": false,
+      ╎        "gfm": false,
+      ╎        "breaks": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

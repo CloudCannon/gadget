@@ -24,23 +24,18 @@ const readFileMock = async (path) => {
 	}
 
 	return '';
-}
+};
 
 test('reads config', async (t) => {
 	const jekyll = new Jekyll();
-	const filePaths = [
-		'_config.toml',
-	];
+	const filePaths = ['_config.toml'];
 	const config = await jekyll.parseConfig(filePaths, readFileMock);
 	t.deepEqual(config, { path: '_config.toml' });
 });
 
 test('prefers yaml over toml config', async (t) => {
 	const jekyll = new Jekyll();
-	const filePaths = [
-		'_config.toml',
-		'_config.yaml',
-	];
+	const filePaths = ['_config.toml', '_config.yaml'];
 
 	const config = await jekyll.parseConfig(filePaths, readFileMock);
 	t.deepEqual(config, { path: '_config.yaml' });
@@ -48,11 +43,7 @@ test('prefers yaml over toml config', async (t) => {
 
 test('prefers yml over yaml config', async (t) => {
 	const jekyll = new Jekyll();
-	const filePaths = [
-		'_config.toml',
-		'_config.yml',
-		'_config.yaml',
-	];
+	const filePaths = ['_config.toml', '_config.yml', '_config.yaml'];
 
 	const config = await jekyll.parseConfig(filePaths, readFileMock);
 	t.deepEqual(config, { path: '_config.yml' });
