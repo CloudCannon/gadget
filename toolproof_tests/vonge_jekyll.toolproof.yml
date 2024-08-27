@@ -10,17 +10,23 @@ steps:
       ╎  "config": {
       ╎    "source": "site",
       ╎    "collections_config": {
-      ╎      "data": {
-      ╎        "path": "_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "output": false
-      ╎      },
-      ╎      "pages": {
+      ╎      "collection_pages": {
       ╎        "path": "collections/_pages",
       ╎        "name": "Pages",
       ╎        "icon": "wysiwyg",
       ╎        "output": true
+      ╎      },
+      ╎      "projects": {
+      ╎        "path": "collections/_projects",
+      ╎        "name": "Projects",
+      ╎        "icon": "eject",
+      ╎        "output": true
+      ╎      },
+      ╎      "testimonials": {
+      ╎        "path": "collections/_testimonials",
+      ╎        "name": "Testimonials",
+      ╎        "icon": "festival",
+      ╎        "output": false
       ╎      },
       ╎      "posts": {
       ╎        "path": "collections/_posts",
@@ -40,22 +46,16 @@ steps:
       ╎          }
       ╎        ]
       ╎      },
-      ╎      "projects": {
-      ╎        "path": "collections/_projects",
-      ╎        "name": "Projects",
-      ╎        "icon": "eject",
+      ╎      "pages": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
       ╎        "output": true
       ╎      },
-      ╎      "testimonials": {
-      ╎        "path": "collections/_testimonials",
-      ╎        "name": "Testimonials",
-      ╎        "icon": "festival",
-      ╎        "output": false
-      ╎      },
-      ╎      "pages_1": {
-      ╎        "path": "",
-      ╎        "name": "Pages 1",
-      ╎        "icon": "pages",
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
       ╎        "output": false
       ╎      },
       ╎      "drafts": {

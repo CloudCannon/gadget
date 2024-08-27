@@ -186,7 +186,7 @@ export default class Jekyll extends Ssg {
 
 		collectionConfig.output = isCollectionOutput(key, options.collection);
 
-		if (options.collection?.sort_by) {
+		if (options.collection?.sort_by && typeof options.collection?.sort_by === 'string') {
 			collectionConfig.sort = { key: options.collection.sort_by };
 		}
 
@@ -199,9 +199,7 @@ export default class Jekyll extends Ssg {
 				{ name: `Add ${collectionConfig.singular_name || 'Post'}` },
 				{ name: 'Add Draft', collection: toDraftsKey(key) },
 			];
-		}
-
-		if (isDraftsPath(collectionConfig.path)) {
+		} else if (isDraftsPath(collectionConfig.path)) {
 			collectionConfig.create ||= {
 				path: '', // TODO: this should not be required if publish_to is set
 				publish_to: toPostsKey(key),
@@ -224,21 +222,48 @@ export default class Jekyll extends Ssg {
 		const collectionsDir = options?.config?.collections_dir || '';
 		const collections = getJekyllCollections(options?.config?.collections);
 
-		// Content folder to collections_config mapping.
-		for (const fullPath of collectionPaths.paths) {
+		// Handle defined collections.
+		for (const key of Object.keys(collections)) {
+			const collectionKey = key === 'pages' || key === 'data' ? `collection_${key}` : key;
+			const path = joinPaths([collectionsDir, `_${key}`]);
+			const collection = collections[key];
+
+			collectionsConfig[collectionKey] = this.generateCollectionConfig(collectionKey, path, {
+				collection,
+			});
+		}
+
+		const sortedPaths = collectionPaths.paths.sort((a, b) => a.length - b.length);
+
+		// Use detected content folders to handle automatic/default collections.
+		for (const fullPath of sortedPaths) {
 			const path = stripTopPath(fullPath, options?.source);
-			const pathInCollectionsDir = collectionsDir ? stripTopPath(path, collectionsDir) : path;
+
+			const isDefaultCollection =
+				path === '' ||
+				path === '_data' ||
+				path.startsWith('_data/') ||
+				path === '_posts' ||
+				path.endsWith('/_posts') ||
+				path === '_drafts' ||
+				path.endsWith('/_drafts');
+
+			if (!isDefaultCollection) {
+				continue;
+			}
+
+			const exists = Object.keys(collectionsConfig).some((key) => {
+				return collectionsConfig[key].path === path;
+			});
+
+			if (exists) {
+				continue;
+			}
+
+			const pathInCollectionsDir = stripTopPath(path, collectionsDir);
 			const key = this.generateCollectionsConfigKey(pathInCollectionsDir, collectionsConfig);
 			const collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
 			collectionsConfig[key] = this.generateCollectionConfig(key, path, { collection });
-		}
-
-		// Handle defined collections without files.
-		for (const key of Object.keys(collections)) {
-			collectionsConfig[key] ||= {
-				path: joinPaths([collectionsDir, `_${key}`]),
-				output: isCollectionOutput(key, collections[key]),
-			};
 		}
 
 		// Add matching post/draft collections

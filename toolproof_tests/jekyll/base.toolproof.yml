@@ -6,6 +6,7 @@ steps:
       collections_dir: collections
       collections:
         - staff
+        - data
   - step: I have a "src/collections/_posts/1999-12-31-partying.md" file with the content {md}
     md: |-
       ---
@@ -17,12 +18,12 @@ steps:
       ---
       title: No more partying
       ---
-  - step: I have a "src/collections/data/clash.md" file with the content {md}
+  - step: I have a "src/collections/_data/clash.md" file with the content {md}
     md: |-
       ---
       title: Not site.data
       ---
-  - step: I have a "src/collections/staff/jane-doe.md" file with the content {md}
+  - step: I have a "src/collections/_staff/jane-doe.md" file with the content {md}
     md: |-
       ---
       _uuid: 05589684-8d33-4d2f-8fde-460f9922d319
@@ -37,11 +38,23 @@ steps:
       <!DOCTYPE html>
       <html>
         <head>
-       	  <title>Home</title>
+          <title>Home</title>
         </head>
         <body>
-       	  <h1>Home</h1>
-       	  <p>Hello.</p>
+          <h1>Home</h1>
+          <p>Hello.</p>
+        </body>
+      </html>
+  - step: I have a "src/about/index.html" file with the content {html}
+    html: |-
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>About</title>
+        </head>
+        <body>
+          <h1>About</h1>
+          <p>Hello.</p>
         </body>
       </html>
   - step: I have a "src/_data/tags.yml" file with the content {yaml}
@@ -62,16 +75,34 @@ steps:
       ╎  "config": {
       ╎    "source": "",
       ╎    "collections_config": {
-      ╎      "data_animals": {
-      ╎        "path": "_data/animals",
-      ╎        "name": "Animals",
-      ╎        "icon": "animation",
+      ╎      "staff": {
+      ╎        "path": "collections/_staff",
+      ╎        "name": "Staff",
+      ╎        "icon": "people",
       ╎        "output": false
+      ╎      },
+      ╎      "collection_data": {
+      ╎        "path": "collections/_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
       ╎      },
       ╎      "data": {
       ╎        "path": "_data",
       ╎        "name": "Data",
       ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "data_animals": {
+      ╎        "path": "_data/animals",
+      ╎        "name": "Animals",
+      ╎        "icon": "animation",
       ╎        "output": false
       ╎      },
       ╎      "posts": {
@@ -92,12 +123,6 @@ steps:
       ╎          }
       ╎        ]
       ╎      },
-      ╎      "data_1": {
-      ╎        "path": "collections/data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "output": false
-      ╎      },
       ╎      "news_posts": {
       ╎        "path": "collections/news/_posts",
       ╎        "name": "Posts",
@@ -115,18 +140,6 @@ steps:
       ╎            "collection": "news_drafts"
       ╎          }
       ╎        ]
-      ╎      },
-      ╎      "staff": {
-      ╎        "path": "collections/staff",
-      ╎        "name": "Staff",
-      ╎        "icon": "people",
-      ╎        "output": false
-      ╎      },
-      ╎      "pages": {
-      ╎        "path": "",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
       ╎      },
       ╎      "drafts": {
       ╎        "path": "collections/_drafts",

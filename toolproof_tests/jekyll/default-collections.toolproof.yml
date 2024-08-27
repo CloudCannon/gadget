@@ -41,11 +41,11 @@ steps:
       ╎  "config": {
       ╎    "source": "",
       ╎    "collections_config": {
-      ╎      "data_animals": {
-      ╎        "path": "_data/animals",
-      ╎        "name": "Animals",
-      ╎        "icon": "animation",
-      ╎        "output": false
+      ╎      "pages": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
       ╎      },
       ╎      "data": {
       ╎        "path": "_data",
@@ -71,12 +71,6 @@ steps:
       ╎          }
       ╎        ]
       ╎      },
-      ╎      "pages": {
-      ╎        "path": "",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
-      ╎      },
       ╎      "news_posts": {
       ╎        "path": "news/_posts",
       ╎        "name": "Posts",
@@ -94,6 +88,12 @@ steps:
       ╎            "collection": "news_drafts"
       ╎          }
       ╎        ]
+      ╎      },
+      ╎      "data_animals": {
+      ╎        "path": "_data/animals",
+      ╎        "name": "Animals",
+      ╎        "icon": "animation",
+      ╎        "output": false
       ╎      },
       ╎      "drafts": {
       ╎        "path": "_drafts",
