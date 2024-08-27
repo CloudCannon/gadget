@@ -1,0 +1,47 @@
+name: Jekyll with one page in a subfolder of root
+
+steps:
+  - step: I have a "src/_config.yml" file with the content {yaml}
+    yaml: ''
+  - step: I have a "src/webpages/index.html" file with the content {html}
+    html: |-
+      ---
+      permalink: /
+      ---
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Home</title>
+        </head>
+        <body>
+          <h1>Home</h1>
+          <p>Hello.</p>
+        </body>
+      </html>
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "webpages": {
+      ╎        "path": "webpages",
+      ╎        "name": "Webpages",
+      ╎        "icon": "pages",
+      ╎        "output": false
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "kramdown",
+      ╎      "options": {
+      ╎        "heading_ids": false,
+      ╎        "gfm": false,
+      ╎        "breaks": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}
