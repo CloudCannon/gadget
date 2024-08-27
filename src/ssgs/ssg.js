@@ -389,7 +389,7 @@ export default class Ssg {
 		if (filePaths.includes(packageJsonPath)) {
 			commands.install.push({
 				value: 'npm i',
-				attribution: 'because of your package.json file',
+				attribution: 'because of your `package.json` file',
 			});
 
 			try {
@@ -399,7 +399,7 @@ export default class Ssg {
 				if (parsed?.scripts?.build) {
 					commands.build.push({
 						value: 'npm run build',
-						attribution: 'found in your package.json file',
+						attribution: 'found in your `package.json` file',
 					});
 				}
 			} catch (_e) {}
