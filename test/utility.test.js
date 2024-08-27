@@ -10,7 +10,7 @@ test('gets last element', (t) => {
 test('joins paths', (t) => {
 	t.is(joinPaths(['first']), 'first');
 	t.is(joinPaths(['first', 'final']), 'first/final');
-	t.is(joinPaths(['/first/', '//fi///nal']), '/first/fi/nal');
+	t.is(joinPaths(['/first/', '//fi///nal']), 'first/fi/nal');
 	t.is(joinPaths([]), '');
 });
 
