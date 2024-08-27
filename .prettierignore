@@ -3,3 +3,4 @@ package-lock.json
 CHANGELOG.md
 .github/
 .backstage/
+toolproof_tests/test_sites/
