@@ -1,146 +1,186 @@
 import test from 'ava';
-import { ssgs } from '../src/ssgs/ssgs.js';
+import Eleventy from '../src/ssgs/eleventy.js';
+import Hugo from '../src/ssgs/hugo.js';
+import Jekyll from '../src/ssgs/jekyll.js';
 import Ssg from '../src/ssgs/ssg.js';
 
-function generateMarkdown(ssgKey, config) {
-	const ssg = ssgs[ssgKey] ?? new Ssg();
-	return ssg.generateMarkdown(config);
-}
+
 
 test('Defaults to CommonMark', (t) => {
-	t.deepEqual(generateMarkdown('', {}), {
+	t.deepEqual(new Ssg().generateMarkdown({}), {
 		engine: 'commonmark',
 		options: {},
 	});
 });
 
 test('Respects Jekyll Kramdown options enabled', (t) => {
-	t.deepEqual(
-		generateMarkdown('jekyll', {
-			kramdown: {
-				input: 'GFM',
-				hard_wrap: true,
-				gfm_quirks: [],
-				auto_ids: true,
-				smart_quotes: 'lsquo,rsquo,ldquo,rdquo',
-			},
-		}),
-		{
-			engine: 'kramdown',
-			options: {
-				breaks: true,
-				gfm: true,
-				heading_ids: true,
-				quotes: '‘’“”',
-				treat_indentation_as_code: true,
-				typographer: true,
-			},
-		},
-	);
+    const markdown = new Jekyll().generateMarkdown({
+        kramdown: {
+            input: 'GFM',
+            hard_wrap: true,
+            gfm_quirks: [],
+            auto_ids: true,
+            smart_quotes: 'lsquo,rsquo,ldquo,rdquo',
+        },
+    });
+    t.is(markdown.engine, 'kramdown');
+    t.is(markdown.options.quotes, '‘’“”');
+    t.true(markdown.options.breaks);
+    t.true(markdown.options.gfm);
+    t.true(markdown.options.heading_ids);
+    t.true(markdown.options.typographer);
+    t.true(markdown.options.treat_indentation_as_code);
 });
 
 test('Respects Jekyll Kramdown options disabled', (t) => {
-	t.deepEqual(
-		generateMarkdown('jekyll', {
-			kramdown: {
-				input: 'not_gfm',
-				hard_wrap: false,
-				gfm_quirks: ['no_auto_typographic'],
-				auto_ids: false,
-			},
-		}),
-		{
-			engine: 'kramdown',
-			options: {
-				breaks: false,
-				gfm: false,
-				heading_ids: false,
-				treat_indentation_as_code: true,
-				typographer: false,
-			},
-		},
-	);
+    const markdown = new Jekyll().generateMarkdown({
+        kramdown: {
+            input: 'not_gfm',
+            hard_wrap: false,
+            gfm_quirks: ['no_auto_typographic'],
+            auto_ids: false,
+        },
+    });
+    t.is(markdown.engine, 'kramdown');
+    t.false(markdown.options.breaks);
+    t.false(markdown.options.gfm);
+    t.false(markdown.options.heading_ids);
+    t.false(markdown.options.typographer);
+    t.true(markdown.options.treat_indentation_as_code);
 });
 
 test('Respects Jekyll CommonMark options', (t) => {
-	t.deepEqual(
-		generateMarkdown('jekyll', {
-			markdown: 'CommonMark',
-			commonmark: {
-				options: ['HARDBREAKS', 'GFM_QUIRKS'],
-				extensions: ['strikethrough', 'table', 'autolink', 'superscript', 'header_ids'],
-			},
-		}),
-		{
-			engine: 'commonmark',
-			options: {
-				breaks: true,
-				gfm: true,
-				strikethrough: true,
-				superscript: true,
-				linkify: true,
-				heading_ids: true,
-				table: true,
-				treat_indentation_as_code: true,
-			},
-		},
-	);
+    const markdown = new Jekyll().generateMarkdown({
+        markdown: 'CommonMark',
+        commonmark: {
+            options: ['HARDBREAKS', 'GFM_QUIRKS'],
+            extensions: ['strikethrough', 'table', 'autolink', 'superscript', 'header_ids'],
+        },
+    });
+    t.is(markdown.engine, 'commonmark');
+    t.true(markdown.options.breaks);
+    t.true(markdown.options.gfm);
+    t.true(markdown.options.strikethrough);
+    t.true(markdown.options.superscript);
+    t.true(markdown.options.linkify);
+    t.true(markdown.options.heading_ids);
+    t.true(markdown.options.table);
+    t.true(markdown.options.treat_indentation_as_code);
 });
 
 test('Respects Hugo options', (t) => {
-	t.deepEqual(
-		generateMarkdown('hugo', {
-			markup: {
-				goldmark: {
-					extensions: {
-						linkify: true,
-						strikethrough: true,
-						table: true,
-						extras: {
-							delete: { enable: true },
-							subscript: { enable: true },
-							superscript: { enable: true },
-						},
-						typographer: {
-							disable: false,
-							leftDoubleQuote: '&ldquo;',
-							leftSingleQuote: '&lsquo;',
-							rightDoubleQuote: '&rdquo;',
-							rightSingleQuote: '&rsquo;',
-						},
-					},
-					parser: {
-						autoHeadingID: true,
-						attribute: { block: false, title: true },
-					},
-					renderer: { hardWraps: true, xhtml: true },
-				},
-			},
-		}),
-		{
-			engine: 'commonmark',
-			options: {
-				attributes: true,
-				linkify: true,
-				strikethrough: true,
-				table: true,
-				treat_indentation_as_code: true,
-				typographer: true,
-				quotes: '‘’“”',
-				breaks: true,
-				gfm: true,
-				subscript: true,
-				superscript: true,
-				heading_ids: true,
-				breaks: true,
-				xhtml: true,
-			},
-		},
-	);
+    const markdown = new Hugo().generateMarkdown({
+        markup: {
+            goldmark: {
+                extensions: {
+                    linkify: true,
+                    strikethrough: true,
+                    table: true,
+                    extras: {
+                        delete: { enable: true },
+                        subscript: { enable: true },
+                        superscript: { enable: true },
+                    },
+                    typographer: {
+                        disable: false,
+                        leftDoubleQuote: '&ldquo;',
+                        leftSingleQuote: '&lsquo;',
+                        rightDoubleQuote: '&rdquo;',
+                        rightSingleQuote: '&rsquo;',
+                    },
+                },
+                parser: {
+                    autoHeadingID: true,
+                    attribute: { block: false, title: true },
+                },
+                renderer: { hardWraps: true, xhtml: true },
+            },
+        },
+    });
+    t.is(markdown.engine, 'commonmark');
+    t.is(markdown.options.quotes, '‘’“”');
+    t.true(markdown.options.attributes);
+    t.true(markdown.options.linkify);
+    t.true(markdown.options.strikethrough);
+    t.true(markdown.options.table);
+    t.true(markdown.options.treat_indentation_as_code);
+    t.true(markdown.options.typographer);
+    t.true(markdown.options.breaks);
+    t.true(markdown.options.gfm);
+    t.true(markdown.options.subscript);
+    t.true(markdown.options.superscript);
+    t.true(markdown.options.heading_ids);
+    t.true(markdown.options.xhtml);
+});
+
+test('Respects Hugo options with attributes disabled', (t) => {
+    const noAttrConfig = new Hugo().generateMarkdown(
+        { "markup": {
+            "goldmark": {
+                "parser": {
+                    "attribute": { "block": false, "title": false }
+                },
+            }
+        }}
+    );
+    t.false(noAttrConfig.options.attributes);
+    t.is(noAttrConfig.options.attribute_elements, undefined);
+});
+
+test('Respects Hugo options with heading attributes enabled', (t) => {
+    const noAttrConfig = new Hugo().generateMarkdown(
+        { "markup": {
+            "goldmark": {
+                "parser": {
+                    "attribute": { "block": false, "title": true },
+                },
+            }
+        }}
+    );
+    t.true(noAttrConfig.options.attributes);
+    t.is(noAttrConfig.options.attribute_elements.h1, 'space right');
+    t.is(noAttrConfig.options.attribute_elements.h6, 'space right');
+    t.is(noAttrConfig.options.attribute_elements.blockquote, 'none');
+    t.is(noAttrConfig.options.attribute_elements.table, 'none');
+});
+
+test('Respects Hugo options with block attributes enabled', (t) => {
+    const noAttrConfig = new Hugo().generateMarkdown(
+        { "markup": {
+            "goldmark": {
+                "parser": {
+                    "attribute": { "block": true, "title": false },
+                },
+            }
+        }}
+    );
+    t.true(noAttrConfig.options.attributes);
+    t.is(noAttrConfig.options.attribute_elements.h1, 'none');
+    t.is(noAttrConfig.options.attribute_elements.img, 'none');
+    t.is(noAttrConfig.options.attribute_elements.blockquote, 'below');
+    t.is(noAttrConfig.options.attribute_elements.ul, 'below');
+    t.is(noAttrConfig.options.attribute_elements.ol, 'below');
+    t.is(noAttrConfig.options.attribute_elements.table, 'below');
+    t.is(noAttrConfig.options.attribute_elements.p, 'below');
+});
+
+test('Respects Hugo options to enable attributes on standalone image', (t) => {
+    const noAttrConfig = new Hugo().generateMarkdown(
+        { "markup": {
+            "goldmark": {
+                "parser": {
+                    "attribute": { "block": true },
+                    "wrapStandAloneImageWithinParagraph": false
+                },
+            }
+        }}
+    );
+    t.true(noAttrConfig.options.attributes);
+    t.is(noAttrConfig.options.attribute_elements.img, 'below');
 });
 
 test('Has good 11ty defaults', (t) => {
-	t.deepEqual(generateMarkdown('eleventy', undefined), {
+	t.deepEqual(new Eleventy().generateMarkdown(undefined), {
 		engine: 'commonmark',
 		options: {
 			html: true,

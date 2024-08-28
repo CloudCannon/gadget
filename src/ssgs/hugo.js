@@ -87,6 +87,28 @@ export default class Hugo extends Ssg {
 
 		options.treat_indentation_as_code = true;
 
+		if (options.attributes) {
+			/** @type {import('@cloudcannon/configuration-types').MarkdownAttributeElementOptions} */
+			const attribute_elements = {};
+
+			/** @type {(keyof HTMLElementTagNameMap)[]} */
+			const headingTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+			headingTags.forEach((tag) => {
+				attribute_elements[tag] = !!parser?.attribute?.title ? 'space right' : 'none';
+			});
+			
+			/** @type {(keyof HTMLElementTagNameMap)[]} */
+			const otherTags = ['blockquote', 'hr', 'ol', 'ul', 'p', 'table'];
+			otherTags.forEach((tag) => {
+				attribute_elements[tag] = !!parser?.attribute?.block ? 'below' : 'none';
+			});
+
+			const imgAttrsAllowed = !!parser?.attribute?.block && parser?.wrapStandAloneImageWithinParagraph === false;
+			attribute_elements.img = imgAttrsAllowed ? 'below' : 'none';
+
+			options.attribute_elements = attribute_elements;
+		}
+
 		return {
 			engine: 'commonmark',
 			options,
