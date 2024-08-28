@@ -172,8 +172,12 @@ export default class Ssg {
 			'tsconfig.json',
 			'jsconfig.json',
 			'.prettierrc.json',
+			'docker-compose.yml',
+			'docker-compose.nginx.yml',
 			'package-lock.json',
 			'package.json',
+			'netlify.toml',
+			'vercel.json',
 			'manifest.json',
 			'.gitignore',
 			'README',
@@ -218,9 +222,13 @@ export default class Ssg {
 	 */
 	isIgnoredPath(filePath) {
 		return (
+			filePath.includes('.config.') ||
+			filePath.includes('/.') ||
+			filePath.startsWith('.') ||
 			this.ignoredFolders().some(
 				(folder) => filePath.startsWith(folder) || filePath.includes(`/${folder}`),
-			) || this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`))
+			) ||
+			this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`))
 		);
 	}
 
@@ -266,16 +274,16 @@ export default class Ssg {
 	 * @returns {import('../types').FileType}
 	 */
 	getFileType(filePath) {
+		if (this.isConfigPath(filePath)) {
+			return 'config';
+		}
+
 		if (this.isIgnoredPath(filePath)) {
 			return 'ignored';
 		}
 
 		if (this.isPartialPath(filePath)) {
 			return 'partial';
-		}
-
-		if (this.isConfigPath(filePath)) {
-			return 'config';
 		}
 
 		if (this.isContentPath(filePath)) {
