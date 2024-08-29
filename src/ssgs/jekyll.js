@@ -1,4 +1,5 @@
 import { decodeEntity, joinPaths, stripTopPath } from '../utility.js';
+import { kramdownAttributeElementOptions } from '../defaults.js';
 import Ssg from './ssg.js';
 
 /**
@@ -325,8 +326,11 @@ export default class Jekyll extends Ssg {
 			 * so I'm thinking we'll leave them disabled until explicitly set in CC config,
 			 * since there is no way to explicitly set them in Kramdown config.
 			 * e.g. strikethrough
-			 * attributes is a similar example
 			 */
+
+			options.attributes = true;
+			options.attribute_elements = kramdownAttributeElementOptions;
+
 		} else if (config) {
 			const commonmarkConfig = config?.['commonmark'] || {};
 
