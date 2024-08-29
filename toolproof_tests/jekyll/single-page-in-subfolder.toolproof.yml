@@ -1,12 +1,9 @@
-name: Jekyll collection using sort
+name: Jekyll pages collection with one nested file
 
 steps:
-  - step: I have a "src/_config.yml" file with the content {yaml}
-    yaml: |-
-      collections:
-        staff:
-          sort_by: credentials
-  - step: I have a "src/_staff/jane-doe.md" file with the content ""
+  - step: I have a "src/_config.yml" file with the content ""
+  - step: I have a "src/pages/home.html" file with the content ""
+  - step: I have a "src/pages/index.md" file with the content ""
   - ref: ./../core/run_gadget.toolproof.yml
   - snapshot: stdout
     snapshot_content: |-

@@ -1,4 +1,5 @@
-import { decodeEntity } from '../utility.js';
+import { findBasePath } from '../collections.js';
+import { decodeEntity, stripTopPath } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Hugo extends Ssg {
@@ -7,9 +8,17 @@ export default class Hugo extends Ssg {
 	}
 
 	configPaths() {
-		return super
-			.configPaths()
-			.concat(['hugo.toml', 'hugo.yaml', 'hugo.json', 'config.toml', 'config.yaml', 'config.json']);
+		return super.configPaths().concat([
+			'hugo.toml',
+			'hugo.yml',
+			'hugo.yaml',
+			'hugo.json',
+			'theme.toml', // on theme repos
+			'config.toml',
+			'config.yml',
+			'config.yaml',
+			'config.json',
+		]);
 	}
 
 	templateExtensions() {
@@ -22,11 +31,32 @@ export default class Hugo extends Ssg {
 		]);
 	}
 
+	ignoredFiles() {
+		return super.ignoredFiles().concat([
+			'theme.toml', // config file for a hugo theme repo
+		]);
+	}
+
 	ignoredFolders() {
 		return super.ignoredFolders().concat([
+			'assets/', // unprocessed asset folder
+			'public/', // default output
 			'resources/', // cache
 		]);
 	}
+
+	// These are customisable, but likely fine to use for source detection regardless.
+	conventionalPathsInSource = [
+		'archetypes/',
+		'assets/',
+		'content/',
+		'config/',
+		'data/',
+		'i18n/',
+		'layouts/',
+		'static/',
+		'themes/',
+	];
 
 	/**
 	 * Generates a collection config entry.
@@ -48,6 +78,49 @@ export default class Hugo extends Ssg {
 		}
 
 		return collectionConfig;
+	}
+
+	/**
+	 * Generates collections config from a set of paths.
+	 *
+	 * @param collectionPaths {string[]}
+	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
+	 * @returns {import('../types').CollectionsConfig}
+	 */
+	generateCollectionsConfig(collectionPaths, options) {
+		/** @type {import('../types').CollectionsConfig} */
+		const collectionsConfig = {};
+		let basePath = options.basePath;
+
+		const collectionPathsOutsideExampleSite = collectionPaths.filter(
+			(path) => !path.includes('exampleSite/'),
+		);
+
+		const hasNonExampleSiteCollections =
+			collectionPathsOutsideExampleSite.length &&
+			collectionPathsOutsideExampleSite.length !== collectionPaths.length;
+
+		if (hasNonExampleSiteCollections) {
+			basePath = findBasePath(collectionPathsOutsideExampleSite);
+			collectionPaths = collectionPathsOutsideExampleSite;
+		}
+
+		const reducedCollectionPaths = collectionPaths.filter((path) => {
+			const pathInBasePath = stripTopPath(path, basePath);
+			return pathInBasePath.split('/').length < 2;
+		});
+
+		basePath = stripTopPath(basePath, options.source);
+
+		for (const fullPath of reducedCollectionPaths) {
+			const path = stripTopPath(fullPath, options.source);
+			const pathInBasePath = stripTopPath(path, basePath);
+			const key = this.generateCollectionsConfigKey(pathInBasePath, collectionsConfig);
+
+			collectionsConfig[key] = this.generateCollectionConfig(key, path, { basePath });
+		}
+
+		return collectionsConfig;
 	}
 
 	/**

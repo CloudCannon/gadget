@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { stripTopPath } from './utility.js';
 
 /**
  * Produces an ordered set of paths that a file at this path could belong to.
@@ -12,7 +11,7 @@ export function getCollectionPaths(filePath) {
 	const paths = [''];
 	const parts = filePath.split('/');
 
-	for (var i = 0; i < parts.length - 1; i++) {
+	for (let i = 0; i < parts.length - 1; i++) {
 		builder = join(builder, parts[i]);
 		paths.push(builder);
 	}
@@ -21,19 +20,18 @@ export function getCollectionPaths(filePath) {
 }
 
 /**
- * Makes collection paths relative to a shared base path, also returns that shared path as source.
+ * Finds a shared base path.
  *
- * @param collectionPathCounts {Record<string, number>}
- * @returns {{ basePath: string, paths: string[] }}
+ * @param paths {string[]}
+ * @returns {basePath}
  */
-export function processCollectionPaths(collectionPathCounts) {
-	let paths = Object.keys(collectionPathCounts);
+export function findBasePath(paths) {
 	let basePath = '';
 
 	if (paths.length) {
 		const checkParts = paths[0].split('/');
 
-		for (var i = 0; i < checkParts.length; i++) {
+		for (let i = 0; i < checkParts.length; i++) {
 			const checkPath = join(...checkParts.slice(0, i + 1));
 
 			const isSharedPath =
@@ -46,20 +44,5 @@ export function processCollectionPaths(collectionPathCounts) {
 		}
 	}
 
-	if (basePath) {
-		paths = paths.map((pathKey) => stripTopPath(pathKey, basePath));
-	}
-
-	if (paths.length === 1) {
-		// If there is one collection, force it to have path.
-		return {
-			basePath: '',
-			paths: [basePath],
-		};
-	}
-
-	return {
-		basePath,
-		paths,
-	};
+	return basePath;
 }
