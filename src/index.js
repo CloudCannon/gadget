@@ -1,5 +1,5 @@
 import { guessSsg, ssgs } from './ssgs/ssgs.js';
-import { processCollectionPaths } from './collections.js';
+import { findBasePath } from './collections.js';
 
 export { ssgs } from './ssgs/ssgs.js';
 
@@ -42,7 +42,7 @@ export async function generateConfiguration(filePaths, options) {
 		? await ssg.parseConfig(configFilePaths, options.readFile)
 		: undefined;
 
-	const collectionPaths = processCollectionPaths(files.collectionPathCounts);
+	const collectionPaths = Object.keys(files.collectionPathCounts);
 
 	return {
 		ssg: ssg.key,
@@ -50,7 +50,11 @@ export async function generateConfiguration(filePaths, options) {
 			source,
 			collections_config:
 				options?.config?.collections_config ||
-				ssg.generateCollectionsConfig(collectionPaths, { source, config }),
+				ssg.generateCollectionsConfig(collectionPaths, {
+					source,
+					config,
+					basePath: findBasePath(collectionPaths),
+				}),
 			paths: options?.config?.paths ?? undefined,
 			timezone: options?.config?.timezone ?? ssg.getTimezone(),
 			markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),

@@ -132,48 +132,7 @@ export default class Jekyll extends Ssg {
 	}
 
 	// _posts and _drafts excluded here as they are potentially nested deeper.
-	static conventionPaths = ['_plugins/', '_includes/', '_data/', '_layouts/', '_sass/'];
-
-	/**
-	 * Attempts to find the most likely source folder for a Jekyll site.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @returns {{ filePath?: string, conventionPath?: string }}
-	 */
-	_findConventionPath(filePaths) {
-		for (let i = 0; i < filePaths.length; i++) {
-			for (let j = 0; j < filePaths.length; j++) {
-				if (
-					filePaths[i].startsWith(Jekyll.conventionPaths[j]) ||
-					filePaths[i].includes(Jekyll.conventionPaths[j])
-				) {
-					return {
-						filePath: filePaths[i],
-						conventionPath: Jekyll.conventionPaths[j],
-					};
-				}
-			}
-		}
-
-		return {};
-	}
-
-	/**
-	 * Attempts to find the most likely source folder for a Jekyll site.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @returns {string | undefined}
-	 */
-	getSource(filePaths) {
-		const { filePath, conventionPath } = this._findConventionPath(filePaths);
-
-		if (filePath && conventionPath) {
-			const conventionIndex = filePath.indexOf(conventionPath);
-			return filePath.substring(0, Math.max(0, conventionIndex - 1));
-		}
-
-		return super.getSource(filePaths);
-	}
+	conventionalPathsInSource = ['_plugins/', '_includes/', '_data/', '_layouts/', '_sass/'];
 
 	/**
 	 * Generates a collection config entry.
@@ -214,15 +173,15 @@ export default class Jekyll extends Ssg {
 	/**
 	 * Generates collections config from a set of paths.
 	 *
-	 * @param collectionPaths {{ basePath: string, paths: string[] }}
-	 * @param options {{ config?: Record<string, any>; source?: string; }=}
+	 * @param collectionPaths {string[]}
+	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
 	generateCollectionsConfig(collectionPaths, options) {
 		/** @type {import('../types').CollectionsConfig} */
 		const collectionsConfig = {};
-		const collectionsDir = options?.config?.collections_dir || '';
-		const collections = getJekyllCollections(options?.config?.collections);
+		const collectionsDir = options.config?.collections_dir || '';
+		const collections = getJekyllCollections(options.config?.collections);
 
 		// Handle defined collections.
 		for (const key of Object.keys(collections)) {
@@ -235,14 +194,15 @@ export default class Jekyll extends Ssg {
 			});
 		}
 
-		const sortedPaths = collectionPaths.paths.sort((a, b) => a.length - b.length);
+		const sortedPaths = collectionPaths.sort((a, b) => a.length - b.length);
 
 		// Use detected content folders to handle automatic/default collections.
 		for (const fullPath of sortedPaths) {
-			const path = stripTopPath(fullPath, options?.source);
+			const path = stripTopPath(fullPath, options.source);
 
 			const isDefaultCollection =
-				path === sortedPaths[0] || // root folder, or a subfolder if no content files in root
+				sortedPaths.length === 1 || // a subfolder if no content files in root
+				path === '' || // root folder
 				path === '_data' ||
 				path.startsWith('_data/') ||
 				path === '_posts' ||

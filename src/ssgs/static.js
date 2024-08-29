@@ -15,8 +15,8 @@ export default class Static extends Ssg {
 	/**
 	 * Generates collections config from a set of paths.
 	 *
-	 * @param _collectionPaths {{ basePath: string, paths: string[] }}
-	 * @param options {{ config?: Record<string, any>; source?: string; }=}
+	 * @param _collectionPaths {string[]}
+	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string }}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
 	generateCollectionsConfig(_collectionPaths, options) {

@@ -77,7 +77,6 @@ steps:
       ╎{
       ╎  "ssg": "jekyll",
       ╎  "config": {
-      ╎    "source": "",
       ╎    "collections_config": {
       ╎      "staff": {
       ╎        "path": "collections/_staff",
@@ -87,8 +86,8 @@ steps:
       ╎      },
       ╎      "collection_data": {
       ╎        "path": "collections/_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
+      ╎        "name": "Collection Data",
+      ╎        "icon": "collections",
       ╎        "output": false
       ╎      },
       ╎      "pages": {
@@ -105,8 +104,8 @@ steps:
       ╎      },
       ╎      "data_animals": {
       ╎        "path": "_data/animals",
-      ╎        "name": "Animals",
-      ╎        "icon": "animation",
+      ╎        "name": "Data Animals",
+      ╎        "icon": "data_array",
       ╎        "output": false
       ╎      },
       ╎      "posts": {
@@ -129,8 +128,8 @@ steps:
       ╎      },
       ╎      "news_posts": {
       ╎        "path": "collections/news/_posts",
-      ╎        "name": "Posts",
-      ╎        "icon": "event_available",
+      ╎        "name": "News Posts",
+      ╎        "icon": "newspaper",
       ╎        "output": true,
       ╎        "create": {
       ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
@@ -157,8 +156,8 @@ steps:
       ╎      },
       ╎      "news_drafts": {
       ╎        "path": "collections/news/_drafts",
-      ╎        "name": "Drafts",
-      ╎        "icon": "event",
+      ╎        "name": "News Drafts",
+      ╎        "icon": "drafts",
       ╎        "output": false,
       ╎        "create": {
       ╎          "path": "",

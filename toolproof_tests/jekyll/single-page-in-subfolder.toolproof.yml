@@ -1,0 +1,33 @@
+name: Jekyll pages collection with one nested file
+
+steps:
+  - step: I have a "src/_config.yml" file with the content ""
+  - step: I have a "src/pages/home.html" file with the content ""
+  - step: I have a "src/pages/index.md" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "pages": {
+      ╎        "path": "pages",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "kramdown",
+      ╎      "options": {
+      ╎        "heading_ids": false,
+      ╎        "gfm": false,
+      ╎        "breaks": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

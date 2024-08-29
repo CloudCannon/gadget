@@ -1,0 +1,61 @@
+name: Hugo theme with example site
+
+steps:
+  - step: I have a "src/theme.toml" file with the content ""
+  - step: I have a "src/exampleSite/content/_index.md" file with the content ""
+  - step: I have a "src/exampleSite/content/blog/_index.md" file with the content ""
+  - step: I have a "src/exampleSite/content/blog/partying.md" file with the content ""
+  - step: I have a "src/exampleSite/data/party-locations.csv" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "hugo",
+      ╎  "config": {
+      ╎    "source": "exampleSite",
+      ╎    "collections_config": {
+      ╎      "data": {
+      ╎        "path": "data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ],
+      ╎        "output": false
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "content",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "blog": {
+      ╎        "path": "content/blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available",
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ],
+      ╎        "output": true
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true,
+      ╎        "linkify": false,
+      ╎        "table": false,
+      ╎        "strikethrough": false,
+      ╎        "subscript": false,
+      ╎        "superscript": false,
+      ╎        "heading_ids": false,
+      ╎        "breaks": false,
+      ╎        "xhtml": false,
+      ╎        "attributes": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

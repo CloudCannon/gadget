@@ -59,6 +59,33 @@ export default class Ssg {
 		return { collectionPathCounts, groups };
 	}
 
+	/** @type {string[]} */
+	conventionalPathsInSource = [];
+
+	/**
+	 * Attempts to find the most likely source folder for a Jekyll site.
+	 *
+	 * @param filePaths {string[]} List of input file paths.
+	 * @returns {{ filePath?: string, conventionPath?: string }}
+	 */
+	findConventionPath(filePaths) {
+		for (let i = 0; i < filePaths.length; i++) {
+			for (let j = 0; j < this.conventionalPathsInSource.length; j++) {
+				if (
+					filePaths[i].startsWith(this.conventionalPathsInSource[j]) ||
+					filePaths[i].includes(`/${this.conventionalPathsInSource[j]}`)
+				) {
+					return {
+						filePath: filePaths[i],
+						conventionPath: this.conventionalPathsInSource[j],
+					};
+				}
+			}
+		}
+
+		return {};
+	}
+
 	/**
 	 * Attempts to find the current timezone.
 	 *
@@ -172,7 +199,9 @@ export default class Ssg {
 			'tsconfig.json',
 			'jsconfig.json',
 			'.prettierrc.json',
+			'docker-compose.yaml',
 			'docker-compose.yml',
+			'docker-compose.nginx.yaml',
 			'docker-compose.nginx.yml',
 			'package-lock.json',
 			'package.json',
@@ -180,10 +209,12 @@ export default class Ssg {
 			'vercel.json',
 			'manifest.json',
 			'.gitignore',
-			'README',
 			'README.md',
-			'LICENSE',
+			'CODE_OF_CONDUCT.md',
+			'CONTRIBUTING.md',
 			'LICENSE.md',
+			'CHANGELOG.md',
+			'HISTORY.md',
 			'cloudcannon.config.cjs',
 			'cloudcannon.config.js',
 			'cloudcannon.config.json',
@@ -300,11 +331,16 @@ export default class Ssg {
 	/**
 	 * Attempts to find the most likely source folder.
 	 *
-	 * @param _filePaths {string[]} List of input file paths.
+	 * @param filePaths {string[]} List of input file paths.
 	 * @returns {string | undefined}
 	 */
-	getSource(_filePaths) {
-		return;
+	getSource(filePaths) {
+		const { filePath, conventionPath } = this.findConventionPath(filePaths);
+
+		if (filePath && conventionPath) {
+			const conventionIndex = filePath.indexOf(conventionPath);
+			return filePath.substring(0, Math.max(0, conventionIndex - 1)) || undefined;
+		}
 	}
 
 	/**
@@ -316,11 +352,7 @@ export default class Ssg {
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, _options) {
-		const name = titleize(
-			basename(path || key)
-				.replace(/[_-]/g, ' ')
-				.trim(),
-		);
+		const name = titleize(basename(key).replace(/[_-]/g, ' ').trim());
 
 		return {
 			path,
@@ -350,19 +382,19 @@ export default class Ssg {
 	/**
 	 * Generates collections config from a set of paths.
 	 *
-	 * @param collectionPaths {{ basePath: string, paths: string[] }}
-	 * @param options {{ config?: Record<string, any>; source?: string; }=}
+	 * @param collectionPaths {string[]}
+	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
 	generateCollectionsConfig(collectionPaths, options) {
 		/** @type {import('../types').CollectionsConfig} */
 		const collectionsConfig = {};
-		const basePath = options?.source
-			? stripTopPath(collectionPaths.basePath, options.source)
-			: collectionPaths.basePath;
+		const basePath = options.source
+			? stripTopPath(options.basePath, options.source)
+			: options.basePath;
 
-		for (const fullPath of collectionPaths.paths) {
-			const path = stripTopPath(fullPath, options?.source);
+		for (const fullPath of collectionPaths) {
+			const path = stripTopPath(fullPath, options.source);
 			const key = this.generateCollectionsConfigKey(path, collectionsConfig);
 
 			collectionsConfig[key] = this.generateCollectionConfig(key, path, { basePath });

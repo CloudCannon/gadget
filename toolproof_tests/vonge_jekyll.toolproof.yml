@@ -12,8 +12,8 @@ steps:
       ╎    "collections_config": {
       ╎      "collection_pages": {
       ╎        "path": "collections/_pages",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
+      ╎        "name": "Collection Pages",
+      ╎        "icon": "collections",
       ╎        "output": true
       ╎      },
       ╎      "projects": {

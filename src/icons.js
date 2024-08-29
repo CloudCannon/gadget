@@ -19,6 +19,7 @@ export function findIcon(query) {
 const overrides = {
 	collection_pages: 'web_asset',
 	pages: 'wysiwyg',
+	content: 'wysiwyg',
 	posts: 'event_available',
 	post: 'event_available',
 	blog: 'event_available',

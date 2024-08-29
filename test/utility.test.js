@@ -20,6 +20,8 @@ test('strips top path', (t) => {
 	t.is(stripTopPath('src/index.html', ''), 'src/index.html');
 	t.is(stripTopPath('src', 'src'), '');
 	t.is(stripTopPath('src', ''), 'src');
+
+	t.is(stripTopPath('sauce/content', 'sauce'), 'content');
 });
 
 test('decodes entities', (t) => {

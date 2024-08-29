@@ -1,0 +1,62 @@
+name: Hugo base
+
+steps:
+  - step: I have a "src/hugo.yaml" file with the content ""
+  - step: I have a "src/content/_index.md" file with the content ""
+  - step: I have a "src/content/blog/_index.md" file with the content ""
+  - step: I have a "src/content/blog/partying.md" file with the content ""
+  - step: I have a "src/content/blog/follow-up/no-more-partying.md" file with the content ""
+  - step: I have a "src/data/party-locations.csv" file with the content ""
+  - step: I have a "src/exampleSite/content/please-ignore/no.md" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "hugo",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "data": {
+      ╎        "path": "data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ],
+      ╎        "output": false
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "content",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "blog": {
+      ╎        "path": "content/blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available",
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ],
+      ╎        "output": true
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true,
+      ╎        "linkify": false,
+      ╎        "table": false,
+      ╎        "strikethrough": false,
+      ╎        "subscript": false,
+      ╎        "superscript": false,
+      ╎        "heading_ids": false,
+      ╎        "breaks": false,
+      ╎        "xhtml": false,
+      ╎        "attributes": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

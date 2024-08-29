@@ -6,16 +6,7 @@ steps:
       collections:
         staff:
           sort_by: credentials
-  - step: I have a "src/_staff/jane-doe.md" file with the content {md}
-    md: |-
-      ---
-      _uuid: 05589684-8d33-4d2f-8fde-460f9922d319
-      name: Jane Doe
-      image: "https://placekitten.com/440/440?a=.png"
-      description: Jane has 19 years of experience in law, and specialises in property and business.
-      credentials: LLB
-      phone_extension: "02"
-      ---
+  - step: I have a "src/_staff/jane-doe.md" file with the content ""
   - ref: ./../core/run_gadget.toolproof.yml
   - snapshot: stdout
     snapshot_content: |-
