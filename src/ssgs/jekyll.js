@@ -124,6 +124,7 @@ export default class Jekyll extends Ssg {
 	ignoredFolders() {
 		return super.ignoredFolders().concat([
 			'_site/', // build output
+			'assets/', // popular assets plugin folder
 			'.jekyll-cache/', // cache
 			'.jekyll-metadata/', // cache
 		]);
@@ -199,7 +200,7 @@ export default class Jekyll extends Ssg {
 			const path = stripTopPath(fullPath, options.source);
 
 			const isDefaultCollection =
-				path === '' ||
+				path === sortedPaths[0] || // root folder, or a subfolder if no content files in root
 				path === '_data' ||
 				path.startsWith('_data/') ||
 				path === '_posts' ||

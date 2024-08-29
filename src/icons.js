@@ -17,6 +17,7 @@ export function findIcon(query) {
 
 /** @type {Record<string, import('@cloudcannon/configuration-types').Icon>} */
 const overrides = {
+	collection_pages: 'web_asset',
 	pages: 'wysiwyg',
 	content: 'wysiwyg',
 	posts: 'event_available',

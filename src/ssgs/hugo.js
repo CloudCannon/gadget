@@ -191,7 +191,10 @@ export default class Hugo extends Ssg {
 		};
 
 		commands.preserved.push({
-			value: '.hugo_cache/,resources/',
+			value: 'resources/',
+			attribution: 'recommended for speeding up Hugo builds',
+		}, {
+			value: '.hugo_cache/',
 			attribution: 'recommended for speeding up Hugo builds',
 		});
 
