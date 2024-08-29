@@ -11,14 +11,11 @@ steps:
       ╎  "ssg": "jekyll",
       ╎  "config": {
       ╎    "collections_config": {
-      ╎      "staff": {
-      ╎        "path": "_staff",
-      ╎        "name": "Staff",
-      ╎        "icon": "people",
-      ╎        "output": false,
-      ╎        "sort": {
-      ╎          "key": "credentials"
-      ╎        }
+      ╎      "pages": {
+      ╎        "path": "pages",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

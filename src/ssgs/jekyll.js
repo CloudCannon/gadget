@@ -200,7 +200,8 @@ export default class Jekyll extends Ssg {
 			const path = stripTopPath(fullPath, options.source);
 
 			const isDefaultCollection =
-				path === sortedPaths[0] || // root folder, or a subfolder if no content files in root
+				sortedPaths.length === 1 || // a subfolder if no content files in root
+				path === '' || // root folder
 				path === '_data' ||
 				path.startsWith('_data/') ||
 				path === '_posts' ||
