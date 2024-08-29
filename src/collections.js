@@ -28,7 +28,7 @@ export function getCollectionPaths(filePath) {
 export function findBasePath(paths) {
 	let basePath = '';
 
-	if (paths.length) {
+	if (paths.length > 1) {
 		const checkParts = paths[0].split('/');
 
 		for (let i = 0; i < checkParts.length; i++) {

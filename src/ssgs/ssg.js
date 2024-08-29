@@ -70,10 +70,10 @@ export default class Ssg {
 	 */
 	findConventionPath(filePaths) {
 		for (let i = 0; i < filePaths.length; i++) {
-			for (let j = 0; j < filePaths.length; j++) {
+			for (let j = 0; j < this.conventionalPathsInSource.length; j++) {
 				if (
 					filePaths[i].startsWith(this.conventionalPathsInSource[j]) ||
-					filePaths[i].includes(this.conventionalPathsInSource[j])
+					filePaths[i].includes(`/${this.conventionalPathsInSource[j]}`)
 				) {
 					return {
 						filePath: filePaths[i],
@@ -199,7 +199,9 @@ export default class Ssg {
 			'tsconfig.json',
 			'jsconfig.json',
 			'.prettierrc.json',
+			'docker-compose.yaml',
 			'docker-compose.yml',
+			'docker-compose.nginx.yaml',
 			'docker-compose.nginx.yml',
 			'package-lock.json',
 			'package.json',
@@ -207,10 +209,12 @@ export default class Ssg {
 			'vercel.json',
 			'manifest.json',
 			'.gitignore',
-			'README',
 			'README.md',
-			'LICENSE',
+			'CODE_OF_CONDUCT.md',
+			'CONTRIBUTING.md',
 			'LICENSE.md',
+			'CHANGELOG.md',
+			'HISTORY.md',
 			'cloudcannon.config.cjs',
 			'cloudcannon.config.js',
 			'cloudcannon.config.json',
@@ -325,7 +329,7 @@ export default class Ssg {
 	}
 
 	/**
-	 * Attempts to find the most likely source folder-.
+	 * Attempts to find the most likely source folder.
 	 *
 	 * @param filePaths {string[]} List of input file paths.
 	 * @returns {string | undefined}

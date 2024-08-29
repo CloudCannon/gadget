@@ -1,18 +1,15 @@
-name: Hugo theme with example site
+name: Hugo data collection only
 
 steps:
-  - step: I have a "src/theme.toml" file with the content ""
-  - step: I have a "src/exampleSite/content/_index.md" file with the content ""
-  - step: I have a "src/exampleSite/content/blog/_index.md" file with the content ""
-  - step: I have a "src/exampleSite/content/blog/partying.md" file with the content ""
-  - step: I have a "src/exampleSite/data/party-locations.csv" file with the content ""
+  - step: I have a "src/hugo.yaml" file with the content ""
+  - step: I have a "src/data/party-locations.csv" file with the content ""
+  - step: I have a "src/exampleSite/content/please-ignore/no.md" file with the content ""
   - ref: ./../core/run_gadget.toolproof.yml
   - snapshot: stdout
     snapshot_content: |-
       ╎{
       ╎  "ssg": "hugo",
       ╎  "config": {
-      ╎    "source": "exampleSite",
       ╎    "collections_config": {
       ╎      "data": {
       ╎        "path": "data",
@@ -22,21 +19,6 @@ steps:
       ╎          "!_index.md"
       ╎        ],
       ╎        "output": false
-      ╎      },
-      ╎      "pages": {
-      ╎        "path": "content",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
-      ╎      },
-      ╎      "blog": {
-      ╎        "path": "content/blog",
-      ╎        "name": "Blog",
-      ╎        "icon": "event_available",
-      ╎        "glob": [
-      ╎          "!_index.md"
-      ╎        ],
-      ╎        "output": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

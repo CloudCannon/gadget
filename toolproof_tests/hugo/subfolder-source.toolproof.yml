@@ -6,7 +6,9 @@ steps:
   - step: I have a "src/sauce/content/blog/_index.md" file with the content ""
   - step: I have a "src/sauce/content/blog/partying.md" file with the content ""
   - step: I have a "src/sauce/content/blog/follow-up/no-more-partying.md" file with the content ""
+  - step: I have a "src/sauce/data/party-locations.csv" file with the content ""
   - step: I have a "src/sauce/exampleSite/content/please-ignore/no.md" file with the content ""
+  - step: I have a "src/sauce/exampleSite/data/party-locations.csv" file with the content ""
   - ref: ./../core/run_gadget.toolproof.yml
   - snapshot: stdout
     snapshot_content: |-
@@ -15,10 +17,20 @@ steps:
       ╎  "config": {
       ╎    "source": "sauce",
       ╎    "collections_config": {
+      ╎      "data": {
+      ╎        "path": "data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ],
+      ╎        "output": false
+      ╎      },
       ╎      "pages": {
       ╎        "path": "content",
       ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
       ╎      },
       ╎      "blog": {
       ╎        "path": "content/blog",
@@ -26,7 +38,8 @@ steps:
       ╎        "icon": "event_available",
       ╎        "glob": [
       ╎          "!_index.md"
-      ╎        ]
+      ╎        ],
+      ╎        "output": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

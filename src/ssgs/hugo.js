@@ -1,5 +1,5 @@
 import { findBasePath } from '../collections.js';
-import { decodeEntity, stripTopPath } from '../utility.js';
+import { decodeEntity, joinPaths, stripTopPath } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Hugo extends Ssg {
@@ -39,6 +39,7 @@ export default class Hugo extends Ssg {
 
 	ignoredFolders() {
 		return super.ignoredFolders().concat([
+			'static/', // passthrough asset folder
 			'assets/', // unprocessed asset folder
 			'public/', // default output
 			'resources/', // cache
@@ -63,19 +64,21 @@ export default class Hugo extends Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param options {{ basePath: string; }=}
+	 * @param options {{ basePath: string; }}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, options) {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
-		if (path !== options?.basePath) {
+		if (path !== options.basePath) {
 			collectionConfig.glob =
 				typeof collectionConfig.glob === 'string'
 					? [collectionConfig.glob]
 					: collectionConfig.glob || [];
 			collectionConfig.glob.push('!_index.md');
 		}
+
+		collectionConfig.output = !(path === 'data' || path.endsWith('/data'));
 
 		return collectionConfig;
 	}
@@ -100,21 +103,45 @@ export default class Hugo extends Ssg {
 			collectionPathsOutsideExampleSite.length &&
 			collectionPathsOutsideExampleSite.length !== collectionPaths.length;
 
+		// Exclude collections found inside the exampleSite folder, unless they are the only collections
 		if (hasNonExampleSiteCollections) {
 			basePath = findBasePath(collectionPathsOutsideExampleSite);
 			collectionPaths = collectionPathsOutsideExampleSite;
 		}
 
-		const reducedCollectionPaths = collectionPaths.filter((path) => {
-			const pathInBasePath = stripTopPath(path, basePath);
-			return pathInBasePath.split('/').length < 2;
-		});
+		const dataPath = joinPaths([basePath, 'data']);
+		const collectionPathsOutsideData = collectionPaths.filter((path) => !path.startsWith(dataPath));
+		const hasDataCollection =
+			collectionPathsOutsideData.length &&
+			collectionPathsOutsideData.length !== collectionPaths.length;
+
+		// Reprocess basePath to exclude the data folder
+		if (hasDataCollection) {
+			basePath = findBasePath(collectionPathsOutsideData);
+		}
 
 		basePath = stripTopPath(basePath, options.source);
 
-		for (const fullPath of reducedCollectionPaths) {
+		const sortedPaths = collectionPaths.sort((a, b) => a.length - b.length);
+		/** @type {string[]} */
+		const seenPaths = [];
+
+		for (const fullPath of sortedPaths) {
 			const path = stripTopPath(fullPath, options.source);
 			const pathInBasePath = stripTopPath(path, basePath);
+
+			if (
+				!path.startsWith(dataPath) &&
+				seenPaths.some((seenPath) => pathInBasePath.startsWith(seenPath))
+			) {
+				// Skip collection if not data, or a top-level content collection (i.e. seen before)
+				continue;
+			}
+
+			if (pathInBasePath) {
+				seenPaths.push(pathInBasePath + '/');
+			}
+
 			const key = this.generateCollectionsConfigKey(pathInBasePath, collectionsConfig);
 
 			collectionsConfig[key] = this.generateCollectionConfig(key, path, { basePath });
@@ -190,13 +217,16 @@ export default class Hugo extends Ssg {
 			attribution: 'recommended for Hugo sites',
 		};
 
-		commands.preserved.push({
-			value: 'resources/',
-			attribution: 'recommended for speeding up Hugo builds',
-		}, {
-			value: '.hugo_cache/',
-			attribution: 'recommended for speeding up Hugo builds',
-		});
+		commands.preserved.push(
+			{
+				value: 'resources/',
+				attribution: 'recommended for speeding up Hugo builds',
+			},
+			{
+				value: '.hugo_cache/',
+				attribution: 'recommended for speeding up Hugo builds',
+			},
+		);
 
 		return commands;
 	}

@@ -6,6 +6,7 @@ steps:
   - step: I have a "src/content/blog/_index.md" file with the content ""
   - step: I have a "src/content/blog/partying.md" file with the content ""
   - step: I have a "src/content/blog/follow-up/no-more-partying.md" file with the content ""
+  - step: I have a "src/data/party-locations.csv" file with the content ""
   - step: I have a "src/exampleSite/content/please-ignore/no.md" file with the content ""
   - ref: ./../core/run_gadget.toolproof.yml
   - snapshot: stdout
@@ -14,10 +15,20 @@ steps:
       ╎  "ssg": "hugo",
       ╎  "config": {
       ╎    "collections_config": {
+      ╎      "data": {
+      ╎        "path": "data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ],
+      ╎        "output": false
+      ╎      },
       ╎      "pages": {
       ╎        "path": "content",
       ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
       ╎      },
       ╎      "blog": {
       ╎        "path": "content/blog",
@@ -25,7 +36,8 @@ steps:
       ╎        "icon": "event_available",
       ╎        "glob": [
       ╎          "!_index.md"
-      ╎        ]
+      ╎        ],
+      ╎        "output": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",
