@@ -42,6 +42,17 @@ export function stripTopPath(path, stripPath) {
 }
 
 /**
+ * Removes the filename or last folder of a path if it exists.
+ *
+ * @param path {string}
+ * @returns {string}
+ */
+export function popPathSection(path) {
+	const index = path.lastIndexOf('/');
+	return index > 0 ? path.substring(path.lastIndexOf('/')) : '';
+}
+
+/**
  * Removes duplicate, leading, and trailing slashes.
  *
  * @param path {string}

@@ -19,10 +19,10 @@ steps:
       ╎        "path": "data",
       ╎        "name": "Data",
       ╎        "icon": "data_usage",
+      ╎        "output": false,
       ╎        "glob": [
       ╎          "!_index.md"
-      ╎        ],
-      ╎        "output": false
+      ╎        ]
       ╎      },
       ╎      "pages": {
       ╎        "path": "content",
@@ -34,10 +34,10 @@ steps:
       ╎        "path": "content/blog",
       ╎        "name": "Blog",
       ╎        "icon": "event_available",
+      ╎        "output": true,
       ╎        "glob": [
       ╎          "!_index.md"
-      ╎        ],
-      ╎        "output": true
+      ╎        ]
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

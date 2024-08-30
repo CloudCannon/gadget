@@ -1,0 +1,50 @@
+name: Eleventy base
+
+steps:
+  - step: I have a "src/eleventy.config.js" file with the content ""
+  - step: I have a "src/index.html" file with the content ""
+  - step: I have a "src/blog.html" file with the content ""
+  - step: I have a "src/blog/partying.md" file with the content ""
+  - step: I have a "src/blog/follow-up/no-more-partying.md" file with the content ""
+  - step: I have a "src/_data/party-locations.csv" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "eleventy",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "blog_follow_up": {
+      ╎        "path": "blog/follow-up",
+      ╎        "name": "Blog Follow Up",
+      ╎        "icon": "bungalow",
+      ╎        "output": true
+      ╎      },
+      ╎      "blog": {
+      ╎        "path": "blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available",
+      ╎        "output": true
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "html": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}
