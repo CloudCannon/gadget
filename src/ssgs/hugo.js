@@ -136,9 +136,7 @@ export default class Hugo extends Ssg {
 			) {
 				// Skip collection if not data, or a top-level content collection (i.e. seen before)
 				continue;
-			}
-
-			if (pathInBasePath) {
+			} else if (pathInBasePath) {
 				seenPaths.push(pathInBasePath + '/');
 			}
 
@@ -196,14 +194,15 @@ export default class Hugo extends Ssg {
 			headingTags.forEach((tag) => {
 				attribute_elements[tag] = !!parser?.attribute?.title ? 'space right' : 'none';
 			});
-			
+
 			/** @type {(keyof HTMLElementTagNameMap)[]} */
 			const otherTags = ['blockquote', 'hr', 'ol', 'ul', 'p', 'table'];
 			otherTags.forEach((tag) => {
 				attribute_elements[tag] = !!parser?.attribute?.block ? 'below' : 'none';
 			});
 
-			const imgAttrsAllowed = !!parser?.attribute?.block && parser?.wrapStandAloneImageWithinParagraph === false;
+			const imgAttrsAllowed =
+				!!parser?.attribute?.block && parser?.wrapStandAloneImageWithinParagraph === false;
 			attribute_elements.img = imgAttrsAllowed ? 'below' : 'none';
 
 			options.attribute_elements = attribute_elements;

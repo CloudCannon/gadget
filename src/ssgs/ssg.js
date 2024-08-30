@@ -394,10 +394,22 @@ export default class Ssg {
 			? stripTopPath(options.basePath, options.source)
 			: options.basePath;
 
-		for (const fullPath of collectionPaths) {
-			const path = stripTopPath(fullPath, options.source);
-			const key = this.generateCollectionsConfigKey(path, collectionsConfig);
+		const sortedPaths = collectionPaths.sort((a, b) => a.length - b.length);
+		/** @type {string[]} */
+		const seenPaths = [];
 
+		for (const fullPath of sortedPaths) {
+			const path = stripTopPath(fullPath, options.source);
+
+			if (seenPaths.some((seenPath) => path.startsWith(seenPath))) {
+				// Skip collection if parent path seen before
+				continue;
+			} else if (path) {
+				// add to seen paths if not the root folder
+				seenPaths.push(path + '/');
+			}
+
+			const key = this.generateCollectionsConfigKey(path, collectionsConfig);
 			collectionsConfig[key] = this.generateCollectionConfig(key, path, { basePath });
 		}
 

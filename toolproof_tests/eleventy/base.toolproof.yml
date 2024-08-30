@@ -14,22 +14,10 @@ steps:
       ╎  "ssg": "eleventy",
       ╎  "config": {
       ╎    "collections_config": {
-      ╎      "data": {
-      ╎        "path": "_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "output": false
-      ╎      },
       ╎      "pages": {
       ╎        "path": "",
       ╎        "name": "Pages",
       ╎        "icon": "wysiwyg",
-      ╎        "output": true
-      ╎      },
-      ╎      "blog_follow_up": {
-      ╎        "path": "blog/follow-up",
-      ╎        "name": "Blog Follow Up",
-      ╎        "icon": "bungalow",
       ╎        "output": true
       ╎      },
       ╎      "blog": {
@@ -37,6 +25,12 @@ steps:
       ╎        "name": "Blog",
       ╎        "icon": "event_available",
       ╎        "output": true
+      ╎      },
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",
