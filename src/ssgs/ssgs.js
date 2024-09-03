@@ -6,6 +6,9 @@ import NextJs from './next-js.js';
 import Ssg from './ssg.js';
 import Sveltekit from './sveltekit.js';
 import Static from './static.js';
+import Astro from './astro.js';
+import NuxtJs from './nuxt-js.js';
+import Gatsby from './gatsby.js';
 
 /** @type {Record<import('@cloudcannon/configuration-types').SsgKey, Ssg>} */
 export const ssgs = {
@@ -13,15 +16,15 @@ export const ssgs = {
 	jekyll: new Jekyll(),
 	eleventy: new Eleventy(),
 	nextjs: new NextJs(),
-	astro: new Ssg('astro'),
+	astro: new Astro(),
 	sveltekit: new Sveltekit(),
 	bridgetown: new Bridgetown(),
 	lume: new Ssg('lume'),
 	mkdocs: new Ssg('mkdocs'),
 	docusaurus: new Ssg('docusaurus'),
-	gatsby: new Ssg('gatsby'),
+	gatsby: new Gatsby(),
 	hexo: new Ssg('hexo'),
-	nuxtjs: new Ssg('nuxtjs'),
+	nuxtjs: new NuxtJs(),
 	sphinx: new Ssg('sphinx'),
 	static: new Static(),
 	legacy: new Ssg('legacy'),
