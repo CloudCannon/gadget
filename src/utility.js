@@ -47,9 +47,9 @@ export function stripTopPath(path, stripPath) {
  * @param path {string}
  * @returns {string}
  */
-export function popPathSection(path) {
+export function stripBottomPath(path) {
 	const index = path.lastIndexOf('/');
-	return index > 0 ? path.substring(path.lastIndexOf('/')) : '';
+	return index > 0 ? path.substring(0, path.lastIndexOf('/')) : '';
 }
 
 /**

@@ -1,4 +1,4 @@
-import { normalisePath, popPathSection } from '../utility.js';
+import { joinPaths, stripBottomPath } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Eleventy extends Ssg {
@@ -55,7 +55,7 @@ export default class Eleventy extends Ssg {
 
 		const configFilePath = filePaths.find(this.isConfigPath.bind(this));
 		if (configFilePath) {
-			return normalisePath(popPathSection(configFilePath)) || undefined;
+			return stripBottomPath(configFilePath) || undefined;
 		}
 	}
 
@@ -71,6 +71,20 @@ export default class Eleventy extends Ssg {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
 		collectionConfig.output = !(path === '_data' || path.endsWith('/_data'));
 		return collectionConfig;
+	}
+
+	/**
+	 * Filters out collection paths that are collections, but exist in isolated locations.
+	 * Used when a data folder (or similar) is causing all collections to group under one
+	 * `collections_config` entry.
+	 *
+	 * @param collectionPaths {string[]}
+	 * @param basePath {string}
+	 * @returns {string[]}
+	 */
+	filterContentCollectionPaths(collectionPaths, basePath) {
+		const dataPath = joinPaths([basePath, '_data']);
+		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
 	}
 
 	/**

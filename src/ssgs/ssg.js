@@ -4,7 +4,7 @@ import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
 import { findIcon } from '../icons.js';
 import { joinPaths, last, parseDataFile, stripTopPath } from '../utility.js';
-import { getCollectionPaths } from '../collections.js';
+import { findBasePath, getCollectionPaths } from '../collections.js';
 
 export default class Ssg {
 	/** @type {import('@cloudcannon/configuration-types').SsgKey} */
@@ -381,6 +381,19 @@ export default class Ssg {
 	}
 
 	/**
+	 * Filters out collection paths that are collections, but exist in isolated locations.
+	 * Used when a data folder (or similar) is causing all collections to group under one
+	 * `collections_config` entry.
+	 *
+	 * @param collectionPaths {string[]}
+	 * @param _basePath {string}
+	 * @returns {string[]}
+	 */
+	filterContentCollectionPaths(collectionPaths, _basePath) {
+		return collectionPaths;
+	}
+
+	/**
 	 * Generates collections config from a set of paths.
 	 *
 	 * @param collectionPaths {string[]}
@@ -388,28 +401,35 @@ export default class Ssg {
 	 * @returns {import('../types').CollectionsConfig}
 	 */
 	generateCollectionsConfig(collectionPaths, options) {
-		/** @type {import('../types').CollectionsConfig} */
-		const collectionsConfig = {};
-		const basePath = options.source
-			? stripTopPath(options.basePath, options.source)
-			: options.basePath;
+		const contentCollectionPaths = this.filterContentCollectionPaths(
+			collectionPaths,
+			options.basePath,
+		);
+
+		const hasNonContentCollection =
+			collectionPaths.length && collectionPaths.length !== contentCollectionPaths.length;
+
+		const basePath = stripTopPath(
+			hasNonContentCollection ? findBasePath(contentCollectionPaths) : options.basePath,
+			options.source,
+		);
 
 		const sortedPaths = collectionPaths.sort((a, b) => a.length - b.length);
-		/** @type {string[]} */
-		const seenPaths = [];
+		const seenPaths = /** @type {string[]} */ ([]);
+		const collectionsConfig = /** @type {import('../types').CollectionsConfig} */ ({});
 
 		for (const fullPath of sortedPaths) {
 			const path = stripTopPath(fullPath, options.source);
+			const pathInBasePath = stripTopPath(path, basePath);
 
-			if (seenPaths.some((seenPath) => path.startsWith(seenPath))) {
-				// Skip collection if parent path seen before
+			if (seenPaths.some((seenPath) => pathInBasePath.startsWith(seenPath))) {
+				// Skip collection if higher level path seen before
 				continue;
-			} else if (path) {
-				// add to seen paths if not the root folder
-				seenPaths.push(path + '/');
+			} else if (pathInBasePath) {
+				seenPaths.push(pathInBasePath + '/');
 			}
 
-			const key = this.generateCollectionsConfigKey(path, collectionsConfig);
+			const key = this.generateCollectionsConfigKey(pathInBasePath, collectionsConfig);
 			collectionsConfig[key] = this.generateCollectionConfig(key, path, { basePath });
 		}
 

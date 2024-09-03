@@ -1,5 +1,5 @@
 import { findBasePath } from '../collections.js';
-import { decodeEntity, joinPaths, stripTopPath } from '../utility.js';
+import { decodeEntity, joinPaths } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Hugo extends Ssg {
@@ -84,6 +84,20 @@ export default class Hugo extends Ssg {
 	}
 
 	/**
+	 * Filters out collection paths that are collections, but exist in isolated locations.
+	 * Used when a data folder (or similar) is causing all collections to group under one
+	 * `collections_config` entry.
+	 *
+	 * @param collectionPaths {string[]}
+	 * @param basePath {string}
+	 * @returns {string[]}
+	 */
+	filterContentCollectionPaths(collectionPaths, basePath) {
+		const dataPath = joinPaths([basePath, 'data']);
+		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
+	}
+
+	/**
 	 * Generates collections config from a set of paths.
 	 *
 	 * @param collectionPaths {string[]}
@@ -91,10 +105,6 @@ export default class Hugo extends Ssg {
 	 * @returns {import('../types').CollectionsConfig}
 	 */
 	generateCollectionsConfig(collectionPaths, options) {
-		/** @type {import('../types').CollectionsConfig} */
-		const collectionsConfig = {};
-		let basePath = options.basePath;
-
 		const collectionPathsOutsideExampleSite = collectionPaths.filter(
 			(path) => !path.includes('exampleSite/'),
 		);
@@ -103,49 +113,15 @@ export default class Hugo extends Ssg {
 			collectionPathsOutsideExampleSite.length &&
 			collectionPathsOutsideExampleSite.length !== collectionPaths.length;
 
-		// Exclude collections found inside the exampleSite folder, unless they are the only collections
 		if (hasNonExampleSiteCollections) {
-			basePath = findBasePath(collectionPathsOutsideExampleSite);
-			collectionPaths = collectionPathsOutsideExampleSite;
+			// Exclude collections found inside the exampleSite folder, unless they are the only collections
+			return super.generateCollectionsConfig(collectionPathsOutsideExampleSite, {
+				...options,
+				basePath: findBasePath(collectionPathsOutsideExampleSite),
+			});
 		}
 
-		const dataPath = joinPaths([basePath, 'data']);
-		const collectionPathsOutsideData = collectionPaths.filter((path) => !path.startsWith(dataPath));
-		const hasDataCollection =
-			collectionPathsOutsideData.length &&
-			collectionPathsOutsideData.length !== collectionPaths.length;
-
-		// Reprocess basePath to exclude the data folder
-		if (hasDataCollection) {
-			basePath = findBasePath(collectionPathsOutsideData);
-		}
-
-		basePath = stripTopPath(basePath, options.source);
-
-		const sortedPaths = collectionPaths.sort((a, b) => a.length - b.length);
-		/** @type {string[]} */
-		const seenPaths = [];
-
-		for (const fullPath of sortedPaths) {
-			const path = stripTopPath(fullPath, options.source);
-			const pathInBasePath = stripTopPath(path, basePath);
-
-			if (
-				!path.startsWith(dataPath) &&
-				seenPaths.some((seenPath) => pathInBasePath.startsWith(seenPath))
-			) {
-				// Skip collection if not data, or a top-level content collection (i.e. seen before)
-				continue;
-			} else if (pathInBasePath) {
-				seenPaths.push(pathInBasePath + '/');
-			}
-
-			const key = this.generateCollectionsConfigKey(pathInBasePath, collectionsConfig);
-
-			collectionsConfig[key] = this.generateCollectionConfig(key, path, { basePath });
-		}
-
-		return collectionsConfig;
+		return super.generateCollectionsConfig(collectionPaths, options);
 	}
 
 	/**
