@@ -1,0 +1,64 @@
+name: Hugo changed dataDir
+
+steps:
+  - step: I have a "src/hugo.yaml" file with the content {yaml}
+    yaml: |-
+      dataDir: stats
+  - step: I have a "src/content/_index.md" file with the content ""
+  - step: I have a "src/content/blog/_index.md" file with the content ""
+  - step: I have a "src/content/blog/partying.md" file with the content ""
+  - step: I have a "src/content/blog/follow-up/no-more-partying.md" file with the content ""
+  - step: I have a "src/stats/party-locations.csv" file with the content ""
+  - step: I have a "src/exampleSite/content/please-ignore/no.md" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "hugo",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "stats": {
+      ╎        "path": "stats",
+      ╎        "name": "Stats",
+      ╎        "icon": "stars",
+      ╎        "output": false,
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ]
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "content",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "blog": {
+      ╎        "path": "content/blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available",
+      ╎        "output": true,
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ]
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true,
+      ╎        "linkify": false,
+      ╎        "table": false,
+      ╎        "strikethrough": false,
+      ╎        "subscript": false,
+      ╎        "superscript": false,
+      ╎        "heading_ids": false,
+      ╎        "breaks": false,
+      ╎        "xhtml": false,
+      ╎        "attributes": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

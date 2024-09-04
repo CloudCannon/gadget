@@ -139,7 +139,7 @@ export default class Jekyll extends Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param options {{ basePath?: string; collection: Record<string, any> | undefined; }}
+	 * @param options {{ config?: Record<string, any>; basePath?: string; collection: Record<string, any> | undefined; }}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, options) {

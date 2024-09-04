@@ -1,5 +1,5 @@
 import { findBasePath } from '../collections.js';
-import { decodeEntity, joinPaths } from '../utility.js';
+import { decodeEntity, joinPaths, normalisePath } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Hugo extends Ssg {
@@ -64,7 +64,7 @@ export default class Hugo extends Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param options {{ basePath: string; }}
+	 * @param options {{ config?: Record<string, any>; basePath: string; }}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, options) {
@@ -78,9 +78,21 @@ export default class Hugo extends Ssg {
 			collectionConfig.glob.push('!_index.md');
 		}
 
-		collectionConfig.output = !(path === 'data' || path.endsWith('/data'));
+		const dataPath = this.getHugoDataPath(options.config);
+		collectionConfig.output = !(path === dataPath || path.endsWith(`/${dataPath}`));
 
 		return collectionConfig;
+	}
+
+	/**
+	 * Returns the path to the Hugo data folder, optionally prepended with a base path.
+	 *
+	 * @param config {Record<string, any> | undefined}
+	 * @param basePath {string=}
+	 * @returns {string}
+	 */
+	getHugoDataPath(config, basePath) {
+		return joinPaths([basePath, normalisePath(config?.dataDir ?? 'data') ?? 'data']);
 	}
 
 	/**
@@ -89,11 +101,11 @@ export default class Hugo extends Ssg {
 	 * `collections_config` entry.
 	 *
 	 * @param collectionPaths {string[]}
-	 * @param basePath {string}
+	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
 	 * @returns {string[]}
 	 */
-	filterContentCollectionPaths(collectionPaths, basePath) {
-		const dataPath = joinPaths([basePath, 'data']);
+	filterContentCollectionPaths(collectionPaths, options) {
+		const dataPath = this.getHugoDataPath(options.config, options.basePath);
 		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
 	}
 

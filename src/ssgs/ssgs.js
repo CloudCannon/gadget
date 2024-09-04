@@ -34,7 +34,7 @@ const ssgValues = Object.values(ssgs);
  * Finds the most likely SSG for a set of files.
  *
  * @param filePaths {string[]} A list of file paths.
- * @returns {Bridgetown | Eleventy | Hugo | Jekyll | NextJs | Sveltekit | Ssg} The assumed SSG.
+ * @returns {Ssg} The assumed SSG.
  */
 export function guessSsg(filePaths) {
 	/** @type {Record<import('@cloudcannon/configuration-types').SsgKey, number>} */
