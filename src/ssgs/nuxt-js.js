@@ -5,7 +5,7 @@ export default class NuxtJs extends Ssg {
 		super('nuxtjs');
 	}
 
-    /**
+	/**
 	 * Generates a list of build suggestions.
 	 *
 	 * @param filePaths {string[]} List of input file paths.
@@ -17,9 +17,9 @@ export default class NuxtJs extends Ssg {
 
 		commands.build.push({
 			value: 'npx nuxt generate',
-			attribution: 'default for Nuxt sites'
+			attribution: 'default for Nuxt sites',
 		});
-        commands.output.unshift({
+		commands.output.unshift({
 			value: 'dist',
 			attribution: 'most common for Nuxt sites',
 		});

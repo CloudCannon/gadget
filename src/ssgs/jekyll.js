@@ -290,7 +290,6 @@ export default class Jekyll extends Ssg {
 
 			options.attributes = true;
 			options.attribute_elements = kramdownAttributeElementOptions;
-
 		} else if (config) {
 			const commonmarkConfig = config?.['commonmark'] || {};
 

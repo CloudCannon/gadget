@@ -196,14 +196,15 @@ export default class Hugo extends Ssg {
 			headingTags.forEach((tag) => {
 				attribute_elements[tag] = !!parser?.attribute?.title ? 'space right' : 'none';
 			});
-			
+
 			/** @type {(keyof HTMLElementTagNameMap)[]} */
 			const otherTags = ['blockquote', 'hr', 'ol', 'ul', 'p', 'table'];
 			otherTags.forEach((tag) => {
 				attribute_elements[tag] = !!parser?.attribute?.block ? 'below' : 'none';
 			});
 
-			const imgAttrsAllowed = !!parser?.attribute?.block && parser?.wrapStandAloneImageWithinParagraph === false;
+			const imgAttrsAllowed =
+				!!parser?.attribute?.block && parser?.wrapStandAloneImageWithinParagraph === false;
 			attribute_elements.img = imgAttrsAllowed ? 'below' : 'none';
 
 			options.attribute_elements = attribute_elements;
@@ -227,7 +228,7 @@ export default class Hugo extends Ssg {
 
 		commands.install.unshift({
 			value: 'export NODE_PATH=`pwd`/node_modules:$NODE_PATH',
-			attribution: 'workaround for a Hugo issue' // https://github.com/gohugoio/hugo/issues/9800
+			attribution: 'workaround for a Hugo issue', // https://github.com/gohugoio/hugo/issues/9800
 		});
 
 		commands.build.unshift({

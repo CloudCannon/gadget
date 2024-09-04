@@ -433,7 +433,9 @@ export default class Ssg {
 
 		const packageJsonPath = joinPaths([options.source, 'package.json']);
 		if (filePaths.includes(packageJsonPath)) {
-			const useYarn = filePaths.includes(joinPaths([options.source, 'yarn.lock'])) && !filePaths.includes(joinPaths([options.source, 'package-lock.json']));
+			const useYarn =
+				filePaths.includes(joinPaths([options.source, 'yarn.lock'])) &&
+				!filePaths.includes(joinPaths([options.source, 'package-lock.json']));
 			if (useYarn) {
 				commands.install.push({
 					value: 'yarn',
@@ -475,10 +477,9 @@ export default class Ssg {
 			if (value && typeof value === 'string') {
 				if (type === 'environment') {
 					commands[type].value = {
-
-							value,
-							attribution: `found in your \`${filename}\` file`,
-					}
+						value,
+						attribution: `found in your \`${filename}\` file`,
+					};
 				} else {
 					commands[type].push({
 						value,
@@ -486,17 +487,21 @@ export default class Ssg {
 					});
 				}
 			}
-		}
+		};
 
 		if (options.readFile) {
 			const forestrySettingsPath = '.forestry/settings.yml';
 			if (filePaths.includes(forestrySettingsPath)) {
 				try {
 					const parsed = await parseDataFile(forestrySettingsPath, options.readFile);
-					validateAndAddCommandFromSettings(parsed?.build?.install_dependencies_command, forestrySettingsPath, 'install');
+					validateAndAddCommandFromSettings(
+						parsed?.build?.install_dependencies_command,
+						forestrySettingsPath,
+						'install',
+					);
 				} catch (_e) {}
 			}
-	
+
 			const netlifySettingsPath = 'netlify.toml';
 			if (filePaths.includes(netlifySettingsPath)) {
 				// https://docs.netlify.com/configure-builds/file-based-configuration/

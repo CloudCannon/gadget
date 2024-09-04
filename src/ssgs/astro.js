@@ -5,7 +5,7 @@ export default class Astro extends Ssg {
 		super('astro');
 	}
 
-    /**
+	/**
 	 * Generates a list of build suggestions.
 	 *
 	 * @param filePaths {string[]} List of input file paths.
@@ -17,12 +17,12 @@ export default class Astro extends Ssg {
 
 		commands.build.push({
 			value: 'npx astro build',
-			attribution: 'default for Astro sites'
-		})
+			attribution: 'default for Astro sites',
+		});
 		commands.output.push({
 			value: 'dist',
-			attribution: 'default for Astro sites'
-		})
+			attribution: 'default for Astro sites',
+		});
 
 		return commands;
 	}

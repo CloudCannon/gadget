@@ -5,7 +5,7 @@ export default class Lume extends Ssg {
 		super('lume');
 	}
 
-    /**
+	/**
 	 * Generates a list of build suggestions.
 	 *
 	 * @param filePaths {string[]} List of input file paths.
@@ -17,9 +17,9 @@ export default class Lume extends Ssg {
 
 		commands.build.push({
 			value: 'deno task lume',
-			attribution: 'default for Lume sites'
+			attribution: 'default for Lume sites',
 		});
-        commands.output.unshift({
+		commands.output.unshift({
 			value: '_site',
 			attribution: 'most common for Lume sites',
 		});

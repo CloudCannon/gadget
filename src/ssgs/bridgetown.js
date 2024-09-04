@@ -38,15 +38,17 @@ export default class Bridgetown extends Ssg {
 			}
 		}
 
-		commands.build.unshift({
-			value: 'bin/bridgetown deploy',
-			attribution: 'most common for Bridgetown sites'
-		})
-		
+		if (filePaths.includes('bin/bridgetown')) {
+			commands.build.unshift({
+				value: 'bin/bridgetown deploy',
+				attribution: 'most common for Bridgetown sites',
+			});
+		}
+
 		commands.output.unshift({
 			value: 'output',
-			attribution: 'most common for Bridgetown sites'
-		})
+			attribution: 'most common for Bridgetown sites',
+		});
 
 		return commands;
 	}

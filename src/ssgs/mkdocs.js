@@ -5,7 +5,7 @@ export default class MkDocs extends Ssg {
 		super('mkdocs');
 	}
 
-    /**
+	/**
 	 * Generates a list of build suggestions.
 	 *
 	 * @param filePaths {string[]} List of input file paths.
@@ -17,9 +17,9 @@ export default class MkDocs extends Ssg {
 
 		commands.build.push({
 			value: 'npx mkdocs build',
-			attribution: 'default for MkDocs sites'
+			attribution: 'default for MkDocs sites',
 		});
-        commands.output.unshift({
+		commands.output.unshift({
 			value: 'site',
 			attribution: 'most common for MkDocs sites',
 		});

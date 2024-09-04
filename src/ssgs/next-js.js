@@ -33,11 +33,11 @@ export default class NextJs extends Ssg {
 
 		commands.build.unshift({
 			value: 'npx next build && npx next export',
-			attribution: 'most common for Next.js sites'
+			attribution: 'most common for Next.js sites',
 		});
 		commands.output.unshift({
 			value: 'out',
-			attribution: 'default for Next.js sites'
+			attribution: 'default for Next.js sites',
 		});
 
 		return commands;

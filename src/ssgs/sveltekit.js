@@ -37,18 +37,17 @@ export default class Sveltekit extends Ssg {
 		const commands = await super.generateBuildCommands(filePaths, options);
 		const viteConfigPath = joinPaths([options.source, 'vite.config.js']);
 
-        if (filePaths.includes(viteConfigPath)) {
+		if (filePaths.includes(viteConfigPath)) {
 			commands.build.push({
 				value: 'npx vite build',
 				attribution: 'because of your `vite.config.js` file',
-			})
-        }
-		
+			});
+		}
+
 		commands.output.push({
 			value: 'build',
 			attribution: 'most common for SvelteKit sites',
-		})
-
+		});
 
 		return commands;
 	}
