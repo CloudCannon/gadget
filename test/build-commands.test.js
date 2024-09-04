@@ -81,10 +81,3 @@ test('Avoid misconfigurations in settings files', async (t) => {
 	t.falsy(buildCommands?.build?.length);
     t.falsy(buildCommands?.output?.length);
 });
-
-// test('Recommend .sh files to build or install', async (t) => {
-// 	const files = ['build.sh', 'install.sh'];
-//     const buildCommands = await new Ssg().generateBuildCommands(files)
-// 	t.is(buildCommands?.build?.[0]?.value, 'sh build.sh');
-// 	t.is(buildCommands?.install?.[0]?.value, 'sh install.sh');
-// });
