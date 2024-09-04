@@ -212,11 +212,6 @@ export default class Hugo extends Ssg {
 	async generateBuildCommands(filePaths, options) {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.install.unshift({
-			value: 'export NODE_PATH=`pwd`/node_modules:$NODE_PATH',
-			attribution: 'workaround for a Hugo issue', // https://github.com/gohugoio/hugo/issues/9800
-		});
-
 		commands.build.unshift({
 			value: 'hugo -b /',
 			attribution: 'most common for Hugo sites',
