@@ -1,0 +1,45 @@
+name: Justice Eleventy template
+
+steps:
+  - I run "cp -R %test_sites%/justice-eleventy-template src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "eleventy",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "pages",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "posts": {
+      ╎        "path": "posts",
+      ╎        "name": "Posts",
+      ╎        "icon": "event_available",
+      ╎        "output": true
+      ╎      },
+      ╎      "staff_members": {
+      ╎        "path": "staff-members",
+      ╎        "name": "Staff Members",
+      ╎        "icon": "card_membership",
+      ╎        "output": true
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "html": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

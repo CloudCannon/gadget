@@ -1,3 +1,4 @@
+import { joinPaths, stripBottomPath } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Eleventy extends Ssg {
@@ -26,6 +27,64 @@ export default class Eleventy extends Ssg {
 
 	contentExtensions() {
 		return super.contentExtensions().concat(['.html']);
+	}
+
+	partialFolders() {
+		return super.partialFolders().concat(['_includes/']);
+	}
+
+	ignoredFolders() {
+		return super.ignoredFolders().concat([
+			'_site/', // build output
+		]);
+	}
+
+	conventionalPathsInSource = ['_includes/', '_data/'];
+
+	/**
+	 * Attempts to find the most likely source folder.
+	 *
+	 * @param filePaths {string[]} List of input file paths.
+	 * @returns {string | undefined}
+	 */
+	getSource(filePaths) {
+		const source = super.getSource(filePaths);
+		if (source !== undefined) {
+			return source;
+		}
+
+		const configFilePath = filePaths.find(this.isConfigPath.bind(this));
+		if (configFilePath) {
+			return stripBottomPath(configFilePath) || undefined;
+		}
+	}
+
+	/**
+	 * Generates a collection config entry.
+	 *
+	 * @param key {string}
+	 * @param path {string}
+	 * @param options {{ basePath?: string; }=}
+	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
+	 */
+	generateCollectionConfig(key, path, options) {
+		const collectionConfig = super.generateCollectionConfig(key, path, options);
+		collectionConfig.output = !(path === '_data' || path.endsWith('/_data'));
+		return collectionConfig;
+	}
+
+	/**
+	 * Filters out collection paths that are collections, but exist in isolated locations.
+	 * Used when a data folder (or similar) is causing all collections to group under one
+	 * `collections_config` entry.
+	 *
+	 * @param collectionPaths {string[]}
+	 * @param basePath {string}
+	 * @returns {string[]}
+	 */
+	filterContentCollectionPaths(collectionPaths, basePath) {
+		const dataPath = joinPaths([basePath, '_data']);
+		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
 	}
 
 	/**

@@ -1,0 +1,49 @@
+name: Eleventy templates in source
+
+steps:
+  - step: I have a "src/eleventy.config.js" file with the content {js}
+    js: |-
+      export default function(eleventyConfig) {
+        return { dir: { input: "sauce" } };
+      }
+  - step: I have a "src/sauce/content/index.html" file with the content ""
+  - step: I have a "src/sauce/content/blog.html" file with the content ""
+  - step: I have a "src/sauce/content/blog/partying.md" file with the content ""
+  - step: I have a "src/sauce/content/blog/follow-up/no-more-partying.md" file with the content ""
+  - step: I have a "src/sauce/_data/party-locations.csv" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "eleventy",
+      ╎  "config": {
+      ╎    "source": "sauce",
+      ╎    "collections_config": {
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "output": false
+      ╎      },
+      ╎      "pages": {
+      ╎        "path": "content",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg",
+      ╎        "output": true
+      ╎      },
+      ╎      "blog": {
+      ╎        "path": "content/blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available",
+      ╎        "output": true
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "html": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

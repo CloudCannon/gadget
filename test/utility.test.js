@@ -1,5 +1,5 @@
 import test from 'ava';
-import { last, joinPaths, stripTopPath, decodeEntity } from '../src/utility.js';
+import { last, joinPaths, stripTopPath, decodeEntity, stripBottomPath } from '../src/utility.js';
 
 test('gets last element', (t) => {
 	t.is(last(['first', 'final']), 'final');
@@ -22,6 +22,13 @@ test('strips top path', (t) => {
 	t.is(stripTopPath('src', ''), 'src');
 
 	t.is(stripTopPath('sauce/content', 'sauce'), 'content');
+});
+
+test('strips bottom path', (t) => {
+	t.is(stripBottomPath('src/content/index.html'), 'src/content');
+	t.is(stripBottomPath('src/content'), 'src');
+	t.is(stripBottomPath('src'), '');
+	t.is(stripBottomPath(''), '');
 });
 
 test('decodes entities', (t) => {

@@ -1,5 +1,6 @@
 import { guessSsg, ssgs } from './ssgs/ssgs.js';
 import { findBasePath } from './collections.js';
+import { normalisePath } from './utility.js';
 
 export { ssgs } from './ssgs/ssgs.js';
 
@@ -70,11 +71,13 @@ export async function generateConfiguration(filePaths, options) {
  * @returns {Promise<import('./types').BuildCommands>}
  */
 export async function generateBuildCommands(filePaths, options) {
+	let source = options?.config?.source ? normalisePath(options.config.source) : undefined;
+
 	const ssg = options?.buildConfig?.ssg
 		? ssgs[options.buildConfig.ssg]
-		: guessSsg(filterPaths(filePaths, options?.config?.source));
+		: guessSsg(filterPaths(filePaths, source));
 
-	const source = options?.config?.source ?? ssg.getSource(filePaths);
+	source = source ?? ssg.getSource(filePaths);
 	filePaths = filterPaths(filePaths, source);
 
 	const files = ssg.groupFiles(filePaths);
