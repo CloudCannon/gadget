@@ -444,16 +444,71 @@ export default class Ssg {
 			});
 
 			try {
-				const raw = options.readFile ? await options.readFile(packageJsonPath) : undefined;
-				const parsed = raw ? JSON.parse(raw) : undefined;
-
-				if (parsed?.scripts?.build) {
-					commands.build.push({
-						value: 'npm run build',
-						attribution: 'found in your `package.json` file',
-					});
+				if (options.readFile) {
+					const parsed = await parseDataFile(packageJsonPath, options.readFile);
+					if (parsed?.scripts?.build) {
+						commands.build.push({
+							value: 'npm run build',
+							attribution: 'found in your `package.json` file',
+						});
+					}
 				}
 			} catch (_e) {}
+		}
+
+		/**
+		 * Check a value from a settings file and add to build commands.
+		 *
+		 * @param value {unknown}
+		 * @param filename {string}
+		 * @param type {keyof import('../types').BuildCommands}
+		 */
+		const validateAndAddCommandFromSettings = (value, filename, type) => {
+			if (value && typeof value === 'string') {
+				if (type === 'environment') {
+					commands[type].value = {
+
+							value,
+							attribution: `found in your \`${filename}\` file`,
+					}
+				} else {
+					commands[type].push({
+						value,
+						attribution: `found in your \`${filename}\` file`,
+					});
+				}
+			}
+		}
+
+		if (options.readFile) {
+			const forestrySettingsPath = '.forestry/settings.yml';
+			if (filePaths.includes(forestrySettingsPath)) {
+				try {
+					const parsed = await parseDataFile(forestrySettingsPath, options.readFile);
+					validateAndAddCommandFromSettings(parsed?.build?.install_dependencies_command, forestrySettingsPath, 'install');
+				} catch (_e) {}
+			}
+	
+			const netlifySettingsPath = 'netlify.toml';
+			if (filePaths.includes(netlifySettingsPath)) {
+				// https://docs.netlify.com/configure-builds/file-based-configuration/
+				try {
+					const parsed = await parseDataFile(netlifySettingsPath, options.readFile);
+					validateAndAddCommandFromSettings(parsed?.build?.command, netlifySettingsPath, 'build');
+					validateAndAddCommandFromSettings(parsed?.build?.publish, netlifySettingsPath, 'output');
+				} catch (_e) {}
+			}
+
+			const vercelSettingsPath = 'vercel.json';
+			if (filePaths.includes(vercelSettingsPath)) {
+				// https://vercel.com/docs/projects/project-configuration
+				try {
+					const parsed = await parseDataFile(vercelSettingsPath, options.readFile);
+					validateAndAddCommandFromSettings(parsed?.installCommand, vercelSettingsPath, 'install');
+					validateAndAddCommandFromSettings(parsed?.buildCommand, vercelSettingsPath, 'build');
+					validateAndAddCommandFromSettings(parsed?.outputDirectory, vercelSettingsPath, 'output');
+				} catch (_e) {}
+			}
 		}
 
 		return commands;
