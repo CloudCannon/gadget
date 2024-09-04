@@ -9,6 +9,8 @@ import Static from './static.js';
 import Astro from './astro.js';
 import NuxtJs from './nuxt-js.js';
 import Gatsby from './gatsby.js';
+import MkDocs from './mkdocs.js';
+import Lume from './lume.js';
 
 /** @type {Record<import('@cloudcannon/configuration-types').SsgKey, Ssg>} */
 export const ssgs = {
@@ -19,8 +21,8 @@ export const ssgs = {
 	astro: new Astro(),
 	sveltekit: new Sveltekit(),
 	bridgetown: new Bridgetown(),
-	lume: new Ssg('lume'),
-	mkdocs: new Ssg('mkdocs'),
+	lume: new Lume(),
+	mkdocs: new MkDocs(),
 	docusaurus: new Ssg('docusaurus'),
 	gatsby: new Gatsby(),
 	hexo: new Ssg('hexo'),
