@@ -345,6 +345,13 @@ export default class Jekyll extends Ssg {
 				value: 'bundle exec jekyll build',
 				attribution: 'because of your Gemfile',
 			});
+
+			if (options.source) {
+				commands.environment['BUNDLE_GEMFILE'] = {
+					value: joinPaths([options.source, 'Gemfile']),
+					attribution: 'because of your Gemfile',
+				};
+			}
 		} else {
 			commands.build.unshift({
 				value: 'jekyll build',

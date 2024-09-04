@@ -1,24 +1,8 @@
 import Ssg from './ssg.js';
 
-export default class NextJs extends Ssg {
+export default class Gatsby extends Ssg {
 	constructor() {
-		super('nextjs');
-	}
-
-	configPaths() {
-		return super.configPaths().concat(['next.config.js', 'next.config.mjs']);
-	}
-
-	templateExtensions() {
-		return super.templateExtensions().concat(['.tsx']);
-	}
-
-	ignoredFolders() {
-		return super.ignoredFolders().concat([
-			'out/', // build output
-			'.next/', // cache
-			'public/', // static assets
-		]);
+		super('gatsby');
 	}
 
 	/**
@@ -32,12 +16,12 @@ export default class NextJs extends Ssg {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		commands.build.unshift({
-			value: 'npx next build && npx next export',
-			attribution: 'most common for Next.js sites',
+			value: 'npx gatsby build',
+			attribution: 'default for Gatsby sites',
 		});
 		commands.output.unshift({
-			value: 'out',
-			attribution: 'default for Next.js sites',
+			value: 'public',
+			attribution: 'default for Gatsby sites',
 		});
 
 		return commands;
