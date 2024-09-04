@@ -227,7 +227,7 @@ export default class Hugo extends Ssg {
 
 		commands.install.unshift({
 			value: 'export NODE_PATH=`pwd`/node_modules:$NODE_PATH',
-			attribution: 'workaround for a Hugo issue ' // https://github.com/gohugoio/hugo/issues/9800
+			attribution: 'workaround for a Hugo issue' // https://github.com/gohugoio/hugo/issues/9800
 		});
 
 		commands.build.unshift({

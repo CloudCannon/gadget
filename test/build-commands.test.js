@@ -31,6 +31,20 @@ test('Look at package.json', async (t) => {
 	t.is(buildCommands?.preserved?.[0]?.value, 'node_modules/');
 });
 
+test('Look at yarn.lock', async (t) => {
+	const ssg = new Ssg();
+	const filePaths = ['package.json', 'yarn.lock'];
+    const buildCommands = await ssg.generateBuildCommands(filePaths, {readFile: readFileMock})
+	t.is(buildCommands?.install?.[0]?.value, 'yarn');
+});
+
+test('Don\'t prefer yarn over npm', async (t) => {
+	const ssg = new Ssg();
+	const filePaths = ['package.json', 'package-lock.json', 'yarn.lock'];
+    const buildCommands = await ssg.generateBuildCommands(filePaths, {readFile: readFileMock})
+	t.is(buildCommands?.install?.[0]?.value, 'npm i');
+});
+
 test('Read forestry settings', async (t) => {
 	const ssg = new Ssg();
 	const filePaths = ['.forestry/settings.yml'];
@@ -66,4 +80,11 @@ test('Avoid misconfigurations in settings files', async (t) => {
 	t.falsy(buildCommands?.install?.length);
 	t.falsy(buildCommands?.build?.length);
     t.falsy(buildCommands?.output?.length);
-})
+});
+
+// test('Recommend .sh files to build or install', async (t) => {
+// 	const files = ['build.sh', 'install.sh'];
+//     const buildCommands = await new Ssg().generateBuildCommands(files)
+// 	t.is(buildCommands?.build?.[0]?.value, 'sh build.sh');
+// 	t.is(buildCommands?.install?.[0]?.value, 'sh install.sh');
+// });

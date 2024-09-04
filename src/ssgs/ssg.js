@@ -433,10 +433,18 @@ export default class Ssg {
 
 		const packageJsonPath = joinPaths([options.source, 'package.json']);
 		if (filePaths.includes(packageJsonPath)) {
-			commands.install.push({
-				value: 'npm i',
-				attribution: 'because of your `package.json` file',
-			});
+			const useYarn = filePaths.includes(joinPaths([options.source, 'yarn.lock'])) && !filePaths.includes(joinPaths([options.source, 'package-lock.json']));
+			if (useYarn) {
+				commands.install.push({
+					value: 'yarn',
+					attribution: 'because of your `yarn.lock` file',
+				});
+			} else {
+				commands.install.push({
+					value: 'npm i',
+					attribution: 'because of your `package.json` file',
+				});
+			}
 
 			commands.preserved.push({
 				value: 'node_modules/',
