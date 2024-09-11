@@ -19,23 +19,21 @@ steps:
       ╎  "config": {
       ╎    "source": "sauce",
       ╎    "collections_config": {
-      ╎      "data": {
-      ╎        "path": "_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "output": false
-      ╎      },
       ╎      "pages": {
       ╎        "path": "content",
       ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
+      ╎        "icon": "wysiwyg"
       ╎      },
       ╎      "blog": {
       ╎        "path": "content/blog",
       ╎        "name": "Blog",
-      ╎        "icon": "event_available",
-      ╎        "output": true
+      ╎        "icon": "event_available"
+      ╎      },
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "disable_url": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

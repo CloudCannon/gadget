@@ -18,20 +18,18 @@ steps:
       ╎      "pages": {
       ╎        "path": "",
       ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
+      ╎        "icon": "wysiwyg"
       ╎      },
       ╎      "blog": {
       ╎        "path": "blog",
       ╎        "name": "Blog",
-      ╎        "icon": "event_available",
-      ╎        "output": true
+      ╎        "icon": "event_available"
       ╎      },
       ╎      "data": {
       ╎        "path": "_data",
       ╎        "name": "Data",
       ╎        "icon": "data_usage",
-      ╎        "output": false
+      ╎        "disable_url": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

@@ -86,21 +86,6 @@ function getJekyllCollections(collections) {
 	return formatted;
 }
 
-/**
- * Checks if a Jekyll collection is output.
- *
- * @param key {string}
- * @param collection {Record<string, any> | undefined}
- * @returns {boolean}
- */
-function isCollectionOutput(key, collection) {
-	if (key === 'data' || key === 'drafts' || key.endsWith('_drafts')) {
-		return false;
-	}
-
-	return key === 'pages' || key === 'posts' || key.endsWith('_posts') || !!collection?.output;
-}
-
 export default class Jekyll extends Ssg {
 	constructor() {
 		super('jekyll');
@@ -145,7 +130,16 @@ export default class Jekyll extends Ssg {
 	generateCollectionConfig(key, path, options) {
 		const collectionConfig = super.generateCollectionConfig(key, path);
 
-		collectionConfig.output = isCollectionOutput(key, options.collection);
+		const isKnownOutputCollection =
+			key === 'pages' ||
+			key === 'posts' ||
+			key.endsWith('_posts') ||
+			key === 'drafts' ||
+			key.endsWith('_drafts');
+
+		if (key === 'data' || (!options.collection?.output && !isKnownOutputCollection)) {
+			collectionConfig.disable_url = true;
+		}
 
 		if (options.collection?.sort_by && typeof options.collection?.sort_by === 'string') {
 			collectionConfig.sort = { key: options.collection.sort_by };

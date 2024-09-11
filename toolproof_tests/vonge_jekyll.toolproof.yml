@@ -10,29 +10,29 @@ steps:
       ╎  "config": {
       ╎    "source": "site",
       ╎    "collections_config": {
+      ╎      "pages": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg"
+      ╎      },
       ╎      "collection_pages": {
       ╎        "path": "collections/_pages",
       ╎        "name": "Collection Pages",
-      ╎        "icon": "collections",
-      ╎        "output": true
+      ╎        "icon": "collections"
       ╎      },
-      ╎      "projects": {
-      ╎        "path": "collections/_projects",
-      ╎        "name": "Projects",
-      ╎        "icon": "eject",
-      ╎        "output": true
-      ╎      },
-      ╎      "testimonials": {
-      ╎        "path": "collections/_testimonials",
-      ╎        "name": "Testimonials",
-      ╎        "icon": "festival",
-      ╎        "output": false
+      ╎      "drafts": {
+      ╎        "path": "collections/_drafts",
+      ╎        "name": "Drafts",
+      ╎        "icon": "event",
+      ╎        "create": {
+      ╎          "path": "",
+      ╎          "publish_to": "posts"
+      ╎        }
       ╎      },
       ╎      "posts": {
       ╎        "path": "collections/_posts",
       ╎        "name": "Posts",
       ╎        "icon": "event_available",
-      ╎        "output": true,
       ╎        "create": {
       ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
       ╎        },
@@ -46,27 +46,22 @@ steps:
       ╎          }
       ╎        ]
       ╎      },
-      ╎      "pages": {
-      ╎        "path": "",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
+      ╎      "projects": {
+      ╎        "path": "collections/_projects",
+      ╎        "name": "Projects",
+      ╎        "icon": "eject"
       ╎      },
       ╎      "data": {
       ╎        "path": "_data",
       ╎        "name": "Data",
       ╎        "icon": "data_usage",
-      ╎        "output": false
+      ╎        "disable_url": true
       ╎      },
-      ╎      "drafts": {
-      ╎        "path": "collections/_drafts",
-      ╎        "name": "Drafts",
-      ╎        "icon": "event",
-      ╎        "output": false,
-      ╎        "create": {
-      ╎          "path": "",
-      ╎          "publish_to": "posts"
-      ╎        }
+      ╎      "testimonials": {
+      ╎        "path": "collections/_testimonials",
+      ╎        "name": "Testimonials",
+      ╎        "icon": "festival",
+      ╎        "disable_url": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

@@ -14,8 +14,7 @@ steps:
       ╎      "pages": {
       ╎        "path": "pages",
       ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
+      ╎        "icon": "wysiwyg"
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

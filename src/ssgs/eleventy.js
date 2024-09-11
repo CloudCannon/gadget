@@ -69,7 +69,11 @@ export default class Eleventy extends Ssg {
 	 */
 	generateCollectionConfig(key, path, options) {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
-		collectionConfig.output = !(path === '_data' || path.endsWith('/_data'));
+
+		if (path === '_data' || path.endsWith('/_data')) {
+			collectionConfig.disable_url = true;
+		}
+
 		return collectionConfig;
 	}
 

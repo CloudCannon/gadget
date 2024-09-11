@@ -29,7 +29,7 @@ steps:
       ╎        "path": "webpages",
       ╎        "name": "Webpages",
       ╎        "icon": "pages",
-      ╎        "output": false
+      ╎        "disable_url": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

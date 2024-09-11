@@ -16,8 +16,7 @@ steps:
       ╎      "has_no_files": {
       ╎        "path": "_has_no_files",
       ╎        "name": "Has No Files",
-      ╎        "icon": "audio_file",
-      ╎        "output": true
+      ╎        "icon": "audio_file"
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

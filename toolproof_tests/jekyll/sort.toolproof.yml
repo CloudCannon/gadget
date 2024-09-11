@@ -18,7 +18,7 @@ steps:
       ╎        "path": "_staff",
       ╎        "name": "Staff",
       ╎        "icon": "people",
-      ╎        "output": false,
+      ╎        "disable_url": true,
       ╎        "sort": {
       ╎          "key": "credentials"
       ╎        }

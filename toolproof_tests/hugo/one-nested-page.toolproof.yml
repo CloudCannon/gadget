@@ -15,7 +15,6 @@ steps:
       ╎        "path": "content/blog",
       ╎        "name": "Content Blog",
       ╎        "icon": "content_copy",
-      ╎        "output": true,
       ╎        "glob": [
       ╎          "!_index.md"
       ╎        ]
