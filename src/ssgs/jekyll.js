@@ -63,6 +63,31 @@ function toPostsKey(key) {
 }
 
 /**
+ * Generates posts _inputs configuration.
+ *
+ * @param collectionKey {string} The posts key.
+ * @returns {Record<string, import('@cloudcannon/configuration-types').Input>}
+ */
+function generatePostsInputs(collectionKey) {
+	return {
+		categories: {
+			type: 'multiselect',
+			options: {
+				values: `collections.${collectionKey}[*].categories`,
+				allow_create: true,
+			},
+		},
+		tags: {
+			type: 'multiselect',
+			options: {
+				values: `collections.${collectionKey}[*].tags`,
+				allow_create: true,
+			},
+		},
+	};
+}
+
+/**
  * Gets `collections` from Jekyll configuration in a standard format.
  *
  * @param collections {Record<string, any> | undefined} The `collections` object from Jekyll config
@@ -137,7 +162,12 @@ export default class Jekyll extends Ssg {
 			key === 'drafts' ||
 			key.endsWith('_drafts');
 
-		if (key === 'data' || (!options.collection?.output && !isKnownOutputCollection)) {
+		if (key === 'data') {
+			collectionConfig.disable_url = true;
+			collectionConfig.disable_add = true;
+			collectionConfig.disable_add_folder = true;
+			collectionConfig.disable_file_actions = true;
+		} else if (!options.collection?.output && !isKnownOutputCollection) {
 			collectionConfig.disable_url = true;
 		}
 
@@ -150,15 +180,21 @@ export default class Jekyll extends Ssg {
 				path: '[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]',
 			};
 
+			collectionConfig._inputs = generatePostsInputs(key);
+
 			collectionConfig.add_options ||= [
 				{ name: `Add ${collectionConfig.singular_name || 'Post'}` },
 				{ name: 'Add Draft', collection: toDraftsKey(key) },
 			];
 		} else if (isDraftsPath(collectionConfig.path)) {
+			const postsKey = toPostsKey(key);
+
 			collectionConfig.create ||= {
 				path: '', // TODO: this should not be required if publish_to is set
-				publish_to: toPostsKey(key),
+				publish_to: postsKey,
 			};
+
+			collectionConfig._inputs = generatePostsInputs(postsKey);
 		}
 
 		return collectionConfig;
