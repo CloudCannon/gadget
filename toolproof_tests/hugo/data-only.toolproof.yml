@@ -18,7 +18,10 @@ steps:
       ╎        "glob": [
       ╎          "!_index.md"
       ╎        ],
-      ╎        "disable_url": true
+      ╎        "disable_url": true,
+      ╎        "disable_add": true,
+      ╎        "disable_add_folder": true,
+      ╎        "disable_file_actions": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

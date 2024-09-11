@@ -82,6 +82,9 @@ export default class Hugo extends Ssg {
 
 		if (path === dataPath || path.endsWith(`/${dataPath}`)) {
 			collectionConfig.disable_url = true;
+			collectionConfig.disable_add = true;
+			collectionConfig.disable_add_folder = true;
+			collectionConfig.disable_file_actions = true;
 		}
 
 		return collectionConfig;

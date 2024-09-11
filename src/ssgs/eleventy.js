@@ -72,6 +72,9 @@ export default class Eleventy extends Ssg {
 
 		if (path === '_data' || path.endsWith('/_data')) {
 			collectionConfig.disable_url = true;
+			collectionConfig.disable_add = true;
+			collectionConfig.disable_add_folder = true;
+			collectionConfig.disable_file_actions = true;
 		}
 
 		return collectionConfig;

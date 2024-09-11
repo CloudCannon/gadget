@@ -27,6 +27,22 @@ steps:
       ╎        "create": {
       ╎          "path": "",
       ╎          "publish_to": "posts"
+      ╎        },
+      ╎        "_inputs": {
+      ╎          "categories": {
+      ╎            "type": "multiselect",
+      ╎            "options": {
+      ╎              "values": "collections.posts[*].categories",
+      ╎              "allow_create": true
+      ╎            }
+      ╎          },
+      ╎          "tags": {
+      ╎            "type": "multiselect",
+      ╎            "options": {
+      ╎              "values": "collections.posts[*].tags",
+      ╎              "allow_create": true
+      ╎            }
+      ╎          }
       ╎        }
       ╎      },
       ╎      "posts": {
@@ -35,6 +51,22 @@ steps:
       ╎        "icon": "event_available",
       ╎        "create": {
       ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎        },
+      ╎        "_inputs": {
+      ╎          "categories": {
+      ╎            "type": "multiselect",
+      ╎            "options": {
+      ╎              "values": "collections.posts[*].categories",
+      ╎              "allow_create": true
+      ╎            }
+      ╎          },
+      ╎          "tags": {
+      ╎            "type": "multiselect",
+      ╎            "options": {
+      ╎              "values": "collections.posts[*].tags",
+      ╎              "allow_create": true
+      ╎            }
+      ╎          }
       ╎        },
       ╎        "add_options": [
       ╎          {
@@ -55,7 +87,10 @@ steps:
       ╎        "path": "_data",
       ╎        "name": "Data",
       ╎        "icon": "data_usage",
-      ╎        "disable_url": true
+      ╎        "disable_url": true,
+      ╎        "disable_add": true,
+      ╎        "disable_add_folder": true,
+      ╎        "disable_file_actions": true
       ╎      },
       ╎      "testimonials": {
       ╎        "path": "collections/_testimonials",
