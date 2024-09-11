@@ -15,10 +15,10 @@ steps:
       ╎        "path": "data",
       ╎        "name": "Data",
       ╎        "icon": "data_usage",
-      ╎        "output": false,
       ╎        "glob": [
       ╎          "!_index.md"
-      ╎        ]
+      ╎        ],
+      ╎        "disable_url": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

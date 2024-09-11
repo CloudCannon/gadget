@@ -9,29 +9,26 @@ steps:
       ╎  "ssg": "eleventy",
       ╎  "config": {
       ╎    "collections_config": {
-      ╎      "data": {
-      ╎        "path": "_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "output": false
-      ╎      },
       ╎      "pages": {
       ╎        "path": "pages",
       ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
+      ╎        "icon": "wysiwyg"
       ╎      },
       ╎      "posts": {
       ╎        "path": "posts",
       ╎        "name": "Posts",
-      ╎        "icon": "event_available",
-      ╎        "output": true
+      ╎        "icon": "event_available"
       ╎      },
       ╎      "staff_members": {
       ╎        "path": "staff-members",
       ╎        "name": "Staff Members",
-      ╎        "icon": "card_membership",
-      ╎        "output": true
+      ╎        "icon": "card_membership"
+      ╎      },
+      ╎      "data": {
+      ╎        "path": "_data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "disable_url": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

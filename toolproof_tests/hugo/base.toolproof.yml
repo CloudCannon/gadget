@@ -15,29 +15,27 @@ steps:
       ╎  "ssg": "hugo",
       ╎  "config": {
       ╎    "collections_config": {
-      ╎      "data": {
-      ╎        "path": "data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "output": false,
-      ╎        "glob": [
-      ╎          "!_index.md"
-      ╎        ]
-      ╎      },
       ╎      "pages": {
       ╎        "path": "content",
       ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg",
-      ╎        "output": true
+      ╎        "icon": "wysiwyg"
       ╎      },
       ╎      "blog": {
       ╎        "path": "content/blog",
       ╎        "name": "Blog",
       ╎        "icon": "event_available",
-      ╎        "output": true,
       ╎        "glob": [
       ╎          "!_index.md"
       ╎        ]
+      ╎      },
+      ╎      "data": {
+      ╎        "path": "data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ],
+      ╎        "disable_url": true
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

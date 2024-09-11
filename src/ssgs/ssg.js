@@ -358,7 +358,6 @@ export default class Ssg {
 			path,
 			name,
 			icon: findIcon(name.toLowerCase()),
-			output: true,
 		};
 	}
 
@@ -431,6 +430,46 @@ export default class Ssg {
 		}
 
 		return collectionsConfig;
+	}
+
+	/**
+	 * Generates collections config from a set of paths.
+	 *
+	 * @param collectionsConfig {import('../types').CollectionsConfig}
+	 * @returns {import('../types').CollectionsConfig}
+	 */
+	sortCollectionsConfig(collectionsConfig) {
+		/** @type {import('../types').CollectionsConfig} */
+		const sorted = {};
+
+		const sortedKeys = Object.keys(collectionsConfig).sort((a, b) => {
+			const aCollectionConfig = collectionsConfig[a];
+			const bCollectionConfig = collectionsConfig[b];
+
+			if (
+				a === 'pages' ||
+				aCollectionConfig.path === '' ||
+				(!aCollectionConfig.disable_url && bCollectionConfig.disable_url)
+			) {
+				return -1;
+			}
+
+			if (
+				b === 'pages' ||
+				bCollectionConfig.path === '' ||
+				(!bCollectionConfig.disable_url && aCollectionConfig.disable_url)
+			) {
+				return 1;
+			}
+
+			return a.localeCompare(b);
+		});
+
+		for (const key of sortedKeys) {
+			sorted[key] = collectionsConfig[key];
+		}
+
+		return sorted;
 	}
 
 	/**

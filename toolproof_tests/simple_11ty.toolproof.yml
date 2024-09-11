@@ -62,8 +62,7 @@ steps:
       ╎      "staff_members": {
       ╎        "path": "staff-members",
       ╎        "name": "Staff Members",
-      ╎        "icon": "card_membership",
-      ╎        "output": true
+      ╎        "icon": "card_membership"
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

@@ -79,7 +79,10 @@ export default class Hugo extends Ssg {
 		}
 
 		const dataPath = this.getHugoDataPath(options.config);
-		collectionConfig.output = !(path === dataPath || path.endsWith(`/${dataPath}`));
+
+		if (path === dataPath || path.endsWith(`/${dataPath}`)) {
+			collectionConfig.disable_url = true;
+		}
 
 		return collectionConfig;
 	}

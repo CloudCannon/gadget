@@ -51,11 +51,13 @@ export async function generateConfiguration(filePaths, options) {
 			source,
 			collections_config:
 				options?.config?.collections_config ||
-				ssg.generateCollectionsConfig(collectionPaths, {
-					source,
-					config,
-					basePath: findBasePath(collectionPaths),
-				}),
+				ssg.sortCollectionsConfig(
+					ssg.generateCollectionsConfig(collectionPaths, {
+						source,
+						config,
+						basePath: findBasePath(collectionPaths),
+					}),
+				),
 			paths: options?.config?.paths ?? undefined,
 			timezone: options?.config?.timezone ?? ssg.getTimezone(),
 			markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
