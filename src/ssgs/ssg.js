@@ -508,7 +508,9 @@ export default class Ssg {
 		if (filePaths.includes(packageJsonPath)) {
 			const useYarn = filePaths.includes(joinPaths([options.source, 'yarn.lock']));
 			const usePnpm = filePaths.includes(joinPaths([options.source, 'pnpm-lock.yaml']));
-			const useNpm = filePaths.includes(joinPaths([options.source, 'package-lock.json']));
+			const useNpm =
+				filePaths.includes(joinPaths([options.source, 'package-lock.json'])) ||
+				(!useYarn && !usePnpm);
 
 			if (useNpm) {
 				commands.install.push({
