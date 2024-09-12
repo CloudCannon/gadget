@@ -29,6 +29,14 @@ export default class Bridgetown extends Ssg {
 				value: 'bundle install',
 				attribution: 'because of your Gemfile',
 			});
+			commands.preserved.push({
+				value: '.bundle_cache/',
+				attribution: 'recommended for speeding up bundler installs',
+			});
+			commands.environment['GEM_HOME'] = {
+				value: '/usr/local/__site/src/.bundle_cache/',
+				attribution: 'recommended for speeding up bundler installs',
+			};
 
 			if (options.source) {
 				commands.environment['BUNDLE_GEMFILE'] = {

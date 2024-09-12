@@ -17,11 +17,15 @@ export default class NuxtJs extends Ssg {
 
 		commands.build.push({
 			value: 'npx nuxt generate',
-			attribution: 'default for Nuxt sites',
+			attribution: 'most common for Nuxt sites',
 		});
 		commands.output.unshift({
 			value: 'dist',
 			attribution: 'most common for Nuxt sites',
+		});
+		commands.preserved.push({
+			value: '.nuxt/',
+			attribution: 'recommended for Nuxt sites',
 		});
 
 		return commands;

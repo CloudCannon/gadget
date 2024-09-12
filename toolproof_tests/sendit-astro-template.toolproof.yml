@@ -1,0 +1,46 @@
+name: Sendit Astro template
+
+steps:
+  - I run "cp -R %test_sites%/sendit-astro-template src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "astro",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "pages": {
+      ╎        "path": "src/pages",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "blog": {
+      ╎        "path": "src/content/blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available"
+      ╎      },
+      ╎      "content_pages": {
+      ╎        "path": "src/content/pages",
+      ╎        "name": "Content Pages",
+      ╎        "icon": "contact_page"
+      ╎      },
+      ╎      "data": {
+      ╎        "path": "data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "disable_url": true
+      ╎      }
+      ╎    },
+      ╎    "paths": {
+      ╎      "static": "public",
+      ╎      "uploads": "public/uploads"
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

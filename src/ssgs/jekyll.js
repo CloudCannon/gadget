@@ -389,6 +389,14 @@ export default class Jekyll extends Ssg {
 				value: 'bundle exec jekyll build',
 				attribution: 'because of your Gemfile',
 			});
+			commands.preserved.push({
+				value: '.bundle_cache/',
+				attribution: 'recommended for speeding up bundler installs',
+			});
+			commands.environment['GEM_HOME'] = {
+				value: '/usr/local/__site/src/.bundle_cache/',
+				attribution: 'recommended for speeding up bundler installs',
+			};
 
 			if (options.source) {
 				commands.environment['BUNDLE_GEMFILE'] = {
@@ -414,5 +422,17 @@ export default class Jekyll extends Ssg {
 		};
 
 		return commands;
+	}
+
+	/**
+	 * Generates path configuration
+	 *
+	 * @returns {import('@cloudcannon/configuration-types').SnippetsImports | undefined}
+	 */
+	getSnippetsImports() {
+		return { 
+			...super.getSnippetsImports(),
+			jekyll: true
+		};
 	}
 }

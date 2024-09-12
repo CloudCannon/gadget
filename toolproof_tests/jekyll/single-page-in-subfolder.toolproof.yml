@@ -17,6 +17,10 @@ steps:
       ╎        "icon": "wysiwyg"
       ╎      }
       ╎    },
+      ╎    "paths": {
+      ╎      "static": "",
+      ╎      "uploads": "uploads"
+      ╎    },
       ╎    "timezone": "Pacific/Auckland",
       ╎    "markdown": {
       ╎      "engine": "kramdown",
@@ -35,6 +39,9 @@ steps:
       ╎        },
       ╎        "treat_indentation_as_code": true
       ╎      }
+      ╎    },
+      ╎    "_snippets_imports": {
+      ╎      "jekyll": true
       ╎    }
       ╎  }
       ╎}
