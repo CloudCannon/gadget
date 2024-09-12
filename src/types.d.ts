@@ -50,3 +50,19 @@ export interface BuildCommands {
 	environment: Record<string, BuildCommandSuggestion>;
 	preserved: BuildCommandSuggestion[];
 }
+
+export interface GenerateCollectionsConfigOptions {
+	config?: Record<string, any>;
+	source?: string;
+	basePath: string;
+	filePaths: string[];
+}
+
+export interface GenerateCollectionConfigOptions extends GenerateCollectionsConfigOptions {
+	collectionPaths: string[];
+}
+
+export interface GenerateCollectionConfigOptionsJekyll extends GenerateCollectionConfigOptions {
+	/** The matching Jekyll collection from _config.yml */
+	collection: Record<string, any> | undefined;
+}

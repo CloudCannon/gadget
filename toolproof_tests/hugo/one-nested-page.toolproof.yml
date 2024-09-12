@@ -14,10 +14,7 @@ steps:
       ╎      "content_blog": {
       ╎        "path": "content/blog",
       ╎        "name": "Content Blog",
-      ╎        "icon": "content_copy",
-      ╎        "glob": [
-      ╎          "!_index.md"
-      ╎        ]
+      ╎        "icon": "content_copy"
       ╎      }
       ╎    },
       ╎    "timezone": "Pacific/Auckland",

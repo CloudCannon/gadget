@@ -64,13 +64,17 @@ export default class Hugo extends Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param options {{ config?: Record<string, any>; basePath: string; }}
+	 * @param options {import('../types').GenerateCollectionConfigOptions}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, options) {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
-		if (path !== options.basePath) {
+		const hasParentCollectionPath = options.collectionPaths.some((otherCollectionPath) => {
+			return joinPaths([options.source, path]).startsWith(`${otherCollectionPath}/`);
+		});
+
+		if (hasParentCollectionPath) {
 			collectionConfig.glob =
 				typeof collectionConfig.glob === 'string'
 					? [collectionConfig.glob]
@@ -107,7 +111,7 @@ export default class Hugo extends Ssg {
 	 * `collections_config` entry.
 	 *
 	 * @param collectionPaths {string[]}
-	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
+	 * @param options {import('../types').GenerateCollectionsConfigOptions}
 	 * @returns {string[]}
 	 */
 	filterContentCollectionPaths(collectionPaths, options) {
@@ -119,10 +123,23 @@ export default class Hugo extends Ssg {
 	 * Generates collections config from a set of paths.
 	 *
 	 * @param collectionPaths {string[]}
-	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
+	 * @param options {import('../types').GenerateCollectionsConfigOptions}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
 	generateCollectionsConfig(collectionPaths, options) {
+		// Remove collection paths with a parent collection path and only a branch index file
+		collectionPaths = collectionPaths.filter((collectionPath) => {
+			const hasNonBranchIndexFile = options.filePaths.some(
+				(filePath) => filePath.startsWith(`${collectionPath}/`) && !filePath.endsWith('/_index.md'),
+			);
+
+			const hasParentCollectionPath = collectionPaths.some((otherCollectionPath) =>
+				collectionPath.startsWith(`${otherCollectionPath}/`),
+			);
+
+			return hasNonBranchIndexFile || !hasParentCollectionPath;
+		});
+
 		const collectionPathsOutsideExampleSite = collectionPaths.filter(
 			(path) => !path.includes('exampleSite/'),
 		);
