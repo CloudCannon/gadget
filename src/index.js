@@ -56,6 +56,7 @@ export async function generateConfiguration(filePaths, options) {
 						source,
 						config,
 						basePath: findBasePath(collectionPaths),
+						filePaths,
 					}),
 				),
 			paths: options?.config?.paths ?? undefined,

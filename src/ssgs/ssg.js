@@ -348,7 +348,7 @@ export default class Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param _options {{ config?: Record<string, any>; basePath?: string; }=}
+	 * @param _options {import('../types').GenerateCollectionConfigOptions}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, _options) {
@@ -385,7 +385,7 @@ export default class Ssg {
 	 * `collections_config` entry.
 	 *
 	 * @param collectionPaths {string[]}
-	 * @param _options {{ config?: Record<string, any>; source?: string; basePath: string; }}
+	 * @param _options {import('../types').GenerateCollectionsConfigOptions}
 	 * @returns {string[]}
 	 */
 	filterContentCollectionPaths(collectionPaths, _options) {
@@ -396,7 +396,7 @@ export default class Ssg {
 	 * Generates collections config from a set of paths.
 	 *
 	 * @param collectionPaths {string[]}
-	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
+	 * @param options {import('../types').GenerateCollectionsConfigOptions}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
 	generateCollectionsConfig(collectionPaths, options) {
@@ -426,7 +426,11 @@ export default class Ssg {
 			}
 
 			const key = this.generateCollectionsConfigKey(pathInBasePath, collectionsConfig);
-			collectionsConfig[key] = this.generateCollectionConfig(key, path, { ...options, basePath });
+			collectionsConfig[key] = this.generateCollectionConfig(key, path, {
+				...options,
+				collectionPaths,
+				basePath,
+			});
 		}
 
 		return collectionsConfig;

@@ -1,0 +1,54 @@
+name: SenDit Hugo site
+
+steps:
+  - I run "cp -R %test_sites%/sendit-hugo-template src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "hugo",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "pages": {
+      ╎        "path": "content",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "blog": {
+      ╎        "path": "content/blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available",
+      ╎        "glob": [
+      ╎          "!_index.md"
+      ╎        ]
+      ╎      },
+      ╎      "data": {
+      ╎        "path": "data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "disable_url": true,
+      ╎        "disable_add": true,
+      ╎        "disable_add_folder": true,
+      ╎        "disable_file_actions": true
+      ╎      }
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true,
+      ╎        "linkify": false,
+      ╎        "table": false,
+      ╎        "strikethrough": false,
+      ╎        "subscript": false,
+      ╎        "superscript": false,
+      ╎        "heading_ids": false,
+      ╎        "breaks": false,
+      ╎        "xhtml": false,
+      ╎        "attributes": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}

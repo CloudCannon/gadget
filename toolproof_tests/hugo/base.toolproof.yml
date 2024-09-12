@@ -32,9 +32,6 @@ steps:
       ╎        "path": "data",
       ╎        "name": "Data",
       ╎        "icon": "data_usage",
-      ╎        "glob": [
-      ╎          "!_index.md"
-      ╎        ],
       ╎        "disable_url": true,
       ╎        "disable_add": true,
       ╎        "disable_add_folder": true,

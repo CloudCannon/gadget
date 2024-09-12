@@ -149,11 +149,11 @@ export default class Jekyll extends Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param options {{ config?: Record<string, any>; basePath?: string; collection: Record<string, any> | undefined; }}
+	 * @param options {import('../types').GenerateCollectionConfigOptionsJekyll}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, options) {
-		const collectionConfig = super.generateCollectionConfig(key, path);
+		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
 		const isKnownOutputCollection =
 			key === 'pages' ||
@@ -204,7 +204,7 @@ export default class Jekyll extends Ssg {
 	 * Generates collections config from a set of paths.
 	 *
 	 * @param collectionPaths {string[]}
-	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
+	 * @param options {import('../types').GenerateCollectionsConfigOptions}
 	 * @returns {import('../types').CollectionsConfig}
 	 */
 	generateCollectionsConfig(collectionPaths, options) {
@@ -220,6 +220,8 @@ export default class Jekyll extends Ssg {
 			const collection = collections[key];
 
 			collectionsConfig[collectionKey] = this.generateCollectionConfig(collectionKey, path, {
+				...options,
+				collectionPaths,
 				collection,
 			});
 		}
@@ -255,7 +257,11 @@ export default class Jekyll extends Ssg {
 			const pathInCollectionsDir = stripTopPath(path, collectionsDir);
 			const key = this.generateCollectionsConfigKey(pathInCollectionsDir, collectionsConfig);
 			const collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
-			collectionsConfig[key] = this.generateCollectionConfig(key, path, { collection });
+			collectionsConfig[key] = this.generateCollectionConfig(key, path, {
+				...options,
+				collectionPaths,
+				collection,
+			});
 		}
 
 		// Add matching post/draft collections
@@ -271,7 +277,11 @@ export default class Jekyll extends Ssg {
 				collectionsConfig[postsKey] ||= this.generateCollectionConfig(
 					postsKey,
 					toPostsPath(collectionConfig.path),
-					{ collection: collections?.posts },
+					{
+						...options,
+						collectionPaths,
+						collection: collections?.posts,
+					},
 				);
 			} else if (isPostsPath(collectionConfig.path)) {
 				// Ensure there is a matching drafts collection
@@ -279,7 +289,11 @@ export default class Jekyll extends Ssg {
 				collectionsConfig[draftsKey] ||= this.generateCollectionConfig(
 					draftsKey,
 					toDraftsPath(collectionConfig.path),
-					{ collection: collections?.drafts || collections?.posts },
+					{
+						...options,
+						collectionPaths,
+						collection: collections?.drafts || collections?.posts,
+					},
 				);
 			}
 		}

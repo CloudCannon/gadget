@@ -64,7 +64,7 @@ export default class Eleventy extends Ssg {
 	 *
 	 * @param key {string}
 	 * @param path {string}
-	 * @param options {{ config?: Record<string, any>; basePath?: string; }=}
+	 * @param options {import('../types').GenerateCollectionConfigOptions}
 	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
 	generateCollectionConfig(key, path, options) {
@@ -86,7 +86,7 @@ export default class Eleventy extends Ssg {
 	 * `collections_config` entry.
 	 *
 	 * @param collectionPaths {string[]}
-	 * @param options {{ config?: Record<string, any>; source?: string; basePath: string; }}
+	 * @param options {import('../types').GenerateCollectionsConfigOptions}
 	 * @returns {string[]}
 	 */
 	filterContentCollectionPaths(collectionPaths, options) {
