@@ -262,4 +262,31 @@ export default class Hugo extends Ssg {
 
 		return commands;
 	}
+
+	/**
+	 * Generates path configuration
+	 *
+	 * @returns {import('@cloudcannon/configuration-types').SnippetsImports | undefined}
+	 */
+	getSnippetsImports() {
+		return {
+			...super.getSnippetsImports(),
+			hugo: {
+				exclude: ['hugo_instagram'],
+			},
+		};
+	}
+
+	/**
+	 * Generates path configuration
+	 *
+	 * @returns {import('@cloudcannon/configuration-types').Paths | undefined}
+	 */
+	getPaths() {
+		return {
+			...super.getPaths(),
+			static: 'static',
+			uploads: 'static/uploads',
+		};
+	}
 }

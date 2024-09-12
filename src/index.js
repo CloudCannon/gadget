@@ -59,9 +59,10 @@ export async function generateConfiguration(filePaths, options) {
 						filePaths,
 					}),
 				),
-			paths: options?.config?.paths ?? undefined,
+			paths: options?.config?.paths ?? ssg.getPaths(),
 			timezone: options?.config?.timezone ?? ssg.getTimezone(),
 			markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
+			_snippets_imports: options?.config?._snippets_imports ?? ssg.getSnippetsImports() 
 		},
 	};
 }

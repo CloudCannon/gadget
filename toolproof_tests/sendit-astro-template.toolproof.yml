@@ -1,48 +1,45 @@
-name: Justice Eleventy template
+name: Sendit Astro template
 
 steps:
-  - I run "cp -R %test_sites%/justice-eleventy-template src"
+  - I run "cp -R %test_sites%/sendit-astro-template src"
   - ref: ./core/run_gadget.toolproof.yml
   - snapshot: stdout
     snapshot_content: |-
       ╎{
-      ╎  "ssg": "eleventy",
+      ╎  "ssg": "astro",
       ╎  "config": {
       ╎    "collections_config": {
       ╎      "pages": {
-      ╎        "path": "pages",
+      ╎        "path": "src/pages",
       ╎        "name": "Pages",
       ╎        "icon": "wysiwyg"
       ╎      },
-      ╎      "posts": {
-      ╎        "path": "posts",
-      ╎        "name": "Posts",
+      ╎      "blog": {
+      ╎        "path": "src/content/blog",
+      ╎        "name": "Blog",
       ╎        "icon": "event_available"
       ╎      },
-      ╎      "staff_members": {
-      ╎        "path": "staff-members",
-      ╎        "name": "Staff Members",
-      ╎        "icon": "card_membership"
+      ╎      "content_pages": {
+      ╎        "path": "src/content/pages",
+      ╎        "name": "Content Pages",
+      ╎        "icon": "contact_page"
       ╎      },
       ╎      "data": {
-      ╎        "path": "_data",
+      ╎        "path": "data",
       ╎        "name": "Data",
       ╎        "icon": "data_usage",
-      ╎        "disable_url": true,
-      ╎        "disable_add": true,
-      ╎        "disable_add_folder": true,
-      ╎        "disable_file_actions": true
+      ╎        "disable_url": true
       ╎      }
       ╎    },
       ╎    "paths": {
-      ╎      "static": "",
-      ╎      "uploads": "uploads"
+      ╎      "static": "public",
+      ╎      "uploads": "public/uploads"
       ╎    },
       ╎    "timezone": "Pacific/Auckland",
       ╎    "markdown": {
       ╎      "engine": "commonmark",
       ╎      "options": {
-      ╎        "html": true
+      ╎        "gfm": true
       ╎      }
       ╎    }
       ╎  }

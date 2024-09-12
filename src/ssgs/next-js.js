@@ -10,7 +10,7 @@ export default class NextJs extends Ssg {
 	}
 
 	templateExtensions() {
-		return super.templateExtensions().concat(['.tsx']);
+		return super.templateExtensions().concat(['.tsx', '.jsx']);
 	}
 
 	ignoredFolders() {
@@ -37,7 +37,11 @@ export default class NextJs extends Ssg {
 		});
 		commands.output.unshift({
 			value: 'out',
-			attribution: 'default for Next.js sites',
+			attribution: 'most common for Next.js sites',
+		});
+		commands.preserved.push({
+			value: '.next/',
+			attribution: 'recommended for Next.js sites',
 		});
 
 		return commands;

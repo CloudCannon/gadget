@@ -65,6 +65,10 @@ steps:
       ╎        "icon": "card_membership"
       ╎      }
       ╎    },
+      ╎    "paths": {
+      ╎      "static": "",
+      ╎      "uploads": "uploads"
+      ╎    },
       ╎    "timezone": "Pacific/Auckland",
       ╎    "markdown": {
       ╎      "engine": "commonmark",

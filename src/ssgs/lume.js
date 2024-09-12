@@ -17,12 +17,20 @@ export default class Lume extends Ssg {
 
 		commands.build.push({
 			value: 'deno task lume',
-			attribution: 'default for Lume sites',
+			attribution: 'most common for Lume sites',
 		});
 		commands.output.unshift({
 			value: '_site',
 			attribution: 'most common for Lume sites',
 		});
+		commands.preserved.push({
+			value: '.deno_cache/',
+			attribution: 'recommended for speeding up Deno installs',
+		});
+		commands.environment['DENO_DIR'] = {
+			value: '/usr/local/__site/src/.deno_cache/',
+			attribution: 'recommended for speeding up Deno installs',
+		};
 
 		return commands;
 	}

@@ -506,18 +506,26 @@ export default class Ssg {
 
 		const packageJsonPath = joinPaths([options.source, 'package.json']);
 		if (filePaths.includes(packageJsonPath)) {
-			const useYarn =
-				filePaths.includes(joinPaths([options.source, 'yarn.lock'])) &&
-				!filePaths.includes(joinPaths([options.source, 'package-lock.json']));
+			const useYarn = filePaths.includes(joinPaths([options.source, 'yarn.lock']));
+			const usePnpm = filePaths.includes(joinPaths([options.source, 'pnpm-lock.yaml']));
+			const useNpm = filePaths.includes(joinPaths([options.source, 'package-lock.json']));
+
+			if (useNpm) {
+				commands.install.push({
+					value: 'npm i',
+					attribution: 'because of your `package.json` file',
+				});
+			}
 			if (useYarn) {
 				commands.install.push({
 					value: 'yarn',
 					attribution: 'because of your `yarn.lock` file',
 				});
-			} else {
+			}
+			if (usePnpm) {
 				commands.install.push({
-					value: 'npm i',
-					attribution: 'because of your `package.json` file',
+					value: 'pnpm i',
+					attribution: 'because of your `pnpm-lock.yaml` file',
 				});
 			}
 
@@ -530,10 +538,24 @@ export default class Ssg {
 				if (options.readFile) {
 					const parsed = await parseDataFile(packageJsonPath, options.readFile);
 					if (parsed?.scripts?.build) {
-						commands.build.push({
-							value: 'npm run build',
-							attribution: 'found in your `package.json` file',
-						});
+						if (useNpm) {
+							commands.build.push({
+								value: 'npm run build',
+								attribution: 'found in your `package.json` file',
+							});
+						}
+						if (useYarn) {
+							commands.build.push({
+								value: 'yarn build',
+								attribution: 'found in your `package.json` file',
+							});
+						}
+						if (usePnpm) {
+							commands.build.push({
+								value: 'pnpm build',
+								attribution: 'found in your `package.json` file',
+							});
+						}
 					}
 				}
 			} catch (_e) {}
@@ -598,5 +620,26 @@ export default class Ssg {
 		}
 
 		return commands;
+	}
+
+	/**
+	 * Generates path configuration
+	 *
+	 * @returns {import('@cloudcannon/configuration-types').Paths | undefined}
+	 */
+	getPaths() {
+		return {
+			static: '',
+			uploads: 'uploads',
+		};
+	}
+
+	/**
+	 * Generates path configuration
+	 *
+	 * @returns {import('@cloudcannon/configuration-types').SnippetsImports | undefined}
+	 */
+	getSnippetsImports() {
+		return;
 	}
 }

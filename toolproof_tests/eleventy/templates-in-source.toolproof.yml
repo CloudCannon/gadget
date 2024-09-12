@@ -39,6 +39,10 @@ steps:
       ╎        "disable_file_actions": true
       ╎      }
       ╎    },
+      ╎    "paths": {
+      ╎      "static": "",
+      ╎      "uploads": "uploads"
+      ╎    },
       ╎    "timezone": "Pacific/Auckland",
       ╎    "markdown": {
       ╎      "engine": "commonmark",
