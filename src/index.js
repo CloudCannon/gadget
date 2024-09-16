@@ -82,7 +82,6 @@ export async function generateBuildCommands(filePaths, options) {
 		: guessSsg(filterPaths(filePaths, source));
 
 	source = source ?? ssg.getSource(filePaths);
-	filePaths = filterPaths(filePaths, source);
 
 	const files = ssg.groupFiles(filePaths);
 

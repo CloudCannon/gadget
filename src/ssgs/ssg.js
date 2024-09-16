@@ -504,12 +504,11 @@ export default class Ssg {
 			environment: {},
 		};
 
-		const packageJsonPath = joinPaths([options.source, 'package.json']);
-		if (filePaths.includes(packageJsonPath)) {
-			const useYarn = filePaths.includes(joinPaths([options.source, 'yarn.lock']));
-			const usePnpm = filePaths.includes(joinPaths([options.source, 'pnpm-lock.yaml']));
+		if (filePaths.includes('package.json')) {
+			const useYarn = filePaths.includes('yarn.lock');
+			const usePnpm = filePaths.includes('pnpm-lock.yaml');
 			const useNpm =
-				filePaths.includes(joinPaths([options.source, 'package-lock.json'])) ||
+				filePaths.includes('package-lock.json') ||
 				(!useYarn && !usePnpm);
 
 			if (useNpm) {
@@ -538,7 +537,7 @@ export default class Ssg {
 
 			try {
 				if (options.readFile) {
-					const parsed = await parseDataFile(packageJsonPath, options.readFile);
+					const parsed = await parseDataFile('package.json', options.readFile);
 					if (parsed?.scripts?.build) {
 						if (useNpm) {
 							commands.build.push({
