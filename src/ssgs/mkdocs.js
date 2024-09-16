@@ -1,4 +1,3 @@
-import { joinPaths } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class MkDocs extends Ssg {

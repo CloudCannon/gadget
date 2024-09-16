@@ -3,7 +3,7 @@ import { basename } from 'path';
 import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
 import { findIcon } from '../icons.js';
-import { joinPaths, last, parseDataFile, stripTopPath } from '../utility.js';
+import { last, parseDataFile, stripTopPath } from '../utility.js';
 import { findBasePath, getCollectionPaths } from '../collections.js';
 
 export default class Ssg {
