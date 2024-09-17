@@ -1,4 +1,3 @@
-import { joinPaths } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Sveltekit extends Ssg {
@@ -35,9 +34,8 @@ export default class Sveltekit extends Ssg {
 	 */
 	async generateBuildCommands(filePaths, options) {
 		const commands = await super.generateBuildCommands(filePaths, options);
-		const viteConfigPath = joinPaths([options.source, 'vite.config.js']);
-
-		if (filePaths.includes(viteConfigPath)) {
+		
+		if (filePaths.includes('vite.config.js')) {
 			commands.build.push({
 				value: 'npx vite build',
 				attribution: 'because of your `vite.config.js` file',

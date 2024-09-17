@@ -1,4 +1,3 @@
-import { joinPaths } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class Bridgetown extends Ssg {
@@ -24,7 +23,8 @@ export default class Bridgetown extends Ssg {
 	async generateBuildCommands(filePaths, options) {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		if (filePaths.includes(joinPaths([options.source, 'Gemfile']))) {
+		const gemfilePath = filePaths.find((path) => path === 'Gemfile' || path.endsWith('/Gemfile'));
+		if (gemfilePath) {
 			commands.install.unshift({
 				value: 'bundle install',
 				attribution: 'because of your Gemfile',
@@ -40,7 +40,7 @@ export default class Bridgetown extends Ssg {
 
 			if (options.source) {
 				commands.environment['BUNDLE_GEMFILE'] = {
-					value: joinPaths([options.source, 'Gemfile']),
+					value: gemfilePath,
 					attribution: 'because of your Gemfile',
 				};
 			}

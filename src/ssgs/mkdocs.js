@@ -1,4 +1,3 @@
-import { joinPaths } from '../utility.js';
 import Ssg from './ssg.js';
 
 export default class MkDocs extends Ssg {
@@ -25,8 +24,8 @@ export default class MkDocs extends Ssg {
 	 */
 	async generateBuildCommands(filePaths, options) {
 		const commands = await super.generateBuildCommands(filePaths, options);
-		const usePip = filePaths.includes(joinPaths([options.source, 'requirements.txt']));
-		const usePipEnv = filePaths.includes(joinPaths([options.source, 'Pipfile']));
+		const usePip = filePaths.includes('requirements.txt');
+		const usePipEnv = filePaths.includes('Pipfile');
 
 		commands.build.push({
 			value: 'mkdocs build',
