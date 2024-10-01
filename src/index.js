@@ -11,7 +11,7 @@ export { ssgs } from './ssgs/ssgs.js';
  * @param source {string | undefined} The source path.
  */
 function filterPaths(filePaths, source) {
-	source = `${source || ''}/`.replace(/\/+/, '/').replace(/^\//, '');
+	source = normalisePath(source || '') + '/'
 	source = source === '/' ? '' : source;
 
 	if (!source) {
