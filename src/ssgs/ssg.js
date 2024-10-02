@@ -230,9 +230,15 @@ export default class Ssg {
 	 * @returns {boolean}
 	 */
 	isConfigPath(filePath) {
-		return this.configPaths().some(
-			(configPath) => filePath === configPath || filePath.endsWith(`/${configPath}`),
-		);
+		const configPaths = this.configPaths();
+
+		for (let i = 0; i < configPaths.length; i++) {
+			if (filePath === configPaths[i] || filePath.endsWith(`/${configPaths[i]}`)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -242,11 +248,51 @@ export default class Ssg {
 	 * @returns {number}
 	 */
 	getPathScore(filePath) {
+		if (this.isInIgnoredFolder(filePath)) {
+			return 0;
+		}
+
 		return this.isConfigPath(filePath) ? 1 : 0;
 	}
 
 	/**
-	 * Checks if we should skip a file at this path
+	 * Checks if a file at this path in inside an ignored folder.
+	 *
+	 * @param filePath {string}
+	 * @returns {boolean}
+	 */
+	isInIgnoredFolder(filePath) {
+		const ignoredFolders = this.ignoredFolders();
+
+		for (let i = 0; i < ignoredFolders.length; i++) {
+			if (filePath.startsWith(ignoredFolders[i]) || filePath.includes(`/${ignoredFolders[i]}`)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if a file at this path is ignored.
+	 *
+	 * @param filePath {string}
+	 * @returns {boolean}
+	 */
+	isIgnoredFile(filePath) {
+		const ignoredFiles = this.ignoredFiles();
+
+		for (let i = 0; i < ignoredFiles.length; i++) {
+			if (filePath === ignoredFiles[i] || filePath.endsWith(`/${ignoredFiles[i]}`)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if we should skip a file at this path.
 	 *
 	 * @param filePath {string}
 	 * @returns {boolean}
@@ -256,10 +302,8 @@ export default class Ssg {
 			filePath.includes('.config.') ||
 			filePath.includes('/.') ||
 			filePath.startsWith('.') ||
-			this.ignoredFolders().some(
-				(folder) => filePath.startsWith(folder) || filePath.includes(`/${folder}`),
-			) ||
-			this.ignoredFiles().some((file) => filePath === file || filePath.endsWith(`/${file}`))
+			this.isInIgnoredFolder(filePath) ||
+			this.isIgnoredFile(filePath)
 		);
 	}
 
@@ -280,12 +324,19 @@ export default class Ssg {
 	 * @returns {boolean}
 	 */
 	isPartialPath(filePath) {
-		return this.partialFolders().some(
-			(partialFolder) =>
-				filePath === partialFolder ||
-				filePath.includes(`/${partialFolder}`) ||
-				filePath.startsWith(partialFolder),
-		);
+		const partialFolders = this.partialFolders();
+
+		for (let i = 0; i < partialFolders.length; i++) {
+			if (
+				filePath === partialFolders[i] ||
+				filePath.includes(`/${partialFolders[i]}`) ||
+				filePath.startsWith(partialFolders[i])
+			) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -507,9 +558,7 @@ export default class Ssg {
 		if (filePaths.includes('package.json')) {
 			const useYarn = filePaths.includes('yarn.lock');
 			const usePnpm = filePaths.includes('pnpm-lock.yaml');
-			const useNpm =
-				filePaths.includes('package-lock.json') ||
-				(!useYarn && !usePnpm);
+			const useNpm = filePaths.includes('package-lock.json') || (!useYarn && !usePnpm);
 
 			if (useNpm) {
 				commands.install.push({

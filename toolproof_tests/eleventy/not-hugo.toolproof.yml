@@ -1,0 +1,25 @@
+name: Eleventy site not Hugo
+
+steps:
+  - step: I have a "src/.github/ISSUE_TEMPLATE/config.yml" file with the content ""
+  - step: I have a "src/eleventy.config.js" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "eleventy",
+      ╎  "config": {
+      ╎    "collections_config": {},
+      ╎    "paths": {
+      ╎      "static": "",
+      ╎      "uploads": "uploads"
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "html": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}
