@@ -30,6 +30,7 @@ export function joinPaths(paths) {
  * @returns {string}
  */
 export function stripTopPath(path, stripPath) {
+	stripPath = normalisePath(stripPath || '');
 	if (path === stripPath) {
 		return '';
 	}
