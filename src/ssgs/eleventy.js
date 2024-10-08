@@ -125,6 +125,10 @@ export default class Eleventy extends Ssg {
 			value: '_site',
 			attribution: 'most common for 11ty sites',
 		});
+		commands.preserved.unshift({
+			value: '.cache',
+			attribution: 'most common for 11ty sites',
+		});
 
 		return commands;
 	}
