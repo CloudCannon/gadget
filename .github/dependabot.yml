@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    open-pull-requests-limit: 1
+    schedule:
+      interval: 'daily'
+  - package-ecosystem: 'npm'
+    directories:
+      - '/toolproof_tests/**/*'
+    open-pull-requests-limit: 0
+    schedule:
+      interval: 'daily'
+  - package-ecosystem: 'bundler'
+    directories:
+      - '/toolproof_tests/**/*'
+    open-pull-requests-limit: 0
+    schedule:
+      interval: 'daily'
