@@ -22,7 +22,7 @@ steps:
       ╎      "staff_members": {
       ╎        "path": "staff-members",
       ╎        "name": "Staff Members",
-      ╎        "icon": "card_membership"
+      ╎        "icon": "group"
       ╎      },
       ╎      "data": {
       ╎        "path": "_data",
