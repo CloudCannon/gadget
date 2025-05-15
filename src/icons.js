@@ -17,7 +17,6 @@ export function findIcon(query) {
 
 /** @type {Record<string, import('@cloudcannon/configuration-types').Icon>} */
 const overrides = {
-	'collection pages': 'photo_library',
 	collection_pages: 'photo_library',
 	pages: 'wysiwyg',
 	content: 'wysiwyg',
@@ -29,9 +28,10 @@ const overrides = {
 	data: 'data_usage',
 	authors: 'person',
 	staff: 'group',
-	'staff members': 'group',
 	staff_members: 'group',
 	recipes: 'local_dining',
+	news_posts: 'newsmode',
+	news: 'newsmode'
 };
 
 /** @type {Array<import('@cloudcannon/configuration-types').Icon>} */
