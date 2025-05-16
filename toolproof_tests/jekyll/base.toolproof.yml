@@ -136,7 +136,7 @@ steps:
       ╎      "news_posts": {
       ╎        "path": "collections/news/_posts",
       ╎        "name": "News Posts",
-      ╎        "icon": "newspaper",
+      ╎        "icon": "newsmode",
       ╎        "create": {
       ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
       ╎        },
@@ -202,7 +202,7 @@ steps:
       ╎      "collection_data": {
       ╎        "path": "collections/_data",
       ╎        "name": "Collection Data",
-      ╎        "icon": "collections",
+      ╎        "icon": "conversion_path",
       ╎        "disable_url": true
       ╎      },
       ╎      "data": {
@@ -223,7 +223,7 @@ steps:
       ╎      "staff": {
       ╎        "path": "collections/_staff",
       ╎        "name": "Staff",
-      ╎        "icon": "people",
+      ╎        "icon": "group",
       ╎        "disable_url": true
       ╎      }
       ╎    },

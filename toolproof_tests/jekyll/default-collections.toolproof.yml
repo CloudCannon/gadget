@@ -72,7 +72,7 @@ steps:
       ╎      "news_posts": {
       ╎        "path": "news/_posts",
       ╎        "name": "News Posts",
-      ╎        "icon": "newspaper",
+      ╎        "icon": "newsmode",
       ╎        "create": {
       ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
       ╎        },

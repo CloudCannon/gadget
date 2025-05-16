@@ -408,7 +408,7 @@ export default class Ssg {
 		return {
 			path,
 			name,
-			icon: findIcon(name.toLowerCase()),
+			icon: findIcon(key),
 		};
 	}
 
