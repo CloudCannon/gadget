@@ -29,7 +29,7 @@ function filterPaths(filePaths, source) {
  * @returns {Promise<import('./types').GenerateResult>}
  */
 export async function generateConfiguration(filePaths, options) {
-	const ssg = options?.buildConfig?.ssg
+	const ssg = options?.buildConfig?.ssg && ssgs[options.buildConfig.ssg]
 		? ssgs[options.buildConfig.ssg]
 		: guessSsg(filterPaths(filePaths, options?.config?.source));
 
