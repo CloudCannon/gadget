@@ -1,0 +1,35 @@
+name: Astro starter blog
+
+steps:
+  - I run "cp -R %test_sites%/astro-starter-blog src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "astro",
+      ╎  "config": {
+      ╎    "collections_config": {
+      ╎      "pages": {
+      ╎        "path": "src/pages",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "blog": {
+      ╎        "path": "src/content/blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available"
+      ╎      },
+      ╎    },
+      ╎    "paths": {
+      ╎      "static": "public",
+      ╎      "uploads": "public/uploads"
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true
+      ╎      }
+      ╎    }
+      ╎  }
+      ╎}
