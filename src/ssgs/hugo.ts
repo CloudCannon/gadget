@@ -8,8 +8,8 @@ import type {
 import { findBasePath } from '../collections';
 import { decodeEntity, joinPaths, normalisePath } from '../utility';
 import Ssg, {
-	type GenerateBuildCommandsOptions,
 	type BuildCommands,
+	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
 	type GenerateCollectionsConfigOptions,
 } from './ssg';

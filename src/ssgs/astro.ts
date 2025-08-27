@@ -1,7 +1,7 @@
 import type { CollectionConfig, MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
 import Ssg, {
-	type GenerateBuildCommandsOptions,
 	type BuildCommands,
+	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
 } from './ssg';
 

@@ -1,7 +1,7 @@
 import type { CollectionConfig } from '@cloudcannon/configuration-types';
 import Ssg, {
-	type GenerateBuildCommandsOptions,
 	type BuildCommands,
+	type GenerateBuildCommandsOptions,
 	type GenerateCollectionsConfigOptions,
 } from './ssg';
 

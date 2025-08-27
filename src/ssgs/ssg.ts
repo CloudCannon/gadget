@@ -1,5 +1,4 @@
-import { extname } from 'node:path';
-import { basename } from 'node:path';
+import { basename, extname } from 'node:path';
 import type {
 	CollectionConfig,
 	MarkdownSettings,

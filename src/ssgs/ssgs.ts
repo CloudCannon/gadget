@@ -33,7 +33,7 @@ export const ssgs: Record<SsgKey, Ssg> = {
 	other: new Ssg(),
 };
 
-const ssgValues = Object.values(ssgs);
+const ssgValues: Ssg[] = Object.values(ssgs);
 
 /**
  * Finds the most likely SSG for a set of files.

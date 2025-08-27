@@ -7,10 +7,10 @@ import type {
 import { kramdownAttributeElementOptions } from '../defaults';
 import { decodeEntity, joinPaths, stripTopPath } from '../utility';
 import Ssg, {
-	type GenerateCollectionsConfigOptions,
-	type GenerateCollectionConfigOptions,
 	type BuildCommands,
 	type GenerateBuildCommandsOptions,
+	type GenerateCollectionConfigOptions,
+	type GenerateCollectionsConfigOptions,
 } from './ssg';
 
 export interface GenerateCollectionConfigOptionsJekyll extends GenerateCollectionConfigOptions {

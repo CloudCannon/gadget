@@ -1,4 +1,4 @@
-import Ssg, { type GenerateBuildCommandsOptions, type BuildCommands } from './ssg';
+import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg';
 
 export default class MkDocs extends Ssg {
 	constructor() {
