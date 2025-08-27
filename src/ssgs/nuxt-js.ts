@@ -1,4 +1,4 @@
-import Ssg from './ssg.js';
+import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg';
 
 export default class NuxtJs extends Ssg {
 	constructor() {
@@ -7,12 +7,11 @@ export default class NuxtJs extends Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		commands.build.push({

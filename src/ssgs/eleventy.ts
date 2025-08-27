@@ -1,12 +1,18 @@
-import { joinPaths, stripBottomPath } from '../utility.js';
-import Ssg from './ssg.js';
+import type { CollectionConfig, MarkdownSettings } from '@cloudcannon/configuration-types';
+import { joinPaths, stripBottomPath } from '../utility';
+import Ssg, {
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+	type GenerateCollectionConfigOptions,
+	type GenerateCollectionsConfigOptions,
+} from './ssg';
 
 export default class Eleventy extends Ssg {
 	constructor() {
 		super('eleventy');
 	}
 
-	configPaths() {
+	configPaths(): string[] {
 		return super
 			.configPaths()
 			.concat([
@@ -19,21 +25,21 @@ export default class Eleventy extends Ssg {
 			]);
 	}
 
-	templateExtensions() {
+	templateExtensions(): string[] {
 		return super
 			.templateExtensions()
 			.concat(['.njk', '.liquid', '.hbs', '.ejs', '.webc', '.mustache', '.haml', '.pug']);
 	}
 
-	contentExtensions() {
+	contentExtensions(): string[] {
 		return super.contentExtensions().concat(['.html']);
 	}
 
-	partialFolders() {
+	partialFolders(): string[] {
 		return super.partialFolders().concat(['_includes/']);
 	}
 
-	ignoredFolders() {
+	ignoredFolders(): string[] {
 		return super.ignoredFolders().concat([
 			'_site/', // build output
 		]);
@@ -43,11 +49,8 @@ export default class Eleventy extends Ssg {
 
 	/**
 	 * Attempts to find the most likely source folder.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @returns {string | undefined}
 	 */
-	getSource(filePaths) {
+	getSource(filePaths: string[]): string | undefined {
 		const source = super.getSource(filePaths);
 		if (source !== undefined) {
 			return source;
@@ -61,13 +64,12 @@ export default class Eleventy extends Ssg {
 
 	/**
 	 * Generates a collection config entry.
-	 *
-	 * @param key {string}
-	 * @param path {string}
-	 * @param options {import('../types').GenerateCollectionConfigOptions}
-	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
-	generateCollectionConfig(key, path, options) {
+	generateCollectionConfig(
+		key: string,
+		path: string,
+		options: GenerateCollectionConfigOptions
+	): CollectionConfig {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
 		if (path === '_data' || path.endsWith('/_data')) {
@@ -84,21 +86,16 @@ export default class Eleventy extends Ssg {
 	 * Filters out collection paths that are collections, but exist in isolated locations.
 	 * Used when a data folder (or similar) is causing all collections to group under one
 	 * `collections_config` entry.
-	 *
-	 * @param collectionPaths {string[]}
-	 * @param options {import('../types').GenerateCollectionsConfigOptions}
-	 * @returns {string[]}
 	 */
-	filterContentCollectionPaths(collectionPaths, options) {
+	filterContentCollectionPaths(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): string[] {
 		const dataPath = joinPaths([options.basePath, '_data']);
 		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
 	}
 
-	/**
-	 * @param _config {Record<string, any>}
-	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
-	 */
-	generateMarkdown(_config) {
+	generateMarkdown(_config: Record<string, any> | undefined): MarkdownSettings {
 		return {
 			engine: 'commonmark',
 			options: {
@@ -109,12 +106,11 @@ export default class Eleventy extends Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		commands.build.unshift({

@@ -19,9 +19,11 @@ steps:
       ╎        "name": "Staff",
       ╎        "icon": "group",
       ╎        "disable_url": true,
-      ╎        "sort": {
-      ╎          "key": "credentials"
-      ╎        }
+      ╎        "sort_options": [
+      ╎          {
+      ╎            "key": "credentials"
+      ╎          }
+      ╎        ]
       ╎      }
       ╎    },
       ╎    "paths": {
