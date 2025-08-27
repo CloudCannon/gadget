@@ -1,0 +1,72 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"ignore": [
+			".zed/**",
+			"package.json",
+			"package-lock.json",
+			"CHANGELOG.md",
+			".github/**",
+			".backstage/**",
+			"toolproof_tests/test_sites/**"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineEnding": "lf",
+		"lineWidth": 100
+	},
+	"javascript": {
+		"formatter": {
+			"quoteProperties": "asNeeded",
+			"trailingCommas": "es5",
+			"semicolons": "always",
+			"arrowParentheses": "always",
+			"bracketSameLine": false,
+			"quoteStyle": "single"
+		}
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"noParameterAssign": "off",
+				"noInferrableTypes": "off"
+			},
+			"complexity": {
+				"useArrowFunction": "off",
+				"noForEach": "off",
+				"noUselessThisAlias": "off"
+			},
+			"correctness": {
+				"noVoidTypeReturn": "off",
+				"noUnusedImports": "error"
+			},
+			"suspicious": {
+				"noExplicitAny": "off",
+				"noControlCharactersInRegex": "off",
+				"noShadowRestrictedNames": "off",
+				"noImplicitAnyLet": "warn"
+			},
+			"nursery": {
+				"useExplicitType": "warn"
+			},
+			"performance": {
+				"noDelete": "off",
+				"noAccumulatingSpread": "warn"
+			}
+		}
+	}
+}

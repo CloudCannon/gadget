@@ -1,19 +1,19 @@
-import Bridgetown from './bridgetown.js';
-import Eleventy from './eleventy.js';
-import Hugo from './hugo.js';
-import Jekyll from './jekyll.js';
-import NextJs from './next-js.js';
-import Ssg from './ssg.js';
-import Sveltekit from './sveltekit.js';
-import Static from './static.js';
-import Astro from './astro.js';
-import NuxtJs from './nuxt-js.js';
-import Gatsby from './gatsby.js';
-import MkDocs from './mkdocs.js';
-import Lume from './lume.js';
+import type { SsgKey } from '@cloudcannon/configuration-types';
+import Astro from './astro';
+import Bridgetown from './bridgetown';
+import Eleventy from './eleventy';
+import Gatsby from './gatsby';
+import Hugo from './hugo';
+import Jekyll from './jekyll';
+import Lume from './lume';
+import MkDocs from './mkdocs';
+import NextJs from './next-js';
+import NuxtJs from './nuxt-js';
+import Ssg from './ssg';
+import Static from './static';
+import Sveltekit from './sveltekit';
 
-/** @type {Record<import('@cloudcannon/configuration-types').SsgKey, Ssg>} */
-export const ssgs = {
+export const ssgs: Record<SsgKey, Ssg> = {
 	hugo: new Hugo(),
 	jekyll: new Jekyll(),
 	eleventy: new Eleventy(),
@@ -37,13 +37,9 @@ const ssgValues = Object.values(ssgs);
 
 /**
  * Finds the most likely SSG for a set of files.
- *
- * @param filePaths {string[]} A list of file paths.
- * @returns {Ssg} The assumed SSG.
  */
-export function guessSsg(filePaths) {
-	/** @type {Record<import('@cloudcannon/configuration-types').SsgKey, number>} */
-	const scores = {
+export function guessSsg(filePaths: string[]): Ssg {
+	const scores: Record<SsgKey, number> = {
 		hugo: 0,
 		jekyll: 0,
 		eleventy: 0,
@@ -71,6 +67,6 @@ export function guessSsg(filePaths) {
 
 	return ssgValues.reduce(
 		(previous, current) => (scores[previous.key] < scores[current.key] ? current : previous),
-		ssgs.other,
+		ssgs.other
 	);
 }

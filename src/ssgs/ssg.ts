@@ -1,34 +1,77 @@
-import { extname } from 'path';
-import { basename } from 'path';
+import { extname } from 'node:path';
+import { basename } from 'node:path';
+import type {
+	CollectionConfig,
+	MarkdownSettings,
+	Paths,
+	SnippetsImports,
+	SsgKey,
+	Timezone,
+} from '@cloudcannon/configuration-types';
 import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
-import { findIcon } from '../icons.js';
-import { last, parseDataFile, stripTopPath } from '../utility.js';
-import { findBasePath, getCollectionPaths } from '../collections.js';
+import { findBasePath, getCollectionPaths } from '../collections';
+import { findIcon } from '../icons';
+import { last, parseDataFile, stripTopPath } from '../utility';
+
+export type FileType = 'config' | 'content' | 'template' | 'partial' | 'ignored' | 'other';
+
+export interface FileSummary {
+	filePath: string;
+	type: FileType;
+	collectionPaths?: string[];
+}
+
+export interface GroupedFileSummaries {
+	groups: Record<FileType, FileSummary[]>;
+	collectionPathCounts: Record<string, number>;
+}
+
+export interface GenerateCollectionsConfigOptions {
+	config?: Record<string, any>;
+	source?: string;
+	basePath: string;
+	filePaths: string[];
+}
+
+export interface GenerateBuildCommandsOptions {
+	config?: Record<string, any>;
+	source?: string;
+	readFile?: (path: string) => Promise<string | undefined>;
+}
+
+export interface GenerateCollectionConfigOptions extends GenerateCollectionsConfigOptions {
+	collectionPaths: string[];
+}
+
+export interface BuildCommandSuggestion {
+	value: string;
+	/** Describes why this build suggestion was made */
+	attribution: string;
+}
+
+export interface BuildCommands {
+	install: BuildCommandSuggestion[];
+	build: BuildCommandSuggestion[];
+	output: BuildCommandSuggestion[];
+	environment: Record<string, BuildCommandSuggestion>;
+	preserved: BuildCommandSuggestion[];
+}
 
 export default class Ssg {
-	/** @type {import('@cloudcannon/configuration-types').SsgKey} */
-	key;
+	key: SsgKey;
 
-	/**
-	 * @param key {import('@cloudcannon/configuration-types').SsgKey | undefined=}
-	 */
-	constructor(key) {
+	constructor(key?: SsgKey) {
 		this.key = key || 'other';
 	}
 
 	/**
 	 * Provides a summary of files.
-	 *
-	 * @param filePaths {string[]} The input file path.
-	 * @returns {import('../types').GroupedFileSummaries} The file summaries grouped by type.
 	 */
-	groupFiles(filePaths) {
-		/** @type {Record<string, number>} */
-		const collectionPathCounts = {};
+	groupFiles(filePaths: string[]): GroupedFileSummaries {
+		const collectionPathCounts: Record<string, number> = {};
 
-		/** @type {Record<import('../types').FileType, import('../types').FileSummary[]>} */
-		const groups = {
+		const groups: Record<FileType, FileSummary[]> = {
 			config: [],
 			content: [],
 			partial: [],
@@ -59,16 +102,12 @@ export default class Ssg {
 		return { collectionPathCounts, groups };
 	}
 
-	/** @type {string[]} */
-	conventionalPathsInSource = [];
+	conventionalPathsInSource: string[] = [];
 
 	/**
 	 * Attempts to find the most likely source folder for a Jekyll site.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @returns {{ filePath?: string, conventionPath?: string }}
 	 */
-	findConventionPath(filePaths) {
+	findConventionPath(filePaths: string[]): { filePath?: string; conventionPath?: string } {
 		for (let i = 0; i < filePaths.length; i++) {
 			for (let j = 0; j < this.conventionalPathsInSource.length; j++) {
 				if (
@@ -88,42 +127,31 @@ export default class Ssg {
 
 	/**
 	 * Attempts to find the current timezone.
-	 *
-	 * @returns {import('@cloudcannon/configuration-types').Timezone | undefined}
 	 */
-	getTimezone() {
+	getTimezone(): Timezone | undefined {
 		const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-		return /** @type {import('@cloudcannon/configuration-types').Timezone | undefined} */ (
-			timezone
-		);
+		return timezone as Timezone;
 	}
 
-	/**
-	 * @returns {string[]}
-	 */
-	configPaths() {
+	configPaths(): string[] {
 		return [];
 	}
 
 	/**
 	 * Returns a prioritised list of config file paths from the provided set.
-	 *
-	 * @param configFilePaths {string[]} List of config files.
-	 * @returns {string[]}
 	 */
-	sortConfigFilePaths(configFilePaths) {
+	sortConfigFilePaths(configFilePaths: string[]): string[] {
 		const configPaths = this.configPaths();
 		return configFilePaths.sort((a, b) => configPaths.indexOf(a) - configPaths.indexOf(b));
 	}
 
 	/**
 	 * Returns the parsed contents of the first readable configuration file provided.
-	 *
-	 * @param configFilePaths {string[]} List of config files.
-	 * @param readFile {(path: string) => Promise<string | undefined>} Function to read files.
-	 * @returns {Promise<Record<string, any> | undefined>}
 	 */
-	async parseConfig(configFilePaths, readFile) {
+	async parseConfig(
+		configFilePaths: string[],
+		readFile: (path: string) => Promise<string | undefined>
+	): Promise<Record<string, any> | undefined> {
 		const sorted = this.sortConfigFilePaths(configFilePaths);
 		for (const configFilePath of sorted) {
 			try {
@@ -137,17 +165,11 @@ export default class Ssg {
 		}
 	}
 
-	/**
-	 * @returns {string[]}
-	 */
-	templateExtensions() {
+	templateExtensions(): string[] {
 		return ['.htm', '.html'];
 	}
 
-	/**
-	 * @returns {string[]}
-	 */
-	contentExtensions() {
+	contentExtensions(): string[] {
 		return [
 			'.md',
 			'.mdown',
@@ -162,10 +184,7 @@ export default class Ssg {
 		];
 	}
 
-	/**
-	 * @returns {string[]}
-	 */
-	partialFolders() {
+	partialFolders(): string[] {
 		return [
 			'layouts/', // general partials
 			'components/', // general partials
@@ -174,10 +193,7 @@ export default class Ssg {
 		];
 	}
 
-	/**
-	 * @returns {string[]}
-	 */
-	ignoredFolders() {
+	ignoredFolders(): string[] {
 		return [
 			'.git/',
 			'.github/',
@@ -189,10 +205,7 @@ export default class Ssg {
 		];
 	}
 
-	/**
-	 * @returns {string[]}
-	 */
-	ignoredFiles() {
+	ignoredFiles(): string[] {
 		return [
 			'.DS_Store',
 			'.eslintrc.json',
@@ -225,11 +238,8 @@ export default class Ssg {
 
 	/**
 	 * Checks if the file at this path is an SSG configuration file.
-	 *
-	 * @param filePath {string}
-	 * @returns {boolean}
 	 */
-	isConfigPath(filePath) {
+	isConfigPath(filePath: string): boolean {
 		const configPaths = this.configPaths();
 
 		for (let i = 0; i < configPaths.length; i++) {
@@ -243,11 +253,8 @@ export default class Ssg {
 
 	/**
 	 * Returns a score for how likely a file path relates to this SSG.
-	 *
-	 * @param filePath {string}
-	 * @returns {number}
 	 */
-	getPathScore(filePath) {
+	getPathScore(filePath: string): number {
 		if (this.isInIgnoredFolder(filePath)) {
 			return 0;
 		}
@@ -257,11 +264,8 @@ export default class Ssg {
 
 	/**
 	 * Checks if a file at this path in inside an ignored folder.
-	 *
-	 * @param filePath {string}
-	 * @returns {boolean}
 	 */
-	isInIgnoredFolder(filePath) {
+	isInIgnoredFolder(filePath: string): boolean {
 		const ignoredFolders = this.ignoredFolders();
 
 		for (let i = 0; i < ignoredFolders.length; i++) {
@@ -275,11 +279,8 @@ export default class Ssg {
 
 	/**
 	 * Checks if a file at this path is ignored.
-	 *
-	 * @param filePath {string}
-	 * @returns {boolean}
 	 */
-	isIgnoredFile(filePath) {
+	isIgnoredFile(filePath: string): boolean {
 		const ignoredFiles = this.ignoredFiles();
 
 		for (let i = 0; i < ignoredFiles.length; i++) {
@@ -293,11 +294,8 @@ export default class Ssg {
 
 	/**
 	 * Checks if we should skip a file at this path.
-	 *
-	 * @param filePath {string}
-	 * @returns {boolean}
 	 */
-	isIgnoredPath(filePath) {
+	isIgnoredPath(filePath: string): boolean {
 		return (
 			filePath.includes('.config.') ||
 			filePath.includes('/.') ||
@@ -309,21 +307,15 @@ export default class Ssg {
 
 	/**
 	 * Checks if the file at this path is a contains Markdown or structured content.
-	 *
-	 * @param filePath {string}
-	 * @returns {boolean}
 	 */
-	isContentPath(filePath) {
+	isContentPath(filePath: string): boolean {
 		return this.contentExtensions().includes(extname(filePath));
 	}
 
 	/**
 	 * Checks if the file at this path is an include, partial or layout file.
-	 *
-	 * @param filePath {string}
-	 * @returns {boolean}
 	 */
-	isPartialPath(filePath) {
+	isPartialPath(filePath: string): boolean {
 		const partialFolders = this.partialFolders();
 
 		for (let i = 0; i < partialFolders.length; i++) {
@@ -341,21 +333,15 @@ export default class Ssg {
 
 	/**
 	 * Checks if the file at this path is a template file.
-	 *
-	 * @param filePath {string}
-	 * @returns boolean
 	 */
-	isTemplatePath(filePath) {
+	isTemplatePath(filePath: string): boolean {
 		return this.templateExtensions().includes(extname(filePath));
 	}
 
 	/**
 	 * Finds the likely type of the file at this path.
-	 *
-	 * @param filePath {string}
-	 * @returns {import('../types').FileType}
 	 */
-	getFileType(filePath) {
+	getFileType(filePath: string): FileType {
 		if (this.isConfigPath(filePath)) {
 			return 'config';
 		}
@@ -381,11 +367,8 @@ export default class Ssg {
 
 	/**
 	 * Attempts to find the most likely source folder.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @returns {string | undefined}
 	 */
-	getSource(filePaths) {
+	getSource(filePaths: string[]): string | undefined {
 		const { filePath, conventionPath } = this.findConventionPath(filePaths);
 
 		if (filePath && conventionPath) {
@@ -396,13 +379,12 @@ export default class Ssg {
 
 	/**
 	 * Generates a collection config entry.
-	 *
-	 * @param key {string}
-	 * @param path {string}
-	 * @param _options {import('../types').GenerateCollectionConfigOptions}
-	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
-	generateCollectionConfig(key, path, _options) {
+	generateCollectionConfig(
+		key: string,
+		path: string,
+		_options: GenerateCollectionConfigOptions
+	): CollectionConfig {
 		const name = titleize(basename(key).replace(/[_-]/g, ' ').trim());
 
 		return {
@@ -414,12 +396,11 @@ export default class Ssg {
 
 	/**
 	 * Generates a collections config key from a path, avoiding existing keys.
-	 *
-	 * @param path {string}
-	 * @param collectionsConfig {Record<string, any>}
-	 * @returns {string}
 	 */
-	generateCollectionsConfigKey(path, collectionsConfig) {
+	generateCollectionsConfigKey(
+		path: string,
+		collectionsConfig: Record<string, CollectionConfig>
+	): string {
 		let key = slugify(path, { separator: '_' }) || 'pages';
 		let suffix = 1;
 
@@ -434,23 +415,21 @@ export default class Ssg {
 	 * Filters out collection paths that are collections, but exist in isolated locations.
 	 * Used when a data folder (or similar) is causing all collections to group under one
 	 * `collections_config` entry.
-	 *
-	 * @param collectionPaths {string[]}
-	 * @param _options {import('../types').GenerateCollectionsConfigOptions}
-	 * @returns {string[]}
 	 */
-	filterContentCollectionPaths(collectionPaths, _options) {
+	filterContentCollectionPaths(
+		collectionPaths: string[],
+		_options: GenerateCollectionsConfigOptions
+	): string[] {
 		return collectionPaths;
 	}
 
 	/**
 	 * Generates collections config from a set of paths.
-	 *
-	 * @param collectionPaths {string[]}
-	 * @param options {import('../types').GenerateCollectionsConfigOptions}
-	 * @returns {import('../types').CollectionsConfig}
 	 */
-	generateCollectionsConfig(collectionPaths, options) {
+	generateCollectionsConfig(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): Record<string, CollectionConfig> {
 		const contentCollectionPaths = this.filterContentCollectionPaths(collectionPaths, options);
 
 		const hasNonContentCollection =
@@ -458,12 +437,12 @@ export default class Ssg {
 
 		const basePath = stripTopPath(
 			hasNonContentCollection ? findBasePath(contentCollectionPaths) : options.basePath,
-			options.source,
+			options.source
 		);
 
 		const sortedPaths = collectionPaths.sort((a, b) => a.length - b.length);
-		const seenPaths = /** @type {string[]} */ ([]);
-		const collectionsConfig = /** @type {import('../types').CollectionsConfig} */ ({});
+		const seenPaths: string[] = [];
+		const collectionsConfig: Record<string, CollectionConfig> = {};
 
 		for (const fullPath of sortedPaths) {
 			const path = stripTopPath(fullPath, options.source);
@@ -472,8 +451,9 @@ export default class Ssg {
 			if (seenPaths.some((seenPath) => pathInBasePath.startsWith(seenPath))) {
 				// Skip collection if higher level path seen before
 				continue;
-			} else if (pathInBasePath) {
-				seenPaths.push(pathInBasePath + '/');
+			}
+			if (pathInBasePath) {
+				seenPaths.push(`${pathInBasePath}/`);
 			}
 
 			const key = this.generateCollectionsConfigKey(pathInBasePath, collectionsConfig);
@@ -488,14 +468,12 @@ export default class Ssg {
 	}
 
 	/**
-	 * Generates collections config from a set of paths.
-	 *
-	 * @param collectionsConfig {import('../types').CollectionsConfig}
-	 * @returns {import('../types').CollectionsConfig}
+	 * Sorts a collections config.
 	 */
-	sortCollectionsConfig(collectionsConfig) {
-		/** @type {import('../types').CollectionsConfig} */
-		const sorted = {};
+	sortCollectionsConfig(
+		collectionsConfig: Record<string, CollectionConfig>
+	): Record<string, CollectionConfig> {
+		const sorted: Record<string, CollectionConfig> = {};
 
 		const sortedKeys = Object.keys(collectionsConfig).sort((a, b) => {
 			const aCollectionConfig = collectionsConfig[a];
@@ -527,11 +505,7 @@ export default class Ssg {
 		return sorted;
 	}
 
-	/**
-	 * @param _config {Record<string, any> | undefined}
-	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
-	 */
-	generateMarkdown(_config) {
+	generateMarkdown(_config: Record<string, any> | undefined): MarkdownSettings {
 		return {
 			engine: 'commonmark',
 			options: {},
@@ -540,14 +514,12 @@ export default class Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
-		/** @type {import('../types').BuildCommands} */
-		const commands = {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
+		const commands: BuildCommands = {
 			install: [],
 			build: [],
 			output: [],
@@ -613,12 +585,12 @@ export default class Ssg {
 
 		/**
 		 * Check a value from a settings file and add to build commands.
-		 *
-		 * @param value {unknown}
-		 * @param filename {string}
-		 * @param type {keyof import('../types').BuildCommands}
 		 */
-		const validateAndAddCommandFromSettings = (value, filename, type) => {
+		const validateAndAddCommandFromSettings = (
+			value: unknown,
+			filename: string,
+			type: keyof BuildCommands
+		): void => {
 			if (value && typeof value === 'string') {
 				if (type === 'environment') {
 					commands[type].value = {
@@ -642,7 +614,7 @@ export default class Ssg {
 					validateAndAddCommandFromSettings(
 						parsed?.build?.install_dependencies_command,
 						forestrySettingsPath,
-						'install',
+						'install'
 					);
 				} catch (_e) {}
 			}
@@ -673,23 +645,16 @@ export default class Ssg {
 	}
 
 	/**
-	 * Generates path configuration
-	 *
-	 * @returns {import('@cloudcannon/configuration-types').Paths | undefined}
+	 * Generates path configuration.
 	 */
-	getPaths() {
+	getPaths(): Paths | undefined {
 		return {
 			static: '',
 			uploads: 'uploads',
 		};
 	}
 
-	/**
-	 * Generates path configuration
-	 *
-	 * @returns {import('@cloudcannon/configuration-types').SnippetsImports | undefined}
-	 */
-	getSnippetsImports() {
+	getSnippetsImports(): SnippetsImports | undefined {
 		return;
 	}
 }

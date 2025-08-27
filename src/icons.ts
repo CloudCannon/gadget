@@ -1,22 +1,19 @@
+import type { Icon } from '@cloudcannon/configuration-types';
 import leven from 'leven';
 
 /**
  * Finds an icon closest to the query provided.
- *
- * @param query {string}
- * @returns {import('@cloudcannon/configuration-types').Icon}
  */
-export function findIcon(query) {
+export function findIcon(query: string): Icon {
 	return (
 		overrides[query] ||
 		icons.reduce((previous, current) =>
-			leven(query, current) < leven(query, previous) ? current : previous,
+			leven(query, current) < leven(query, previous) ? current : previous
 		)
 	);
 }
 
-/** @type {Record<string, import('@cloudcannon/configuration-types').Icon>} */
-const overrides = {
+const overrides: Record<string, Icon> = {
 	collection_pages: 'photo_library',
 	pages: 'wysiwyg',
 	content: 'wysiwyg',
@@ -31,11 +28,10 @@ const overrides = {
 	staff_members: 'group',
 	recipes: 'local_dining',
 	news_posts: 'newsmode',
-	news: 'newsmode'
+	news: 'newsmode',
 };
 
-/** @type {Array<import('@cloudcannon/configuration-types').Icon>} */
-const icons = [
+const icons: Icon[] = [
 	'10k',
 	'10mp',
 	'11mp',

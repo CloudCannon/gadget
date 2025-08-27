@@ -10,7 +10,11 @@ steps:
         "private": "true",
         "dependencies": {
           "@cloudcannon/gadget": "file:%gadget_dir%",
+          "tsx": "^4.20.4",
           "fdir": "^6.1.1"
+        },
+        "scripts": {
+          "go": "tsx gadget.js"
         }
       }
   - step: I have a "gadget.js" file with the content {js}
@@ -31,4 +35,4 @@ steps:
 
       console.log(JSON.stringify(config, undefined, 2));
   - I run "npm i"
-  - I run "node gadget.js"
+  - I run "npm -s run go"

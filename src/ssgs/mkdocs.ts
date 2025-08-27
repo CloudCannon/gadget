@@ -1,28 +1,23 @@
-import Ssg from './ssg.js';
+import Ssg, { type GenerateBuildCommandsOptions, type BuildCommands } from './ssg';
 
 export default class MkDocs extends Ssg {
 	constructor() {
 		super('mkdocs');
 	}
 
-	/** @type {string[]} */
 	conventionalPathsInSource = ['docs/'];
 
-	/**
-	 * @returns {string[]}
-	 */
-	configPaths() {
+	configPaths(): string[] {
 		return ['mkdocs.yml'];
 	}
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 		const usePip = filePaths.includes('requirements.txt');
 		const usePipEnv = filePaths.includes('Pipfile');
@@ -42,7 +37,7 @@ export default class MkDocs extends Ssg {
 				attribution: 'because of your `requirements.txt` file',
 			});
 
-			commands.environment['PIP_CACHE_DIR'] = {
+			commands.environment.PIP_CACHE_DIR = {
 				value: '/usr/local/__site/src/.pip_cache/',
 				attribution: 'recommended for speeding up pip installs',
 			};
@@ -59,7 +54,7 @@ export default class MkDocs extends Ssg {
 				attribution: 'because of your `Pipfile`',
 			});
 
-			commands.environment['PIPENV_CACHE_DIR'] = {
+			commands.environment.PIPENV_CACHE_DIR = {
 				value: '/usr/local/__site/src/.pipenv_cache/',
 				attribution: 'recommended for speeding up pipenv installs',
 			};

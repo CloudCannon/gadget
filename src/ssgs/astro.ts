@@ -1,21 +1,22 @@
-import Ssg from './ssg.js';
+import type { CollectionConfig, MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
+import Ssg, {
+	type GenerateBuildCommandsOptions,
+	type BuildCommands,
+	type GenerateCollectionConfigOptions,
+} from './ssg';
 
 export default class Astro extends Ssg {
 	constructor() {
 		super('astro');
 	}
 
-	/** @type {string[]} */
 	conventionalPathsInSource = ['src/', 'public/'];
 
-	/**
-	 * @returns {string[]}
-	 */
-	configPaths() {
+	configPaths(): string[] {
 		return ['astro.config.mjs', 'astro.config.cjs', 'astro.config.js', 'astro.config.ts'];
 	}
 
-	ignoredFolders() {
+	ignoredFolders(): string[] {
 		return super.ignoredFolders().concat([
 			'public/', // passthrough asset folder
 			'dist/', // default output
@@ -23,7 +24,7 @@ export default class Astro extends Ssg {
 		]);
 	}
 
-	templateExtensions() {
+	templateExtensions(): string[] {
 		return super.templateExtensions().concat(['.astro', '.tsx', '.jsx', '.vue', '.svelte']);
 	}
 
@@ -31,25 +32,23 @@ export default class Astro extends Ssg {
 	 * Filters out collection paths that are collections, but exist in isolated locations.
 	 * Used when a data folder (or similar) is causing all collections to group under one
 	 * `collections_config` entry.
-	 *
-	 * @param collectionPaths {string[]}
-	 * @param _options {{ config?: Record<string, any>; source?: string; basePath: string; }}
-	 * @returns {string[]}
 	 */
-	filterContentCollectionPaths(collectionPaths, _options) {
+	filterContentCollectionPaths(
+		collectionPaths: string[],
+		_options: { config?: Record<string, any>; source?: string; basePath: string }
+	): string[] {
 		return collectionPaths.filter(
-			(path) => path.startsWith('src/content') || path.startsWith('src/pages'),
+			(path) => path.startsWith('src/content') || path.startsWith('src/pages')
 		);
 	}
 
 	/**
 	 * Generates a collections config key from a path, avoiding existing keys.
-	 *
-	 * @param path {string}
-	 * @param collectionsConfig {Record<string, any>}
-	 * @returns {string}
 	 */
-	generateCollectionsConfigKey(path, collectionsConfig) {
+	generateCollectionsConfigKey(
+		path: string,
+		collectionsConfig: Record<string, CollectionConfig>
+	): string {
 		const key = super.generateCollectionsConfigKey(path, collectionsConfig);
 
 		if (key.startsWith('content_')) {
@@ -64,13 +63,12 @@ export default class Astro extends Ssg {
 
 	/**
 	 * Generates a collection config entry.
-	 *
-	 * @param key {string}
-	 * @param path {string}
-	 * @param options {import('../types').GenerateCollectionConfigOptions}
-	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
-	generateCollectionConfig(key, path, options) {
+	generateCollectionConfig(
+		key: string,
+		path: string,
+		options: GenerateCollectionConfigOptions
+	): CollectionConfig {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
 		if (
@@ -85,12 +83,11 @@ export default class Astro extends Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		commands.build.push({
@@ -106,11 +103,9 @@ export default class Astro extends Ssg {
 	}
 
 	/**
-	 * Generates path configuration
-	 *
-	 * @returns {import('@cloudcannon/configuration-types').Paths | undefined}
+	 * Generates path configuration.
 	 */
-	getPaths() {
+	getPaths(): Paths | undefined {
 		return {
 			...super.getPaths(),
 			static: 'public',
@@ -118,11 +113,7 @@ export default class Astro extends Ssg {
 		};
 	}
 
-	/**
-	 * @param _config {Record<string, any> | undefined}
-	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
-	 */
-	generateMarkdown(_config) {
+	generateMarkdown(_config: Record<string, any> | undefined): MarkdownSettings {
 		return {
 			engine: 'commonmark',
 			options: {

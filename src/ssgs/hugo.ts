@@ -1,13 +1,25 @@
-import { findBasePath } from '../collections.js';
-import { decodeEntity, joinPaths, normalisePath } from '../utility.js';
-import Ssg from './ssg.js';
+import type {
+	CollectionConfig,
+	MarkdownAttributeElementOptions,
+	MarkdownSettings,
+	Paths,
+	SnippetsImports,
+} from '@cloudcannon/configuration-types';
+import { findBasePath } from '../collections';
+import { decodeEntity, joinPaths, normalisePath } from '../utility';
+import Ssg, {
+	type GenerateBuildCommandsOptions,
+	type BuildCommands,
+	type GenerateCollectionConfigOptions,
+	type GenerateCollectionsConfigOptions,
+} from './ssg';
 
 export default class Hugo extends Ssg {
 	constructor() {
 		super('hugo');
 	}
 
-	configPaths() {
+	configPaths(): string[] {
 		return super.configPaths().concat([
 			'hugo.toml',
 			'hugo.yml',
@@ -21,23 +33,23 @@ export default class Hugo extends Ssg {
 		]);
 	}
 
-	templateExtensions() {
+	templateExtensions(): string[] {
 		return [];
 	}
 
-	partialFolders() {
+	partialFolders(): string[] {
 		return super.partialFolders().concat([
 			'archetypes/', // scaffolding templates
 		]);
 	}
 
-	ignoredFiles() {
+	ignoredFiles(): string[] {
 		return super.ignoredFiles().concat([
 			'theme.toml', // config file for a hugo theme repo
 		]);
 	}
 
-	ignoredFolders() {
+	ignoredFolders(): string[] {
 		return super.ignoredFolders().concat([
 			'static/', // passthrough asset folder
 			'assets/', // unprocessed asset folder
@@ -61,13 +73,12 @@ export default class Hugo extends Ssg {
 
 	/**
 	 * Generates a collection config entry.
-	 *
-	 * @param key {string}
-	 * @param path {string}
-	 * @param options {import('../types').GenerateCollectionConfigOptions}
-	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
-	generateCollectionConfig(key, path, options) {
+	generateCollectionConfig(
+		key: string,
+		path: string,
+		options: GenerateCollectionConfigOptions
+	): CollectionConfig {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
 		const hasParentCollectionPath = options.collectionPaths.some((otherCollectionPath) => {
@@ -96,12 +107,8 @@ export default class Hugo extends Ssg {
 
 	/**
 	 * Returns the path to the Hugo data folder, optionally prepended with a base path.
-	 *
-	 * @param config {Record<string, any> | undefined}
-	 * @param basePath {string=}
-	 * @returns {string}
 	 */
-	getHugoDataPath(config, basePath) {
+	getHugoDataPath(config: Record<string, any> | undefined, basePath?: string): string {
 		return joinPaths([basePath, normalisePath(config?.dataDir ?? 'data') ?? 'data']);
 	}
 
@@ -109,39 +116,37 @@ export default class Hugo extends Ssg {
 	 * Filters out collection paths that are collections, but exist in isolated locations.
 	 * Used when a data folder (or similar) is causing all collections to group under one
 	 * `collections_config` entry.
-	 *
-	 * @param collectionPaths {string[]}
-	 * @param options {import('../types').GenerateCollectionsConfigOptions}
-	 * @returns {string[]}
 	 */
-	filterContentCollectionPaths(collectionPaths, options) {
+	filterContentCollectionPaths(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): string[] {
 		const dataPath = this.getHugoDataPath(options.config, options.basePath);
 		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
 	}
 
 	/**
 	 * Generates collections config from a set of paths.
-	 *
-	 * @param collectionPaths {string[]}
-	 * @param options {import('../types').GenerateCollectionsConfigOptions}
-	 * @returns {import('../types').CollectionsConfig}
 	 */
-	generateCollectionsConfig(collectionPaths, options) {
+	generateCollectionsConfig(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): Record<string, CollectionConfig> {
 		// Remove collection paths with a parent collection path and only a branch index file
 		collectionPaths = collectionPaths.filter((collectionPath) => {
 			const hasNonBranchIndexFile = options.filePaths.some(
-				(filePath) => filePath.startsWith(`${collectionPath}/`) && !filePath.endsWith('/_index.md'),
+				(filePath) => filePath.startsWith(`${collectionPath}/`) && !filePath.endsWith('/_index.md')
 			);
 
 			const hasParentCollectionPath = collectionPaths.some((otherCollectionPath) =>
-				collectionPath.startsWith(`${otherCollectionPath}/`),
+				collectionPath.startsWith(`${otherCollectionPath}/`)
 			);
 
 			return hasNonBranchIndexFile || !hasParentCollectionPath;
 		});
 
 		const collectionPathsOutsideExampleSite = collectionPaths.filter(
-			(path) => !path.includes('exampleSite/'),
+			(path) => !path.includes('exampleSite/')
 		);
 
 		const hasNonExampleSiteCollections =
@@ -159,17 +164,12 @@ export default class Hugo extends Ssg {
 		return super.generateCollectionsConfig(collectionPaths, options);
 	}
 
-	/**
-	 * @param config {Record<string, any> | undefined}
-	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
-	 */
-	generateMarkdown(config) {
+	generateMarkdown(config: Record<string, any> | undefined): MarkdownSettings {
 		const goldmark = config?.markup?.goldmark || {};
 		const { extensions, parser, renderer } = goldmark;
 		const extras = extensions?.extras || {};
 
-		/** @type {import('@cloudcannon/configuration-types').MarkdownSettings['options']} */
-		const options = {
+		const options: MarkdownSettings['options'] = {
 			gfm: true,
 		};
 
@@ -197,26 +197,30 @@ export default class Hugo extends Ssg {
 		options.treat_indentation_as_code = true;
 
 		if (options.attributes) {
-			/** @type {import('@cloudcannon/configuration-types').MarkdownAttributeElementOptions} */
-			const attribute_elements = {};
+			const attributeElements: MarkdownAttributeElementOptions = {};
 
-			/** @type {(keyof HTMLElementTagNameMap)[]} */
-			const headingTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+			const headingTags: (keyof HTMLElementTagNameMap)[] = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 			headingTags.forEach((tag) => {
-				attribute_elements[tag] = !!parser?.attribute?.title ? 'space right' : 'none';
+				attributeElements[tag] = parser?.attribute?.title ? 'space right' : 'none';
 			});
 
-			/** @type {(keyof HTMLElementTagNameMap)[]} */
-			const otherTags = ['blockquote', 'hr', 'ol', 'ul', 'p', 'table'];
+			const otherTags: (keyof HTMLElementTagNameMap)[] = [
+				'blockquote',
+				'hr',
+				'ol',
+				'ul',
+				'p',
+				'table',
+			];
 			otherTags.forEach((tag) => {
-				attribute_elements[tag] = !!parser?.attribute?.block ? 'below' : 'none';
+				attributeElements[tag] = parser?.attribute?.block ? 'below' : 'none';
 			});
 
 			const imgAttrsAllowed =
 				!!parser?.attribute?.block && parser?.wrapStandAloneImageWithinParagraph === false;
-			attribute_elements.img = imgAttrsAllowed ? 'below' : 'none';
+			attributeElements.img = imgAttrsAllowed ? 'below' : 'none';
 
-			options.attribute_elements = attribute_elements;
+			options.attribute_elements = attributeElements;
 		}
 
 		return {
@@ -227,12 +231,11 @@ export default class Hugo extends Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		commands.build.unshift({
@@ -244,7 +247,7 @@ export default class Hugo extends Ssg {
 			attribution: 'most common for Hugo sites',
 		});
 
-		commands.environment['HUGO_CACHEDIR'] = {
+		commands.environment.HUGO_CACHEDIR = {
 			value: '/usr/local/__site/src/.hugo_cache/',
 			attribution: 'recommended for Hugo sites',
 		};
@@ -257,18 +260,13 @@ export default class Hugo extends Ssg {
 			{
 				value: '.hugo_cache/',
 				attribution: 'recommended for speeding up Hugo builds',
-			},
+			}
 		);
 
 		return commands;
 	}
 
-	/**
-	 * Generates path configuration
-	 *
-	 * @returns {import('@cloudcannon/configuration-types').SnippetsImports | undefined}
-	 */
-	getSnippetsImports() {
+	getSnippetsImports(): SnippetsImports | undefined {
 		return {
 			...super.getSnippetsImports(),
 			hugo: {
@@ -278,11 +276,9 @@ export default class Hugo extends Ssg {
 	}
 
 	/**
-	 * Generates path configuration
-	 *
-	 * @returns {import('@cloudcannon/configuration-types').Paths | undefined}
+	 * Generates path configuration.
 	 */
-	getPaths() {
+	getPaths(): Paths | undefined {
 		return {
 			...super.getPaths(),
 			static: 'static',

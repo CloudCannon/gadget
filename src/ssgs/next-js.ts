@@ -1,19 +1,19 @@
-import Ssg from './ssg.js';
+import Ssg, { type GenerateBuildCommandsOptions, type BuildCommands } from './ssg';
 
 export default class NextJs extends Ssg {
 	constructor() {
 		super('nextjs');
 	}
 
-	configPaths() {
+	configPaths(): string[] {
 		return super.configPaths().concat(['next.config.js', 'next.config.mjs']);
 	}
 
-	templateExtensions() {
+	templateExtensions(): string[] {
 		return super.templateExtensions().concat(['.tsx', '.jsx']);
 	}
 
-	ignoredFolders() {
+	ignoredFolders(): string[] {
 		return super.ignoredFolders().concat([
 			'out/', // build output
 			'.next/', // cache
@@ -23,12 +23,11 @@ export default class NextJs extends Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		commands.build.unshift({

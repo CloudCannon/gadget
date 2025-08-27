@@ -1,4 +1,4 @@
-import Ssg from './ssg.js';
+import Ssg, { type GenerateBuildCommandsOptions, type BuildCommands } from './ssg';
 
 export default class Lume extends Ssg {
 	constructor() {
@@ -7,12 +7,11 @@ export default class Lume extends Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types.js').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		commands.build.push({
@@ -27,7 +26,7 @@ export default class Lume extends Ssg {
 			value: '.deno_cache/',
 			attribution: 'recommended for speeding up Deno installs',
 		});
-		commands.environment['DENO_DIR'] = {
+		commands.environment.DENO_DIR = {
 			value: '/usr/local/__site/src/.deno_cache/',
 			attribution: 'recommended for speeding up Deno installs',
 		};
