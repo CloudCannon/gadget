@@ -76,6 +76,15 @@ it('generates configuration', async () => {
 						],
 					},
 					{
+						collections: [],
+						config: {
+							icon: 'contacts',
+							name: 'Contact',
+							path: 'contact',
+						},
+						key: 'contact',
+					},
+					{
 						key: 'content',
 						config: {
 							icon: 'wysiwyg',

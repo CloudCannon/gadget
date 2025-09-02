@@ -90,7 +90,7 @@ export default class Ssg {
 				type: this.getFileType(filePaths[i]),
 			};
 
-			if (summary.type === 'content') {
+			if (summary.type === 'content' || summary.type === 'template') {
 				const lastPath = last(getCollectionPaths(filePaths[i]));
 				if (lastPath || lastPath === '') {
 					collectionPathCounts[lastPath] = collectionPathCounts[lastPath] || 0;

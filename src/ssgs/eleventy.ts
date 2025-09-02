@@ -31,10 +31,6 @@ export default class Eleventy extends Ssg {
 			.concat(['.njk', '.liquid', '.hbs', '.ejs', '.webc', '.mustache', '.haml', '.pug']);
 	}
 
-	contentExtensions(): string[] {
-		return super.contentExtensions().concat(['.html']);
-	}
-
 	partialFolders(): string[] {
 		return super.partialFolders().concat(['_includes/']);
 	}

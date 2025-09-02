@@ -1,0 +1,74 @@
+name: Astro starter blog
+
+steps:
+  - I run "cp -R %test_sites%/astro-starter-blog src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "astro",
+      ╎  "config": {
+      ╎    "paths": {
+      ╎      "static": "public",
+      ╎      "uploads": "public/uploads"
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true
+      ╎      }
+      ╎    }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "src",
+      ╎      "config": {
+      ╎        "path": "src",
+      ╎        "name": "Src",
+      ╎        "icon": "abc",
+      ╎        "disable_url": true
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "pages",
+      ╎          "config": {
+      ╎            "path": "src/pages",
+      ╎            "name": "Pages",
+      ╎            "icon": "wysiwyg"
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "pages_blog",
+      ╎              "config": {
+      ╎                "path": "src/pages/blog",
+      ╎                "name": "Pages Blog",
+      ╎                "icon": "call_log"
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "content",
+      ╎          "config": {
+      ╎            "path": "src/content",
+      ╎            "name": "Content",
+      ╎            "icon": "wysiwyg"
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "blog",
+      ╎              "config": {
+      ╎                "path": "src/content/blog",
+      ╎                "name": "Blog",
+      ╎                "icon": "event_available"
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
+      ╎}

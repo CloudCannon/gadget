@@ -34,10 +34,6 @@ export default class Hugo extends Ssg {
 		]);
 	}
 
-	templateExtensions(): string[] {
-		return [];
-	}
-
 	partialFolders(): string[] {
 		return super.partialFolders().concat([
 			'archetypes/', // scaffolding templates

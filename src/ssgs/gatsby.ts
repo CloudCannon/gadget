@@ -5,6 +5,14 @@ export default class Gatsby extends Ssg {
 		super('gatsby');
 	}
 
+	isIgnoredFile(filePath: string): boolean {
+		return super.isIgnoredFile(filePath) || filePath.includes('{');
+	}
+
+	templateExtensions(): string[] {
+		return super.templateExtensions().concat(['.tsx', '.jsx']);
+	}
+
 	/**
 	 * Generates a list of build suggestions.
 	 */

@@ -21,6 +21,10 @@ export default class NextJs extends Ssg {
 		]);
 	}
 
+	isIgnoredFile(filePath: string): boolean {
+		return super.isIgnoredFile(filePath) || filePath.includes('[');
+	}
+
 	/**
 	 * Generates a list of build suggestions.
 	 */

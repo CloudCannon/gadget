@@ -24,6 +24,10 @@ export default class Astro extends Ssg {
 		]);
 	}
 
+	isIgnoredFile(filePath: string): boolean {
+		return super.isIgnoredFile(filePath) || filePath.includes('[');
+	}
+
 	templateExtensions(): string[] {
 		return super.templateExtensions().concat(['.astro', '.tsx', '.jsx', '.vue', '.svelte']);
 	}

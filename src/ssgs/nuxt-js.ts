@@ -5,6 +5,14 @@ export default class NuxtJs extends Ssg {
 		super('nuxtjs');
 	}
 
+	isIgnoredFile(filePath: string): boolean {
+		return super.isIgnoredFile(filePath) || filePath.includes('[');
+	}
+
+	templateExtensions(): string[] {
+		return super.templateExtensions().concat(['.vue']);
+	}
+
 	/**
 	 * Generates a list of build suggestions.
 	 */
