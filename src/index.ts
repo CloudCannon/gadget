@@ -71,7 +71,7 @@ export async function generateConfiguration(
 		markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
 	};
 
-	if (source && source !== '/') {
+	if (source) {
 		configuration.source = source;
 	}
 
