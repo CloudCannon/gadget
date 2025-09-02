@@ -13,19 +13,6 @@ steps:
       ╎{
       ╎  "ssg": "jekyll",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "staff": {
-      ╎        "path": "_staff",
-      ╎        "name": "Staff",
-      ╎        "icon": "group",
-      ╎        "disable_url": true,
-      ╎        "sort_options": [
-      ╎          {
-      ╎            "key": "credentials"
-      ╎          }
-      ╎        ]
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "",
       ╎      "uploads": "uploads"
@@ -52,5 +39,22 @@ steps:
       ╎    "_snippets_imports": {
       ╎      "jekyll": true
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "staff",
+      ╎      "config": {
+      ╎        "path": "_staff",
+      ╎        "name": "Staff",
+      ╎        "icon": "group",
+      ╎        "disable_url": true,
+      ╎        "sort_options": [
+      ╎          {
+      ╎            "key": "credentials"
+      ╎          }
+      ╎        ]
+      ╎      },
+      ╎      "collections": []
+      ╎    }
+      ╎  ]
       ╎}

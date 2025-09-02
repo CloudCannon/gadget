@@ -13,28 +13,6 @@ steps:
       ╎{
       ╎  "ssg": "eleventy",
       ╎  "config": {
-      ╎    "source": "sauce",
-      ╎    "collections_config": {
-      ╎      "pages": {
-      ╎        "path": "",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
-      ╎      },
-      ╎      "blog": {
-      ╎        "path": "blog",
-      ╎        "name": "Blog",
-      ╎        "icon": "event_available"
-      ╎      },
-      ╎      "data": {
-      ╎        "path": "_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "disable_url": true,
-      ╎        "disable_add": true,
-      ╎        "disable_add_folder": true,
-      ╎        "disable_file_actions": true
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "",
       ╎      "uploads": "uploads"
@@ -45,6 +23,51 @@ steps:
       ╎      "options": {
       ╎        "html": true
       ╎      }
+      ╎    },
+      ╎    "source": "sauce"
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "pages",
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "blog",
+      ╎          "config": {
+      ╎            "path": "blog",
+      ╎            "name": "Blog",
+      ╎            "icon": "event_available"
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "blog_follow_up",
+      ╎              "config": {
+      ╎                "path": "blog/follow-up",
+      ╎                "name": "Blog Follow Up",
+      ╎                "icon": "clock_arrow_up"
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "data",
+      ╎          "config": {
+      ╎            "path": "_data",
+      ╎            "name": "Data",
+      ╎            "icon": "data_usage",
+      ╎            "disable_url": true,
+      ╎            "disable_add": true,
+      ╎            "disable_add_folder": true,
+      ╎            "disable_file_actions": true
+      ╎          },
+      ╎          "collections": []
+      ╎        }
+      ╎      ]
       ╎    }
-      ╎  }
+      ╎  ]
       ╎}

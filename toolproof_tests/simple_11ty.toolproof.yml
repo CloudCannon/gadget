@@ -58,13 +58,6 @@ steps:
       ╎{
       ╎  "ssg": "eleventy",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "staff_members": {
-      ╎        "path": "staff-members",
-      ╎        "name": "Staff Members",
-      ╎        "icon": "group"
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "",
       ╎      "uploads": "uploads"
@@ -76,5 +69,16 @@ steps:
       ╎        "html": true
       ╎      }
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "staff_members",
+      ╎      "config": {
+      ╎        "path": "staff-members",
+      ╎        "name": "Staff Members",
+      ╎        "icon": "group"
+      ╎      },
+      ╎      "collections": []
+      ╎    }
+      ╎  ]
       ╎}

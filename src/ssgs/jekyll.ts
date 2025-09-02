@@ -4,10 +4,14 @@ import type {
 	MarkdownSettings,
 	SnippetsImports,
 } from '@cloudcannon/configuration-types';
+import slugify from '@sindresorhus/slugify';
+import { getCollectionPaths } from '../collections';
 import { kramdownAttributeElementOptions } from '../defaults';
-import { decodeEntity, joinPaths, stripTopPath } from '../utility';
+import { findIcon } from '../icons';
+import { decodeEntity, join, stripBottomPath, stripTopPath } from '../utility';
 import Ssg, {
 	type BuildCommands,
+	type CollectionConfigTree,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
 	type GenerateCollectionsConfigOptions,
@@ -204,7 +208,7 @@ export default class Jekyll extends Ssg {
 		// Handle defined collections.
 		for (const key of Object.keys(collections)) {
 			const collectionKey = key === 'pages' || key === 'data' ? `collection_${key}` : key;
-			const path = joinPaths([collectionsDir, `_${key}`]);
+			const path = join(collectionsDir, `_${key}`);
 			const collection = collections[key];
 
 			collectionsConfig[collectionKey] = this.generateCollectionConfig(collectionKey, path, {
@@ -243,7 +247,10 @@ export default class Jekyll extends Ssg {
 			}
 
 			const pathInCollectionsDir = stripTopPath(path, collectionsDir);
-			const key = this.generateCollectionsConfigKey(pathInCollectionsDir, collectionsConfig);
+			const key = this.generateCollectionsConfigKey(
+				pathInCollectionsDir,
+				Object.keys(collectionsConfig)
+			);
 			const collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
 			collectionsConfig[key] = this.generateCollectionConfig(key, path, {
 				...options,
@@ -287,6 +294,107 @@ export default class Jekyll extends Ssg {
 		}
 
 		return collectionsConfig;
+	}
+
+	/**
+	 * Generates a tree from a set of paths for selectively creating a collections_config.
+	 */
+	generateCollectionsConfigTree(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): CollectionConfigTree[] {
+		const collectionsDir = options.config?.collections_dir || '';
+		const collections = getJekyllCollections(options.config?.collections);
+
+		// Handle defined collections.
+		for (const key of Object.keys(collections)) {
+			const path = join(options.source, collectionsDir, `_${key}`);
+			if (!collectionPaths.includes(path)) {
+				collectionPaths.push(path);
+			}
+		}
+
+		const allCollectionPaths =
+			collectionPaths.length === 1
+				? collectionPaths
+				: collectionPaths.reduce((memo, path) => {
+						const allPaths = getCollectionPaths(path);
+
+						for (let i = 0; i < allPaths.length; i++) {
+							if (allPaths[i].startsWith(options.basePath)) {
+								memo.add(allPaths[i]);
+
+								if (isDraftsPath(path)) {
+									// Ensure there is a matching posts collection
+									memo.add(toPostsPath(path));
+								} else if (isPostsPath(path)) {
+									// Ensure there is a matching drafts collection
+									memo.add(toDraftsPath(path));
+								}
+							}
+						}
+						memo.add(path);
+						return memo;
+					}, new Set<string>());
+
+		const sortedPaths = Array.from(allCollectionPaths).sort((x, y) => {
+			return x.length - y.length || (x > y ? 1 : -1);
+		});
+
+		const seenKeys: Record<string, CollectionConfigTree> = {};
+		const seenPaths: Record<string, CollectionConfigTree> = {};
+		const trees: CollectionConfigTree[] = [];
+		const contentPrefix = `${slugify(collectionsDir, { separator: '_' })}_`;
+
+		for (let i = 0; i < sortedPaths.length; i++) {
+			const path = stripTopPath(sortedPaths[i], options.source);
+
+			const key = this.generateCollectionsConfigKey(path, Object.keys(seenKeys), {
+				fallback: !path ? 'source' : 'pages',
+				contentPrefix,
+			});
+
+			let collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
+			if (!collection) {
+				if (isDraftsPath(path)) {
+					collection = collections?.posts;
+				} else if (isPostsPath(path)) {
+					collection = collections?.drafts || collections?.posts;
+				}
+			}
+
+			const tree: CollectionConfigTree = {
+				key,
+				config: this.generateCollectionConfig(key, path, {
+					...options,
+					collectionPaths,
+					collection,
+				}),
+				collections: [],
+			};
+
+			const parentPath = stripBottomPath(path);
+			const parent = seenPaths[parentPath];
+
+			seenPaths[path] = tree;
+			seenKeys[key] = tree;
+
+			if (parent) {
+				parent.collections.push(tree);
+			} else {
+				trees.push(tree);
+			}
+		}
+
+		if (seenKeys.source && !seenKeys.pages) {
+			// Clean up the source collection if there is no pages entry
+			seenKeys.source.key = 'pages';
+			seenKeys.source.config.name = 'Pages';
+			seenKeys.source.config.icon = findIcon('pages');
+			delete seenKeys.source.config.disable_url;
+		}
+
+		return trees;
 	}
 
 	generateMarkdown(config: Record<string, any> | undefined): MarkdownSettings {

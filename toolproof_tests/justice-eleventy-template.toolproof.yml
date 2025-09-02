@@ -8,32 +8,6 @@ steps:
       ╎{
       ╎  "ssg": "eleventy",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "pages": {
-      ╎        "path": "pages",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
-      ╎      },
-      ╎      "posts": {
-      ╎        "path": "posts",
-      ╎        "name": "Posts",
-      ╎        "icon": "event_available"
-      ╎      },
-      ╎      "staff_members": {
-      ╎        "path": "staff-members",
-      ╎        "name": "Staff Members",
-      ╎        "icon": "group"
-      ╎      },
-      ╎      "data": {
-      ╎        "path": "_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "disable_url": true,
-      ╎        "disable_add": true,
-      ╎        "disable_add_folder": true,
-      ╎        "disable_file_actions": true
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "",
       ╎      "uploads": "uploads"
@@ -45,5 +19,57 @@ steps:
       ╎        "html": true
       ╎      }
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "source",
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "name": "Source",
+      ╎        "icon": "package_2"
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "data",
+      ╎          "config": {
+      ╎            "path": "_data",
+      ╎            "name": "Data",
+      ╎            "icon": "data_usage",
+      ╎            "disable_url": true,
+      ╎            "disable_add": true,
+      ╎            "disable_add_folder": true,
+      ╎            "disable_file_actions": true
+      ╎          },
+      ╎          "collections": []
+      ╎        },
+      ╎        {
+      ╎          "key": "pages",
+      ╎          "config": {
+      ╎            "path": "pages",
+      ╎            "name": "Pages",
+      ╎            "icon": "wysiwyg"
+      ╎          },
+      ╎          "collections": []
+      ╎        },
+      ╎        {
+      ╎          "key": "posts",
+      ╎          "config": {
+      ╎            "path": "posts",
+      ╎            "name": "Posts",
+      ╎            "icon": "event_available"
+      ╎          },
+      ╎          "collections": []
+      ╎        },
+      ╎        {
+      ╎          "key": "staff_members",
+      ╎          "config": {
+      ╎            "path": "staff-members",
+      ╎            "name": "Staff Members",
+      ╎            "icon": "group"
+      ╎          },
+      ╎          "collections": []
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
       ╎}

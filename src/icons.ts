@@ -1,16 +1,11 @@
 import type { Icon } from '@cloudcannon/configuration-types';
-import leven from 'leven';
+import { closest } from 'fastest-levenshtein';
 
 /**
  * Finds an icon closest to the query provided.
  */
 export function findIcon(query: string): Icon {
-	return (
-		overrides[query] ||
-		icons.reduce((previous, current) =>
-			leven(query, current) < leven(query, previous) ? current : previous
-		)
-	);
+	return overrides[query] || (closest(query, icons) as Icon);
 }
 
 const overrides: Record<string, Icon> = {
@@ -22,10 +17,12 @@ const overrides: Record<string, Icon> = {
 	blog: 'event_available',
 	drafts: 'event',
 	draft: 'event',
+	stats: 'analytics',
 	data: 'data_usage',
 	authors: 'person',
 	staff: 'group',
 	staff_members: 'group',
+	source: 'package_2',
 	recipes: 'local_dining',
 	news_posts: 'newsmode',
 	news: 'newsmode',

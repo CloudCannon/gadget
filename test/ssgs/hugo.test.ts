@@ -23,7 +23,7 @@ async function parseConfigFromMultipleCandidates(
 ): Promise<void> {
 	const hugo = new Hugo();
 	const config = await hugo.parseConfig(filePaths, readFileMock);
-	expect(config).toEqual({ path: expectedFile });
+	expect(config).toStrictEqual({ path: expectedFile });
 }
 
 it('reads config', async () => {

@@ -1,5 +1,5 @@
 import type { CollectionConfig, MarkdownSettings } from '@cloudcannon/configuration-types';
-import { joinPaths, stripBottomPath } from '../utility';
+import { join, stripBottomPath } from '../utility';
 import Ssg, {
 	type BuildCommands,
 	type GenerateBuildCommandsOptions,
@@ -91,7 +91,7 @@ export default class Eleventy extends Ssg {
 		collectionPaths: string[],
 		options: GenerateCollectionsConfigOptions
 	): string[] {
-		const dataPath = joinPaths([options.basePath, '_data']);
+		const dataPath = join(options.basePath, '_data');
 		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
 	}
 

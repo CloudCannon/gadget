@@ -43,25 +43,6 @@ export default class Astro extends Ssg {
 	}
 
 	/**
-	 * Generates a collections config key from a path, avoiding existing keys.
-	 */
-	generateCollectionsConfigKey(
-		path: string,
-		collectionsConfig: Record<string, CollectionConfig>
-	): string {
-		const key = super.generateCollectionsConfigKey(path, collectionsConfig);
-
-		if (key.startsWith('content_')) {
-			const trimmedKey = key.replace('content_', '');
-			if (!Object.prototype.hasOwnProperty.call(collectionsConfig, trimmedKey)) {
-				return trimmedKey;
-			}
-		}
-
-		return key;
-	}
-
-	/**
 	 * Generates a collection config entry.
 	 */
 	generateCollectionConfig(

@@ -9,13 +9,6 @@ steps:
       ╎{
       ╎  "ssg": "hugo",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "content": {
-      ╎        "path": "content",
-      ╎        "name": "Content",
-      ╎        "icon": "wysiwyg"
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "static",
       ╎      "uploads": "static/uploads"
@@ -45,5 +38,16 @@ steps:
       ╎        ]
       ╎      }
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "content",
+      ╎      "config": {
+      ╎        "path": "content",
+      ╎        "name": "Content",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "collections": []
+      ╎    }
+      ╎  ]
       ╎}

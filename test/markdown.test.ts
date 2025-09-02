@@ -5,7 +5,7 @@ import Jekyll from '../src/ssgs/jekyll';
 import Ssg from '../src/ssgs/ssg';
 
 it('Defaults to CommonMark', () => {
-	expect(new Ssg().generateMarkdown({})).toEqual({
+	expect(new Ssg().generateMarkdown({})).toStrictEqual({
 		engine: 'commonmark',
 		options: {},
 	});
@@ -178,7 +178,7 @@ it('Respects Hugo options to enable attributes on standalone image', () => {
 });
 
 it('Has good 11ty defaults', () => {
-	expect(new Eleventy().generateMarkdown(undefined)).toEqual({
+	expect(new Eleventy().generateMarkdown(undefined)).toStrictEqual({
 		engine: 'commonmark',
 		options: {
 			html: true,

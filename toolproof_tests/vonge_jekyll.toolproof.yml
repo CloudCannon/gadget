@@ -8,97 +8,6 @@ steps:
       ╎{
       ╎  "ssg": "jekyll",
       ╎  "config": {
-      ╎    "source": "site",
-      ╎    "collections_config": {
-      ╎      "pages": {
-      ╎        "path": "",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
-      ╎      },
-      ╎      "collection_pages": {
-      ╎        "path": "collections/_pages",
-      ╎        "name": "Collection Pages",
-      ╎        "icon": "photo_library"
-      ╎      },
-      ╎      "drafts": {
-      ╎        "path": "collections/_drafts",
-      ╎        "name": "Drafts",
-      ╎        "icon": "event",
-      ╎        "create": {
-      ╎          "path": "",
-      ╎          "publish_to": "posts"
-      ╎        },
-      ╎        "_inputs": {
-      ╎          "categories": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.posts[*].categories",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          },
-      ╎          "tags": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.posts[*].tags",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          }
-      ╎        }
-      ╎      },
-      ╎      "posts": {
-      ╎        "path": "collections/_posts",
-      ╎        "name": "Posts",
-      ╎        "icon": "event_available",
-      ╎        "create": {
-      ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
-      ╎        },
-      ╎        "_inputs": {
-      ╎          "categories": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.posts[*].categories",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          },
-      ╎          "tags": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.posts[*].tags",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          }
-      ╎        },
-      ╎        "add_options": [
-      ╎          {
-      ╎            "name": "Add Post"
-      ╎          },
-      ╎          {
-      ╎            "name": "Add Draft",
-      ╎            "collection": "drafts"
-      ╎          }
-      ╎        ]
-      ╎      },
-      ╎      "projects": {
-      ╎        "path": "collections/_projects",
-      ╎        "name": "Projects",
-      ╎        "icon": "eject"
-      ╎      },
-      ╎      "data": {
-      ╎        "path": "_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "disable_url": true,
-      ╎        "disable_add": true,
-      ╎        "disable_add_folder": true,
-      ╎        "disable_file_actions": true
-      ╎      },
-      ╎      "testimonials": {
-      ╎        "path": "collections/_testimonials",
-      ╎        "name": "Testimonials",
-      ╎        "icon": "festival",
-      ╎        "disable_url": true
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "",
       ╎      "uploads": "uploads"
@@ -122,8 +31,140 @@ steps:
       ╎        "treat_indentation_as_code": true
       ╎      }
       ╎    },
+      ╎    "source": "site",
       ╎    "_snippets_imports": {
       ╎      "jekyll": true
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "source",
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "name": "Source",
+      ╎        "icon": "package_2",
+      ╎        "disable_url": true
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "data",
+      ╎          "config": {
+      ╎            "path": "_data",
+      ╎            "name": "Data",
+      ╎            "icon": "data_usage",
+      ╎            "disable_url": true,
+      ╎            "disable_add": true,
+      ╎            "disable_add_folder": true,
+      ╎            "disable_file_actions": true
+      ╎          },
+      ╎          "collections": []
+      ╎        },
+      ╎        {
+      ╎          "key": "collections",
+      ╎          "config": {
+      ╎            "path": "collections",
+      ╎            "name": "Collections",
+      ╎            "icon": "conditions",
+      ╎            "disable_url": true
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "pages",
+      ╎              "config": {
+      ╎                "path": "collections/_pages",
+      ╎                "name": "Pages",
+      ╎                "icon": "wysiwyg"
+      ╎              },
+      ╎              "collections": []
+      ╎            },
+      ╎            {
+      ╎              "key": "posts",
+      ╎              "config": {
+      ╎                "path": "collections/_posts",
+      ╎                "name": "Posts",
+      ╎                "icon": "event_available",
+      ╎                "create": {
+      ╎                  "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎                },
+      ╎                "_inputs": {
+      ╎                  "categories": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.posts[*].categories",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  },
+      ╎                  "tags": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.posts[*].tags",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  }
+      ╎                },
+      ╎                "add_options": [
+      ╎                  {
+      ╎                    "name": "Add Post"
+      ╎                  },
+      ╎                  {
+      ╎                    "name": "Add Draft",
+      ╎                    "collection": "drafts"
+      ╎                  }
+      ╎                ]
+      ╎              },
+      ╎              "collections": []
+      ╎            },
+      ╎            {
+      ╎              "key": "drafts",
+      ╎              "config": {
+      ╎                "path": "collections/_drafts",
+      ╎                "name": "Drafts",
+      ╎                "icon": "event",
+      ╎                "create": {
+      ╎                  "path": "",
+      ╎                  "publish_to": "posts"
+      ╎                },
+      ╎                "_inputs": {
+      ╎                  "categories": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.posts[*].categories",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  },
+      ╎                  "tags": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.posts[*].tags",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  }
+      ╎                }
+      ╎              },
+      ╎              "collections": []
+      ╎            },
+      ╎            {
+      ╎              "key": "projects",
+      ╎              "config": {
+      ╎                "path": "collections/_projects",
+      ╎                "name": "Projects",
+      ╎                "icon": "eject"
+      ╎              },
+      ╎              "collections": []
+      ╎            },
+      ╎            {
+      ╎              "key": "testimonials",
+      ╎              "config": {
+      ╎                "path": "collections/_testimonials",
+      ╎                "name": "Testimonials",
+      ╎                "icon": "festival",
+      ╎                "disable_url": true
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
       ╎}
