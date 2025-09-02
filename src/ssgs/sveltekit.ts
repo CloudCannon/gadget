@@ -25,6 +25,16 @@ export default class Sveltekit extends Ssg {
 		]);
 	}
 
+	isIgnoredFile(filePath: string): boolean {
+		return (
+			super.isIgnoredFile(filePath) ||
+			filePath.includes('[') ||
+			filePath.includes('/+error') ||
+			filePath.includes('/+layout') ||
+			filePath.includes('/+server')
+		);
+	}
+
 	/**
 	 * Generates a list of build suggestions.
 	 */

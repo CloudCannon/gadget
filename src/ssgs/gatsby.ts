@@ -5,6 +5,10 @@ export default class Gatsby extends Ssg {
 		super('gatsby');
 	}
 
+	isIgnoredFile(filePath: string): boolean {
+		return super.isIgnoredFile(filePath) || filePath.includes('{');
+	}
+
 	/**
 	 * Generates a list of build suggestions.
 	 */

@@ -49,6 +49,27 @@ steps:
       ╎              "collections": []
       ╎            },
       ╎            {
+      ╎              "key": "shared",
+      ╎              "config": {
+      ╎                "path": "src/shared",
+      ╎                "name": "Shared",
+      ╎                "icon": "share",
+      ╎                "disable_url": true
+      ╎              },
+      ╎              "collections": [
+      ╎                {
+      ╎                  "key": "shared_astro",
+      ╎                  "config": {
+      ╎                    "path": "src/shared/astro",
+      ╎                    "name": "Shared Astro",
+      ╎                    "icon": "share_eta",
+      ╎                    "disable_url": true
+      ╎                  },
+      ╎                  "collections": []
+      ╎                }
+      ╎              ]
+      ╎            },
+      ╎            {
       ╎              "key": "content",
       ╎              "config": {
       ╎                "path": "src/content",

@@ -5,6 +5,10 @@ export default class NuxtJs extends Ssg {
 		super('nuxtjs');
 	}
 
+	isIgnoredFile(filePath: string): boolean {
+		return super.isIgnoredFile(filePath) || filePath.includes('[');
+	}
+
 	/**
 	 * Generates a list of build suggestions.
 	 */
