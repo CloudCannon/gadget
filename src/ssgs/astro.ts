@@ -28,8 +28,8 @@ export default class Astro extends Ssg {
 		return super.isIgnoredFile(filePath) || filePath.includes('[');
 	}
 
-	contentExtensions(): string[] {
-		return super.contentExtensions().concat(['.astro', '.tsx', '.jsx', '.vue', '.svelte']);
+	templateExtensions(): string[] {
+		return super.templateExtensions().concat(['.astro', '.tsx', '.jsx', '.vue', '.svelte']);
 	}
 
 	/**

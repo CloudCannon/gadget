@@ -14,14 +14,6 @@ export default class Static extends Ssg {
 		return super.configPaths().concat(['.nojekyll']);
 	}
 
-	templateExtensions(): string[] {
-		return [];
-	}
-
-	contentExtensions(): string[] {
-		return super.contentExtensions().concat(['.htm', '.html']);
-	}
-
 	/**
 	 * Generates collections config from a set of paths.
 	 */

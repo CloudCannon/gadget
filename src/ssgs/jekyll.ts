@@ -119,10 +119,6 @@ export default class Jekyll extends Ssg {
 		return super.templateExtensions().concat(['.liquid']);
 	}
 
-	contentExtensions(): string[] {
-		return super.contentExtensions().concat(['.html']);
-	}
-
 	partialFolders(): string[] {
 		return super.partialFolders().concat(['_layouts/', '_includes/']);
 	}
