@@ -5,6 +5,7 @@ import { guessSsg, ssgs } from './ssgs/ssgs';
 import { normalisePath } from './utility';
 
 export { ssgs } from './ssgs/ssgs';
+export type { CollectionConfigTree, Configuration, SsgKey, BuildCommands };
 
 export interface GenerateOptions {
 	/** Current configuration, or user overrides for generation. */
@@ -70,7 +71,7 @@ export async function generateConfiguration(
 		markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
 	};
 
-	if (source) {
+	if (source && source !== '/') {
 		configuration.source = source;
 	}
 
