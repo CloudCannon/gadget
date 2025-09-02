@@ -1,18 +1,12 @@
 {
 	"compilerOptions": {
-		"target": "ES6",
-		"moduleResolution": "Bundler",
-		"lib": ["ES6", "DOM"],
-		"isolatedModules": true,
-		"declaration": true,
-		"outDir": "dist",
-		"checkJs": true,
-		"allowJs": true,
 		"strict": true,
+		"esModuleInterop": true,
+		"noEmit": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true
 	},
-	"include": ["src"],
-	"exclude": ["src/cli.js", "dist", "node_modules"]
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules", "dist"]
 }

@@ -1,12 +1,9 @@
-import { join } from 'path';
+import { join } from './utility';
 
 /**
  * Produces an ordered set of paths that a file at this path could belong to.
- *
- * @param filePath {string}
- * @returns {string[]}
  */
-export function getCollectionPaths(filePath) {
+export function getCollectionPaths(filePath: string): string[] {
 	let builder = '';
 	const paths = [''];
 	const parts = filePath.split('/');
@@ -21,11 +18,8 @@ export function getCollectionPaths(filePath) {
 
 /**
  * Finds a shared base path.
- *
- * @param paths {string[]}
- * @returns {basePath}
  */
-export function findBasePath(paths) {
+export function findBasePath(paths: string[]): string {
 	let basePath = '';
 
 	if (paths.length > 1) {
@@ -36,7 +30,7 @@ export function findBasePath(paths) {
 
 			const isSharedPath =
 				checkPath &&
-				paths.every((pathKey) => pathKey === checkPath || pathKey.startsWith(checkPath + '/'));
+				paths.every((pathKey) => pathKey === checkPath || pathKey.startsWith(`${checkPath}/`));
 
 			if (isSharedPath) {
 				basePath = checkPath;

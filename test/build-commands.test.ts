@@ -1,12 +1,12 @@
-import test from 'ava';
-import Ssg from '../src/ssgs/ssg.js';
+import { expect, it } from 'vitest';
+import Ssg from '../src/ssgs/ssg';
 
-const readFileMock = async (path) => {
+const readFileMock = async (path: string): Promise<string> => {
 	if (path.endsWith('package.json')) {
 		return `{ "scripts": { "build": "webpack" } }`;
 	}
 	if (path.endsWith('.forestry/settings.yml')) {
-		return `build:\n  install_dependencies_command: npm i`;
+		return 'build:\n  install_dependencies_command: npm i';
 	}
 	if (path.endsWith('netlify.toml')) {
 		return `[build]\npublish = "out"\ncommand = "webpack"`;
@@ -22,56 +22,56 @@ const readFileMock = async (path) => {
 	return '';
 };
 
-test('Look at package.json', async (t) => {
+it('Look at package.json', async () => {
 	const ssg = new Ssg();
 	const filePaths = ['package.json'];
 	const buildCommands = await ssg.generateBuildCommands(filePaths, { readFile: readFileMock });
-	t.is(buildCommands?.install?.[0]?.value, 'npm i');
-	t.is(buildCommands?.build?.[0]?.value, 'npm run build');
-	t.is(buildCommands?.preserved?.[0]?.value, 'node_modules/');
+	expect(buildCommands?.install?.[0]?.value).toBe('npm i');
+	expect(buildCommands?.build?.[0]?.value).toBe('npm run build');
+	expect(buildCommands?.preserved?.[0]?.value).toBe('node_modules/');
 });
 
-test('Look at yarn.lock', async (t) => {
+it('Look at yarn.lock', async () => {
 	const ssg = new Ssg();
 	const filePaths = ['package.json', 'yarn.lock'];
 	const buildCommands = await ssg.generateBuildCommands(filePaths, { readFile: readFileMock });
-	t.is(buildCommands?.install?.[0]?.value, 'yarn');
+	expect(buildCommands?.install?.[0]?.value).toBe('yarn');
 });
 
-test("Don't prefer yarn over npm", async (t) => {
+it("Don't prefer yarn over npm", async () => {
 	const ssg = new Ssg();
 	const filePaths = ['package.json', 'package-lock.json', 'yarn.lock'];
 	const buildCommands = await ssg.generateBuildCommands(filePaths, { readFile: readFileMock });
-	t.is(buildCommands?.install?.[0]?.value, 'npm i');
+	expect(buildCommands?.install?.[0]?.value).toBe('npm i');
 });
 
-test('Read forestry settings', async (t) => {
+it('Read forestry settings', async () => {
 	const ssg = new Ssg();
 	const filePaths = ['.forestry/settings.yml'];
 	const buildCommands = await ssg.generateBuildCommands(filePaths, { readFile: readFileMock });
-	t.is(buildCommands?.install?.[0]?.value, 'npm i');
+	expect(buildCommands?.install?.[0]?.value).toBe('npm i');
 });
 
-test('Read netlify settings', async (t) => {
+it('Read netlify settings', async () => {
 	const ssg = new Ssg();
 	const filePaths = ['netlify.toml'];
 	const buildCommands = await ssg.generateBuildCommands(filePaths, { readFile: readFileMock });
-	t.is(buildCommands?.build?.[0]?.value, 'webpack');
-	t.is(buildCommands?.output?.[0]?.value, 'out');
+	expect(buildCommands?.build?.[0]?.value).toBe('webpack');
+	expect(buildCommands?.output?.[0]?.value).toBe('out');
 });
 
-test('Read vercel settings', async (t) => {
+it('Read vercel settings', async () => {
 	const ssg = new Ssg();
 	const filePaths = ['vercel.json'];
 	const buildCommands = await ssg.generateBuildCommands(filePaths, { readFile: readFileMock });
-	t.is(buildCommands?.install?.[0]?.value, 'npm i');
-	t.is(buildCommands?.build?.[0]?.value, 'webpack');
-	t.is(buildCommands?.output?.[0]?.value, 'out');
+	expect(buildCommands?.install?.[0]?.value).toBe('npm i');
+	expect(buildCommands?.build?.[0]?.value).toBe('webpack');
+	expect(buildCommands?.output?.[0]?.value).toBe('out');
 });
 
-test('Avoid misconfigurations in settings files', async (t) => {
+it('Avoid misconfigurations in settings files', async () => {
 	const ssg = new Ssg();
-	const readWeirdFile = () => `{
+	const readWeirdFile = async (): Promise<string> => `{
         "buildCommand": ["webpack"],
         "installCommand": true,
         "outputDirectory": 5
@@ -79,7 +79,7 @@ test('Avoid misconfigurations in settings files', async (t) => {
 	const buildCommands = await ssg.generateBuildCommands(['vercel.json'], {
 		readFile: readWeirdFile,
 	});
-	t.falsy(buildCommands?.install?.length);
-	t.falsy(buildCommands?.build?.length);
-	t.falsy(buildCommands?.output?.length);
+	expect(buildCommands?.install?.length).toBeFalsy();
+	expect(buildCommands?.build?.length).toBeFalsy();
+	expect(buildCommands?.output?.length).toBeFalsy();
 });

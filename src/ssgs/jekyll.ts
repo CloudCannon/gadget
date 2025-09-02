@@ -1,74 +1,73 @@
-import { decodeEntity, joinPaths, stripTopPath } from '../utility.js';
-import { kramdownAttributeElementOptions } from '../defaults.js';
-import Ssg from './ssg.js';
+import type {
+	CollectionConfig,
+	Input,
+	MarkdownSettings,
+	SnippetsImports,
+} from '@cloudcannon/configuration-types';
+import slugify from '@sindresorhus/slugify';
+import { getCollectionPaths } from '../collections';
+import { kramdownAttributeElementOptions } from '../defaults';
+import { findIcon } from '../icons';
+import { decodeEntity, join, stripBottomPath, stripTopPath } from '../utility';
+import Ssg, {
+	type BuildCommands,
+	type CollectionConfigTree,
+	type GenerateBuildCommandsOptions,
+	type GenerateCollectionConfigOptions,
+	type GenerateCollectionsConfigOptions,
+} from './ssg';
+
+export interface GenerateCollectionConfigOptionsJekyll extends GenerateCollectionConfigOptions {
+	/** The matching Jekyll collection from _config.yml */
+	collection: Record<string, any> | undefined;
+}
 
 /**
  * Checks if this is a Jekyll drafts collection path.
- *
- * @param path {string | undefined} The path to check.
- * @returns {boolean}
  */
-function isDraftsPath(path) {
+function isDraftsPath(path: string): boolean {
 	return !!path?.match(/\b_drafts$/);
 }
 
 /**
  * Checks if this is a Jekyll posts collection path.
- *
- * @param path {string | undefined} The path to check.
- * @returns {boolean}
  */
-function isPostsPath(path) {
+function isPostsPath(path: string): boolean {
 	return !!path?.match(/\b_posts$/);
 }
 
 /**
  * Transforms a Jekyll drafts collection path into a posts path.
- *
- * @param path {string} The drafts path.
- * @returns {string}
  */
-function toDraftsPath(path) {
+function toDraftsPath(path: string): string {
 	return path.replace(/\b_posts$/, '_drafts');
 }
 
 /**
  * Transforms a Jekyll posts collection path into a drafts path.
- *
- * @param path {string} The posts path.
- * @returns {string}
  */
-function toPostsPath(path) {
+function toPostsPath(path: string): string {
 	return path.replace(/\b_drafts$/, '_posts');
 }
 
 /**
  * Transforms a drafts collection key into a posts key.
- *
- * @param key {string} The drafts key.
- * @returns {string}
  */
-function toDraftsKey(key) {
+function toDraftsKey(key: string): string {
 	return key.replace('posts', 'drafts');
 }
 
 /**
  * Transforms a posts collection key into a drafts key.
- *
- * @param key {string} The posts key.
- * @returns {string}
  */
-function toPostsKey(key) {
+function toPostsKey(key: string): string {
 	return key.replace('drafts', 'posts');
 }
 
 /**
  * Generates posts _inputs configuration.
- *
- * @param collectionKey {string} The posts key.
- * @returns {Record<string, import('@cloudcannon/configuration-types').Input>}
  */
-function generatePostsInputs(collectionKey) {
+function generatePostsInputs(collectionKey: string): Record<string, Input> {
 	return {
 		categories: {
 			type: 'multiselect',
@@ -89,13 +88,9 @@ function generatePostsInputs(collectionKey) {
 
 /**
  * Gets `collections` from Jekyll configuration in a standard format.
- *
- * @param collections {Record<string, any> | undefined} The `collections` object from Jekyll config
- * @returns {Record<string, any>}
  */
-function getJekyllCollections(collections) {
-	/** @type {Record<string, any>} */
-	let formatted = {};
+function getJekyllCollections(collections: Record<string, any> | undefined): Record<string, any> {
+	const formatted: Record<string, any> = {};
 
 	if (Array.isArray(collections)) {
 		return collections.reduce((memo, key) => {
@@ -116,23 +111,23 @@ export default class Jekyll extends Ssg {
 		super('jekyll');
 	}
 
-	configPaths() {
+	configPaths(): string[] {
 		return super.configPaths().concat(['_config.yml', '_config.yaml', '_config.toml']);
 	}
 
-	templateExtensions() {
+	templateExtensions(): string[] {
 		return super.templateExtensions().concat(['.liquid']);
 	}
 
-	contentExtensions() {
+	contentExtensions(): string[] {
 		return super.contentExtensions().concat(['.html']);
 	}
 
-	partialFolders() {
+	partialFolders(): string[] {
 		return super.partialFolders().concat(['_layouts/', '_includes/']);
 	}
 
-	ignoredFolders() {
+	ignoredFolders(): string[] {
 		return super.ignoredFolders().concat([
 			'_site/', // build output
 			'assets/', // popular assets plugin folder
@@ -146,13 +141,12 @@ export default class Jekyll extends Ssg {
 
 	/**
 	 * Generates a collection config entry.
-	 *
-	 * @param key {string}
-	 * @param path {string}
-	 * @param options {import('../types').GenerateCollectionConfigOptionsJekyll}
-	 * @returns {import('@cloudcannon/configuration-types').CollectionConfig}
 	 */
-	generateCollectionConfig(key, path, options) {
+	generateCollectionConfig(
+		key: string,
+		path: string,
+		options: GenerateCollectionConfigOptionsJekyll
+	): CollectionConfig {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
 		const isKnownOutputCollection =
@@ -172,7 +166,7 @@ export default class Jekyll extends Ssg {
 		}
 
 		if (options.collection?.sort_by && typeof options.collection?.sort_by === 'string') {
-			collectionConfig.sort = { key: options.collection.sort_by };
+			collectionConfig.sort_options = [{ key: options.collection.sort_by }];
 		}
 
 		if (isPostsPath(collectionConfig.path)) {
@@ -202,21 +196,19 @@ export default class Jekyll extends Ssg {
 
 	/**
 	 * Generates collections config from a set of paths.
-	 *
-	 * @param collectionPaths {string[]}
-	 * @param options {import('../types').GenerateCollectionsConfigOptions}
-	 * @returns {import('../types').CollectionsConfig}
 	 */
-	generateCollectionsConfig(collectionPaths, options) {
-		/** @type {import('../types').CollectionsConfig} */
-		const collectionsConfig = {};
+	generateCollectionsConfig(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): Record<string, CollectionConfig> {
+		const collectionsConfig: Record<string, CollectionConfig> = {};
 		const collectionsDir = options.config?.collections_dir || '';
 		const collections = getJekyllCollections(options.config?.collections);
 
 		// Handle defined collections.
 		for (const key of Object.keys(collections)) {
 			const collectionKey = key === 'pages' || key === 'data' ? `collection_${key}` : key;
-			const path = joinPaths([collectionsDir, `_${key}`]);
+			const path = join(collectionsDir, `_${key}`);
 			const collection = collections[key];
 
 			collectionsConfig[collectionKey] = this.generateCollectionConfig(collectionKey, path, {
@@ -255,7 +247,10 @@ export default class Jekyll extends Ssg {
 			}
 
 			const pathInCollectionsDir = stripTopPath(path, collectionsDir);
-			const key = this.generateCollectionsConfigKey(pathInCollectionsDir, collectionsConfig);
+			const key = this.generateCollectionsConfigKey(
+				pathInCollectionsDir,
+				Object.keys(collectionsConfig)
+			);
 			const collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
 			collectionsConfig[key] = this.generateCollectionConfig(key, path, {
 				...options,
@@ -281,7 +276,7 @@ export default class Jekyll extends Ssg {
 						...options,
 						collectionPaths,
 						collection: collections?.posts,
-					},
+					}
 				);
 			} else if (isPostsPath(collectionConfig.path)) {
 				// Ensure there is a matching drafts collection
@@ -293,7 +288,7 @@ export default class Jekyll extends Ssg {
 						...options,
 						collectionPaths,
 						collection: collections?.drafts || collections?.posts,
-					},
+					}
 				);
 			}
 		}
@@ -302,19 +297,115 @@ export default class Jekyll extends Ssg {
 	}
 
 	/**
-	 * @param config {Record<string, any> | undefined}
-	 * @returns {import('@cloudcannon/configuration-types').MarkdownSettings}
+	 * Generates a tree from a set of paths for selectively creating a collections_config.
 	 */
-	generateMarkdown(config) {
-		const engine = config?.['markdown']?.includes('CommonMark') ? 'commonmark' : 'kramdown';
-		/** @type {import('@cloudcannon/configuration-types').MarkdownSettings['options']} */
-		const options = {};
+	generateCollectionsConfigTree(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): CollectionConfigTree[] {
+		const collectionsDir = options.config?.collections_dir || '';
+		const collections = getJekyllCollections(options.config?.collections);
+
+		// Handle defined collections.
+		for (const key of Object.keys(collections)) {
+			const path = join(options.source, collectionsDir, `_${key}`);
+			if (!collectionPaths.includes(path)) {
+				collectionPaths.push(path);
+			}
+		}
+
+		const allCollectionPaths =
+			collectionPaths.length === 1
+				? collectionPaths
+				: collectionPaths.reduce((memo, path) => {
+						const allPaths = getCollectionPaths(path);
+
+						for (let i = 0; i < allPaths.length; i++) {
+							if (allPaths[i].startsWith(options.basePath)) {
+								memo.add(allPaths[i]);
+
+								if (isDraftsPath(path)) {
+									// Ensure there is a matching posts collection
+									memo.add(toPostsPath(path));
+								} else if (isPostsPath(path)) {
+									// Ensure there is a matching drafts collection
+									memo.add(toDraftsPath(path));
+								}
+							}
+						}
+						memo.add(path);
+						return memo;
+					}, new Set<string>());
+
+		const sortedPaths = Array.from(allCollectionPaths).sort((x, y) => {
+			return x.length - y.length || (x > y ? 1 : -1);
+		});
+
+		const seenKeys: Record<string, CollectionConfigTree> = {};
+		const seenPaths: Record<string, CollectionConfigTree> = {};
+		const trees: CollectionConfigTree[] = [];
+		const contentPrefix = `${slugify(collectionsDir, { separator: '_' })}_`;
+
+		for (let i = 0; i < sortedPaths.length; i++) {
+			const path = stripTopPath(sortedPaths[i], options.source);
+
+			const key = this.generateCollectionsConfigKey(path, Object.keys(seenKeys), {
+				fallback: !path ? 'source' : 'pages',
+				contentPrefix,
+			});
+
+			let collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
+			if (!collection) {
+				if (isDraftsPath(path)) {
+					collection = collections?.posts;
+				} else if (isPostsPath(path)) {
+					collection = collections?.drafts || collections?.posts;
+				}
+			}
+
+			const tree: CollectionConfigTree = {
+				key,
+				config: this.generateCollectionConfig(key, path, {
+					...options,
+					collectionPaths,
+					collection,
+				}),
+				collections: [],
+			};
+
+			const parentPath = stripBottomPath(path);
+			const parent = seenPaths[parentPath];
+
+			seenPaths[path] = tree;
+			seenKeys[key] = tree;
+
+			if (parent) {
+				parent.collections.push(tree);
+			} else {
+				trees.push(tree);
+			}
+		}
+
+		if (seenKeys.source && !seenKeys.pages) {
+			// Clean up the source collection if there is no pages entry
+			seenKeys.source.key = 'pages';
+			seenKeys.source.config.name = 'Pages';
+			seenKeys.source.config.icon = findIcon('pages');
+			delete seenKeys.source.config.disable_url;
+		}
+
+		return trees;
+	}
+
+	generateMarkdown(config: Record<string, any> | undefined): MarkdownSettings {
+		const engine = config?.markdown?.includes('CommonMark') ? 'commonmark' : 'kramdown';
+		const options: MarkdownSettings['options'] = {};
 
 		if (engine === 'kramdown') {
-			const kramdownConfig = config?.['kramdown'] || {};
+			const kramdownConfig = config?.kramdown || {};
 			// https://kramdown.gettalong.org/options.html
 			options.heading_ids = !!kramdownConfig.auto_ids;
-			options.gfm = !kramdownConfig.input || kramdownConfig.input !== 'GFM' ? false : true;
+			options.gfm = kramdownConfig.input === 'GFM';
 			options.breaks = !!kramdownConfig.hard_wrap;
 			const smartquotes = kramdownConfig.smart_quotes;
 			if (smartquotes && typeof smartquotes === 'string') {
@@ -335,17 +426,15 @@ export default class Jekyll extends Ssg {
 			options.attributes = true;
 			options.attribute_elements = kramdownAttributeElementOptions;
 		} else if (config) {
-			const commonmarkConfig = config?.['commonmark'] || {};
+			const commonmarkConfig = config?.commonmark || {};
 
-			/** @type {(name: string) => boolean} */
-			const checkOption = (name) => {
+			const checkOption = (name: string): boolean => {
 				return (
 					commonmarkConfig.options?.includes(name.toLowerCase()) ||
 					commonmarkConfig.options?.includes(name.toUpperCase())
 				);
 			};
-			/** @type {(name: string) => boolean} */
-			const checkExtension = (name) => {
+			const checkExtension = (name: string): boolean => {
 				return (
 					commonmarkConfig.extensions?.includes(name.toLowerCase()) ||
 					commonmarkConfig.extensions?.includes(name.toUpperCase())
@@ -372,12 +461,11 @@ export default class Jekyll extends Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		const gemfilePath = filePaths.find((path) => path === 'Gemfile' || path.endsWith('/Gemfile'));
@@ -394,13 +482,13 @@ export default class Jekyll extends Ssg {
 				value: '.bundle_cache/',
 				attribution: 'recommended for speeding up bundler installs',
 			});
-			commands.environment['GEM_HOME'] = {
+			commands.environment.GEM_HOME = {
 				value: '/usr/local/__site/src/.bundle_cache/',
 				attribution: 'recommended for speeding up bundler installs',
 			};
 
 			if (options.source) {
-				commands.environment['BUNDLE_GEMFILE'] = {
+				commands.environment.BUNDLE_GEMFILE = {
 					value: gemfilePath,
 					attribution: 'because of your Gemfile',
 				};
@@ -417,7 +505,7 @@ export default class Jekyll extends Ssg {
 			attribution: 'most common for Jekyll sites',
 		});
 
-		commands.environment['JEKYLL_ENV'] = {
+		commands.environment.JEKYLL_ENV = {
 			value: 'production',
 			attribution: 'recommended for hosted Jekyll sites',
 		};
@@ -425,15 +513,10 @@ export default class Jekyll extends Ssg {
 		return commands;
 	}
 
-	/**
-	 * Generates path configuration
-	 *
-	 * @returns {import('@cloudcannon/configuration-types').SnippetsImports | undefined}
-	 */
-	getSnippetsImports() {
-		return { 
+	getSnippetsImports(): SnippetsImports | undefined {
+		return {
 			...super.getSnippetsImports(),
-			jekyll: true
+			jekyll: true,
 		};
 	}
 }

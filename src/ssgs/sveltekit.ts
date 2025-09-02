@@ -1,23 +1,23 @@
-import Ssg from './ssg.js';
+import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg';
 
 export default class Sveltekit extends Ssg {
 	constructor() {
 		super('sveltekit');
 	}
 
-	configPaths() {
+	configPaths(): string[] {
 		return super.configPaths().concat(['svelte.config.js']);
 	}
 
-	templateExtensions() {
+	templateExtensions(): string[] {
 		return super.templateExtensions().concat(['.svelte']);
 	}
 
-	contentExtensions() {
+	contentExtensions(): string[] {
 		return super.contentExtensions().concat(['.svx']);
 	}
 
-	ignoredFolders() {
+	ignoredFolders(): string[] {
 		return super.ignoredFolders().concat([
 			'build/', // build output
 			'.svelte-kit/', // cache
@@ -27,14 +27,13 @@ export default class Sveltekit extends Ssg {
 
 	/**
 	 * Generates a list of build suggestions.
-	 *
-	 * @param filePaths {string[]} List of input file paths.
-	 * @param options {{ config?: Record<string, any>; source?: string; readFile?: (path: string) => Promise<string | undefined>; }}
-	 * @returns {Promise<import('../types').BuildCommands>}
 	 */
-	async generateBuildCommands(filePaths, options) {
+	async generateBuildCommands(
+		filePaths: string[],
+		options: GenerateBuildCommandsOptions
+	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
-		
+
 		if (filePaths.includes('vite.config.js')) {
 			commands.build.push({
 				value: 'npx vite build',
