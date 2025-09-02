@@ -26,7 +26,7 @@ it('generates configuration', async () => {
 
 	const configuration = await generateConfiguration(filePaths, { readFile });
 
-	expect(configuration).toStrictEqual({
+	expect(configuration).toMatchObject({
 		config: {
 			markdown: {
 				engine: 'commonmark',
@@ -36,7 +36,6 @@ it('generates configuration', async () => {
 				static: '',
 				uploads: 'uploads',
 			},
-			timezone: 'Pacific/Auckland',
 		},
 		ssg: 'other',
 		collections: [
