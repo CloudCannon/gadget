@@ -6,9 +6,10 @@ import type {
 	SnippetsImports,
 } from '@cloudcannon/configuration-types';
 import { findBasePath } from '../collections';
-import { decodeEntity, joinPaths, normalisePath } from '../utility';
+import { decodeEntity, join, normalisePath } from '../utility';
 import Ssg, {
 	type BuildCommands,
+	type CollectionConfigTree,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
 	type GenerateCollectionsConfigOptions,
@@ -82,7 +83,7 @@ export default class Hugo extends Ssg {
 		const collectionConfig = super.generateCollectionConfig(key, path, options);
 
 		const hasParentCollectionPath = options.collectionPaths.some((otherCollectionPath) => {
-			return joinPaths([options.source, path]).startsWith(`${otherCollectionPath}/`);
+			return join(options.source, path).startsWith(`${otherCollectionPath}/`);
 		});
 
 		if (hasParentCollectionPath) {
@@ -109,7 +110,7 @@ export default class Hugo extends Ssg {
 	 * Returns the path to the Hugo data folder, optionally prepended with a base path.
 	 */
 	getHugoDataPath(config: Record<string, any> | undefined, basePath?: string): string {
-		return joinPaths([basePath, normalisePath(config?.dataDir ?? 'data') ?? 'data']);
+		return join(basePath, normalisePath(config?.dataDir ?? 'data') ?? 'data');
 	}
 
 	/**
@@ -162,6 +163,45 @@ export default class Hugo extends Ssg {
 		}
 
 		return super.generateCollectionsConfig(collectionPaths, options);
+	}
+
+	/**
+	 * Generates a tree from a set of paths for selectively creating a collections_config.
+	 */
+	generateCollectionsConfigTree(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): CollectionConfigTree[] {
+		// Remove collection paths with a parent collection path and only a branch index file
+		collectionPaths = collectionPaths.filter((collectionPath) => {
+			const hasNonBranchIndexFile = options.filePaths.some(
+				(filePath) => filePath.startsWith(`${collectionPath}/`) && !filePath.endsWith('/_index.md')
+			);
+
+			const hasParentCollectionPath = collectionPaths.some((otherCollectionPath) =>
+				collectionPath.startsWith(`${otherCollectionPath}/`)
+			);
+
+			return hasNonBranchIndexFile || !hasParentCollectionPath;
+		});
+
+		const collectionPathsOutsideExampleSite = collectionPaths.filter(
+			(path) => !path.includes('exampleSite/')
+		);
+
+		const hasNonExampleSiteCollections =
+			collectionPathsOutsideExampleSite.length &&
+			collectionPathsOutsideExampleSite.length !== collectionPaths.length;
+
+		if (hasNonExampleSiteCollections) {
+			// Exclude collections found inside the exampleSite folder, unless they are the only collections
+			return super.generateCollectionsConfigTree(collectionPathsOutsideExampleSite, {
+				...options,
+				basePath: findBasePath(collectionPathsOutsideExampleSite),
+			});
+		}
+
+		return super.generateCollectionsConfigTree(collectionPaths, options);
 	}
 
 	generateMarkdown(config: Record<string, any> | undefined): MarkdownSettings {

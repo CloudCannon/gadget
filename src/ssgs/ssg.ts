@@ -1,4 +1,3 @@
-import { basename, extname } from 'node:path';
 import type {
 	CollectionConfig,
 	MarkdownSettings,
@@ -11,7 +10,13 @@ import slugify from '@sindresorhus/slugify';
 import titleize from 'titleize';
 import { findBasePath, getCollectionPaths } from '../collections';
 import { findIcon } from '../icons';
-import { last, parseDataFile, stripTopPath } from '../utility';
+import { basename, extname, last, parseDataFile, stripBottomPath, stripTopPath } from '../utility';
+
+export interface CollectionConfigTree {
+	key: string;
+	config: CollectionConfig;
+	collections: CollectionConfigTree[];
+}
 
 export type FileType = 'config' | 'content' | 'template' | 'partial' | 'ignored' | 'other';
 
@@ -398,12 +403,23 @@ export default class Ssg {
 	 */
 	generateCollectionsConfigKey(
 		path: string,
-		collectionsConfig: Record<string, CollectionConfig>
+		existingKeys: string[],
+		options?: { fallback?: string; contentPrefix?: string }
 	): string {
-		let key = slugify(path, { separator: '_' }) || 'pages';
+		let key = slugify(path, { separator: '_' }) || options?.fallback || 'pages';
+		const contentPrefix = options?.contentPrefix || 'content_';
+
+		if (key.startsWith(contentPrefix)) {
+			const trimmedKey = key.replace(contentPrefix, '');
+
+			if (!existingKeys.includes(trimmedKey)) {
+				return trimmedKey;
+			}
+		}
+
 		let suffix = 1;
 
-		while (Object.prototype.hasOwnProperty.call(collectionsConfig, key)) {
+		while (existingKeys.includes(key)) {
 			key = `${key.replace(/_\d+$/, '')}_${suffix++}`;
 		}
 
@@ -455,7 +471,7 @@ export default class Ssg {
 				seenPaths.push(`${pathInBasePath}/`);
 			}
 
-			const key = this.generateCollectionsConfigKey(pathInBasePath, collectionsConfig);
+			const key = this.generateCollectionsConfigKey(pathInBasePath, Object.keys(collectionsConfig));
 			collectionsConfig[key] = this.generateCollectionConfig(key, path, {
 				...options,
 				collectionPaths,
@@ -464,6 +480,90 @@ export default class Ssg {
 		}
 
 		return collectionsConfig;
+	}
+
+	/**
+	 * Generates a tree from a set of paths for selectively creating a collections_config.
+	 */
+	generateCollectionsConfigTree(
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): CollectionConfigTree[] {
+		const contentCollectionPaths = this.filterContentCollectionPaths(collectionPaths, options);
+
+		const hasNonContentCollection =
+			collectionPaths.length && collectionPaths.length !== contentCollectionPaths.length;
+
+		const basePath = stripTopPath(
+			hasNonContentCollection ? findBasePath(contentCollectionPaths) : options.basePath,
+			options.source
+		);
+
+		const allCollectionPaths =
+			collectionPaths.length === 1
+				? collectionPaths
+				: collectionPaths.reduce((memo, path) => {
+						const allPaths = getCollectionPaths(path);
+						for (let i = 0; i < allPaths.length; i++) {
+							if (allPaths[i].startsWith(options.basePath)) {
+								memo.add(allPaths[i]);
+							}
+						}
+						memo.add(path);
+						return memo;
+					}, new Set<string>());
+
+		const sortedPaths = Array.from(allCollectionPaths).sort((x, y) => {
+			return x.length - y.length || (x > y ? 1 : -1);
+		});
+
+		const seenKeys: Record<string, CollectionConfigTree> = {};
+		const seenPaths: Record<string, CollectionConfigTree> = {};
+		const trees: CollectionConfigTree[] = [];
+		const hasPages = sortedPaths.some((path) => path === 'pages' || path.endsWith('/pages'));
+
+		for (let i = 0; i < sortedPaths.length; i++) {
+			const path = stripTopPath(sortedPaths[i], options.source);
+			const pathInBasePath = stripTopPath(path, basePath);
+			const key = this.generateCollectionsConfigKey(pathInBasePath, Object.keys(seenKeys), {
+				fallback: !path
+					? 'source'
+					: path === basePath && !hasPages
+						? 'pages'
+						: slugify(path, { separator: '_' }),
+			});
+
+			const tree: CollectionConfigTree = {
+				key,
+				config: this.generateCollectionConfig(key, path, {
+					...options,
+					collectionPaths,
+					basePath,
+				}),
+				collections: [],
+			};
+
+			const parentPath = stripBottomPath(path);
+			const parent = seenPaths[parentPath];
+
+			seenPaths[path] = tree;
+			seenKeys[key] = tree;
+
+			if (parent) {
+				parent.collections.push(tree);
+			} else {
+				trees.push(tree);
+			}
+		}
+
+		if (seenKeys.source && !seenKeys.pages) {
+			// Clean up the source collection if there is no pages entry
+			seenKeys.source.key = 'pages';
+			seenKeys.source.config.name = 'Pages';
+			seenKeys.source.config.icon = findIcon('pages');
+		}
+
+		return trees;
 	}
 
 	/**

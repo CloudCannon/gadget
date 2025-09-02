@@ -13,144 +13,6 @@ steps:
       ╎{
       ╎  "ssg": "jekyll",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "pages": {
-      ╎        "path": "",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
-      ╎      },
-      ╎      "drafts": {
-      ╎        "path": "_drafts",
-      ╎        "name": "Drafts",
-      ╎        "icon": "event",
-      ╎        "create": {
-      ╎          "path": "",
-      ╎          "publish_to": "posts"
-      ╎        },
-      ╎        "_inputs": {
-      ╎          "categories": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.posts[*].categories",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          },
-      ╎          "tags": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.posts[*].tags",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          }
-      ╎        }
-      ╎      },
-      ╎      "news_drafts": {
-      ╎        "path": "news/_drafts",
-      ╎        "name": "News Drafts",
-      ╎        "icon": "drafts",
-      ╎        "create": {
-      ╎          "path": "",
-      ╎          "publish_to": "news_posts"
-      ╎        },
-      ╎        "_inputs": {
-      ╎          "categories": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.news_posts[*].categories",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          },
-      ╎          "tags": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.news_posts[*].tags",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          }
-      ╎        }
-      ╎      },
-      ╎      "news_posts": {
-      ╎        "path": "news/_posts",
-      ╎        "name": "News Posts",
-      ╎        "icon": "newsmode",
-      ╎        "create": {
-      ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
-      ╎        },
-      ╎        "_inputs": {
-      ╎          "categories": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.news_posts[*].categories",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          },
-      ╎          "tags": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.news_posts[*].tags",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          }
-      ╎        },
-      ╎        "add_options": [
-      ╎          {
-      ╎            "name": "Add Post"
-      ╎          },
-      ╎          {
-      ╎            "name": "Add Draft",
-      ╎            "collection": "news_drafts"
-      ╎          }
-      ╎        ]
-      ╎      },
-      ╎      "posts": {
-      ╎        "path": "_posts",
-      ╎        "name": "Posts",
-      ╎        "icon": "event_available",
-      ╎        "create": {
-      ╎          "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
-      ╎        },
-      ╎        "_inputs": {
-      ╎          "categories": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.posts[*].categories",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          },
-      ╎          "tags": {
-      ╎            "type": "multiselect",
-      ╎            "options": {
-      ╎              "values": "collections.posts[*].tags",
-      ╎              "allow_create": true
-      ╎            }
-      ╎          }
-      ╎        },
-      ╎        "add_options": [
-      ╎          {
-      ╎            "name": "Add Post"
-      ╎          },
-      ╎          {
-      ╎            "name": "Add Draft",
-      ╎            "collection": "drafts"
-      ╎          }
-      ╎        ]
-      ╎      },
-      ╎      "data": {
-      ╎        "path": "_data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "disable_url": true,
-      ╎        "disable_add": true,
-      ╎        "disable_add_folder": true,
-      ╎        "disable_file_actions": true
-      ╎      },
-      ╎      "data_animals": {
-      ╎        "path": "_data/animals",
-      ╎        "name": "Data Animals",
-      ╎        "icon": "data_array",
-      ╎        "disable_url": true
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "",
       ╎      "uploads": "uploads"
@@ -177,5 +39,184 @@ steps:
       ╎    "_snippets_imports": {
       ╎      "jekyll": true
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "pages",
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "news",
+      ╎          "config": {
+      ╎            "path": "news",
+      ╎            "name": "News",
+      ╎            "icon": "newsmode",
+      ╎            "disable_url": true
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "news_posts",
+      ╎              "config": {
+      ╎                "path": "news/_posts",
+      ╎                "name": "News Posts",
+      ╎                "icon": "newsmode",
+      ╎                "create": {
+      ╎                  "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎                },
+      ╎                "_inputs": {
+      ╎                  "categories": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.news_posts[*].categories",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  },
+      ╎                  "tags": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.news_posts[*].tags",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  }
+      ╎                },
+      ╎                "add_options": [
+      ╎                  {
+      ╎                    "name": "Add Post"
+      ╎                  },
+      ╎                  {
+      ╎                    "name": "Add Draft",
+      ╎                    "collection": "news_drafts"
+      ╎                  }
+      ╎                ]
+      ╎              },
+      ╎              "collections": []
+      ╎            },
+      ╎            {
+      ╎              "key": "news_drafts",
+      ╎              "config": {
+      ╎                "path": "news/_drafts",
+      ╎                "name": "News Drafts",
+      ╎                "icon": "drafts",
+      ╎                "create": {
+      ╎                  "path": "",
+      ╎                  "publish_to": "news_posts"
+      ╎                },
+      ╎                "_inputs": {
+      ╎                  "categories": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.news_posts[*].categories",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  },
+      ╎                  "tags": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.news_posts[*].tags",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  }
+      ╎                }
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "data",
+      ╎          "config": {
+      ╎            "path": "_data",
+      ╎            "name": "Data",
+      ╎            "icon": "data_usage",
+      ╎            "disable_url": true,
+      ╎            "disable_add": true,
+      ╎            "disable_add_folder": true,
+      ╎            "disable_file_actions": true
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "data_animals",
+      ╎              "config": {
+      ╎                "path": "_data/animals",
+      ╎                "name": "Data Animals",
+      ╎                "icon": "data_array",
+      ╎                "disable_url": true
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "posts",
+      ╎          "config": {
+      ╎            "path": "_posts",
+      ╎            "name": "Posts",
+      ╎            "icon": "event_available",
+      ╎            "create": {
+      ╎              "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎            },
+      ╎            "_inputs": {
+      ╎              "categories": {
+      ╎                "type": "multiselect",
+      ╎                "options": {
+      ╎                  "values": "collections.posts[*].categories",
+      ╎                  "allow_create": true
+      ╎                }
+      ╎              },
+      ╎              "tags": {
+      ╎                "type": "multiselect",
+      ╎                "options": {
+      ╎                  "values": "collections.posts[*].tags",
+      ╎                  "allow_create": true
+      ╎                }
+      ╎              }
+      ╎            },
+      ╎            "add_options": [
+      ╎              {
+      ╎                "name": "Add Post"
+      ╎              },
+      ╎              {
+      ╎                "name": "Add Draft",
+      ╎                "collection": "drafts"
+      ╎              }
+      ╎            ]
+      ╎          },
+      ╎          "collections": []
+      ╎        },
+      ╎        {
+      ╎          "key": "drafts",
+      ╎          "config": {
+      ╎            "path": "_drafts",
+      ╎            "name": "Drafts",
+      ╎            "icon": "event",
+      ╎            "create": {
+      ╎              "path": "",
+      ╎              "publish_to": "posts"
+      ╎            },
+      ╎            "_inputs": {
+      ╎              "categories": {
+      ╎                "type": "multiselect",
+      ╎                "options": {
+      ╎                  "values": "collections.posts[*].categories",
+      ╎                  "allow_create": true
+      ╎                }
+      ╎              },
+      ╎              "tags": {
+      ╎                "type": "multiselect",
+      ╎                "options": {
+      ╎                  "values": "collections.posts[*].tags",
+      ╎                  "allow_create": true
+      ╎                }
+      ╎              }
+      ╎            }
+      ╎          },
+      ╎          "collections": []
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
       ╎}

@@ -10,13 +10,6 @@ steps:
       ╎{
       ╎  "ssg": "jekyll",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "pages": {
-      ╎        "path": "pages",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "",
       ╎      "uploads": "uploads"
@@ -43,5 +36,16 @@ steps:
       ╎    "_snippets_imports": {
       ╎      "jekyll": true
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "pages",
+      ╎      "config": {
+      ╎        "path": "pages",
+      ╎        "name": "Pages",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "collections": []
+      ╎    }
+      ╎  ]
       ╎}

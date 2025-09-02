@@ -10,13 +10,6 @@ steps:
       ╎{
       ╎  "ssg": "hugo",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "content_blog": {
-      ╎        "path": "content/blog",
-      ╎        "name": "Content Blog",
-      ╎        "icon": "content_copy"
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "static",
       ╎      "uploads": "static/uploads"
@@ -46,5 +39,16 @@ steps:
       ╎        ]
       ╎      }
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "blog",
+      ╎      "config": {
+      ╎        "path": "content/blog",
+      ╎        "name": "Blog",
+      ╎        "icon": "event_available"
+      ╎      },
+      ╎      "collections": []
+      ╎    }
+      ╎  ]
       ╎}

@@ -1,6 +1,6 @@
 import type { Configuration, SsgKey } from '@cloudcannon/configuration-types';
 import { findBasePath } from './collections';
-import type { BuildCommands } from './ssgs/ssg';
+import type { BuildCommands, CollectionConfigTree } from './ssgs/ssg';
 import { guessSsg, ssgs } from './ssgs/ssgs';
 import { normalisePath } from './utility';
 
@@ -22,6 +22,8 @@ export interface GenerateResult {
 	ssg: SsgKey | undefined;
 	/** The generated configuration. */
 	config: Configuration;
+	/** Tree for selectively creating a collections_config. */
+	collections: CollectionConfigTree[];
 }
 
 /**
@@ -62,25 +64,30 @@ export async function generateConfiguration(
 
 	const collectionPaths = Object.keys(files.collectionPathCounts);
 
+	const configuration: Configuration = {
+		paths: options?.config?.paths ?? ssg.getPaths(),
+		timezone: options?.config?.timezone ?? ssg.getTimezone(),
+		markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
+	};
+
+	if (source) {
+		configuration.source = source;
+	}
+
+	const snippetsImports = options?.config?._snippets_imports ?? ssg.getSnippetsImports();
+	if (snippetsImports) {
+		configuration._snippets_imports = snippetsImports;
+	}
+
 	return {
 		ssg: ssg.key,
-		config: {
+		config: configuration,
+		collections: ssg.generateCollectionsConfigTree(collectionPaths, {
 			source,
-			collections_config:
-				options?.config?.collections_config ||
-				ssg.sortCollectionsConfig(
-					ssg.generateCollectionsConfig(collectionPaths, {
-						source,
-						config,
-						basePath: findBasePath(collectionPaths),
-						filePaths,
-					})
-				),
-			paths: options?.config?.paths ?? ssg.getPaths(),
-			timezone: options?.config?.timezone ?? ssg.getTimezone(),
-			markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
-			_snippets_imports: options?.config?._snippets_imports ?? ssg.getSnippetsImports(),
-		},
+			config,
+			basePath: findBasePath(collectionPaths),
+			filePaths,
+		}),
 	};
 }
 

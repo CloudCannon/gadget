@@ -10,17 +10,6 @@ steps:
       ╎{
       ╎  "ssg": "hugo",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "data": {
-      ╎        "path": "data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "disable_url": true,
-      ╎        "disable_add": true,
-      ╎        "disable_add_folder": true,
-      ╎        "disable_file_actions": true
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "static",
       ╎      "uploads": "static/uploads"
@@ -50,5 +39,20 @@ steps:
       ╎        ]
       ╎      }
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "data",
+      ╎      "config": {
+      ╎        "path": "data",
+      ╎        "name": "Data",
+      ╎        "icon": "data_usage",
+      ╎        "disable_url": true,
+      ╎        "disable_add": true,
+      ╎        "disable_add_folder": true,
+      ╎        "disable_file_actions": true
+      ╎      },
+      ╎      "collections": []
+      ╎    }
+      ╎  ]
       ╎}

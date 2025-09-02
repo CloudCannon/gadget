@@ -8,29 +8,6 @@ steps:
       ╎{
       ╎  "ssg": "astro",
       ╎  "config": {
-      ╎    "collections_config": {
-      ╎      "pages": {
-      ╎        "path": "src/pages",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
-      ╎      },
-      ╎      "blog": {
-      ╎        "path": "src/content/blog",
-      ╎        "name": "Blog",
-      ╎        "icon": "event_available"
-      ╎      },
-      ╎      "content_pages": {
-      ╎        "path": "src/content/pages",
-      ╎        "name": "Content Pages",
-      ╎        "icon": "contact_page"
-      ╎      },
-      ╎      "data": {
-      ╎        "path": "data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "disable_url": true
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "public",
       ╎      "uploads": "public/uploads"
@@ -42,5 +19,76 @@ steps:
       ╎        "gfm": true
       ╎      }
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "source",
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "name": "Source",
+      ╎        "icon": "package_2",
+      ╎        "disable_url": true
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "src",
+      ╎          "config": {
+      ╎            "path": "src",
+      ╎            "name": "Src",
+      ╎            "icon": "abc",
+      ╎            "disable_url": true
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "pages",
+      ╎              "config": {
+      ╎                "path": "src/pages",
+      ╎                "name": "Pages",
+      ╎                "icon": "wysiwyg"
+      ╎              },
+      ╎              "collections": []
+      ╎            },
+      ╎            {
+      ╎              "key": "content",
+      ╎              "config": {
+      ╎                "path": "src/content",
+      ╎                "name": "Content",
+      ╎                "icon": "wysiwyg"
+      ╎              },
+      ╎              "collections": [
+      ╎                {
+      ╎                  "key": "blog",
+      ╎                  "config": {
+      ╎                    "path": "src/content/blog",
+      ╎                    "name": "Blog",
+      ╎                    "icon": "event_available"
+      ╎                  },
+      ╎                  "collections": []
+      ╎                },
+      ╎                {
+      ╎                  "key": "content_pages",
+      ╎                  "config": {
+      ╎                    "path": "src/content/pages",
+      ╎                    "name": "Content Pages",
+      ╎                    "icon": "contact_page"
+      ╎                  },
+      ╎                  "collections": []
+      ╎                }
+      ╎              ]
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "data",
+      ╎          "config": {
+      ╎            "path": "data",
+      ╎            "name": "Data",
+      ╎            "icon": "data_usage",
+      ╎            "disable_url": true
+      ╎          },
+      ╎          "collections": []
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
       ╎}

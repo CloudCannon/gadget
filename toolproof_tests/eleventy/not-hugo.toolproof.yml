@@ -9,7 +9,6 @@ steps:
       ╎{
       ╎  "ssg": "eleventy",
       ╎  "config": {
-      ╎    "collections_config": {},
       ╎    "paths": {
       ╎      "static": "",
       ╎      "uploads": "uploads"
@@ -21,5 +20,6 @@ steps:
       ╎        "html": true
       ╎      }
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": []
       ╎}

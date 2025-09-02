@@ -2,6 +2,17 @@ import { parse as tomlParse } from '@iarna/toml';
 import htmlEntities from 'he';
 import yaml from 'js-yaml';
 
+export function extname(path: string): string {
+	const base = basename(path);
+	const index = base.lastIndexOf('.');
+	return index >= 1 ? base.substring(index) : '';
+}
+
+export function basename(path: string): string {
+	const normalised = normalisePath(path);
+	return normalised.substring(normalised.lastIndexOf('/') + 1);
+}
+
 /**
  * Retrieves the last element from an array.
  */
@@ -12,7 +23,7 @@ export function last<T>(array: T[]): T {
 /**
  * Joins strings with slashes.
  */
-export function joinPaths(paths: (string | undefined)[]): string {
+export function join(...paths: (string | undefined)[]): string {
 	return normalisePath(paths.filter(Boolean).join('/'));
 }
 

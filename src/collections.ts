@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { join } from './utility';
 
 /**
  * Produces an ordered set of paths that a file at this path could belong to.

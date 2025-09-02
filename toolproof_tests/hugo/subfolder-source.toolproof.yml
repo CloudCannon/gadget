@@ -15,31 +15,6 @@ steps:
       ╎{
       ╎  "ssg": "hugo",
       ╎  "config": {
-      ╎    "source": "sauce",
-      ╎    "collections_config": {
-      ╎      "pages": {
-      ╎        "path": "content",
-      ╎        "name": "Pages",
-      ╎        "icon": "wysiwyg"
-      ╎      },
-      ╎      "blog": {
-      ╎        "path": "content/blog",
-      ╎        "name": "Blog",
-      ╎        "icon": "event_available",
-      ╎        "glob": [
-      ╎          "!_index.md"
-      ╎        ]
-      ╎      },
-      ╎      "data": {
-      ╎        "path": "data",
-      ╎        "name": "Data",
-      ╎        "icon": "data_usage",
-      ╎        "disable_url": true,
-      ╎        "disable_add": true,
-      ╎        "disable_add_folder": true,
-      ╎        "disable_file_actions": true
-      ╎      }
-      ╎    },
       ╎    "paths": {
       ╎      "static": "static",
       ╎      "uploads": "static/uploads"
@@ -62,6 +37,7 @@ steps:
       ╎        "treat_indentation_as_code": true
       ╎      }
       ╎    },
+      ╎    "source": "sauce",
       ╎    "_snippets_imports": {
       ╎      "hugo": {
       ╎        "exclude": [
@@ -69,5 +45,65 @@ steps:
       ╎        ]
       ╎      }
       ╎    }
-      ╎  }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "source",
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "name": "Source",
+      ╎        "icon": "package_2"
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "data",
+      ╎          "config": {
+      ╎            "path": "data",
+      ╎            "name": "Data",
+      ╎            "icon": "data_usage",
+      ╎            "disable_url": true,
+      ╎            "disable_add": true,
+      ╎            "disable_add_folder": true,
+      ╎            "disable_file_actions": true
+      ╎          },
+      ╎          "collections": []
+      ╎        },
+      ╎        {
+      ╎          "key": "pages",
+      ╎          "config": {
+      ╎            "path": "content",
+      ╎            "name": "Pages",
+      ╎            "icon": "wysiwyg"
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "blog",
+      ╎              "config": {
+      ╎                "path": "content/blog",
+      ╎                "name": "Blog",
+      ╎                "icon": "event_available",
+      ╎                "glob": [
+      ╎                  "!_index.md"
+      ╎                ]
+      ╎              },
+      ╎              "collections": [
+      ╎                {
+      ╎                  "key": "blog_follow_up",
+      ╎                  "config": {
+      ╎                    "path": "content/blog/follow-up",
+      ╎                    "name": "Blog Follow Up",
+      ╎                    "icon": "clock_arrow_up",
+      ╎                    "glob": [
+      ╎                      "!_index.md"
+      ╎                    ]
+      ╎                  },
+      ╎                  "collections": []
+      ╎                }
+      ╎              ]
+      ╎            }
+      ╎          ]
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
       ╎}

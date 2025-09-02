@@ -1,5 +1,33 @@
 import { expect, it } from 'vitest';
-import { decodeEntity, joinPaths, last, stripBottomPath, stripTopPath } from '../src/utility';
+import {
+	basename,
+	decodeEntity,
+	extname,
+	join,
+	last,
+	stripBottomPath,
+	stripTopPath,
+} from '../src/utility';
+
+it('gets extname', () => {
+	expect(extname('')).toBe('');
+	expect(extname('file.md')).toBe('.md');
+	expect(extname('folder/file.md')).toBe('.md');
+	expect(extname('folder/file')).toBe('');
+	expect(extname('folder/.file')).toBe('');
+});
+
+it('gets basename', () => {
+	expect(basename('')).toBe('');
+	expect(basename('first')).toBe('first');
+	expect(basename('/first')).toBe('first');
+	expect(basename('/first/')).toBe('first');
+	expect(basename('first/')).toBe('first');
+	expect(basename('first/second')).toBe('second');
+	expect(basename('/first/second')).toBe('second');
+	expect(basename('/first/second/')).toBe('second');
+	expect(basename('first/second/')).toBe('second');
+});
 
 it('gets last element', () => {
 	expect(last(['first', 'final'])).toBe('final');
@@ -8,10 +36,10 @@ it('gets last element', () => {
 });
 
 it('joins paths', () => {
-	expect(joinPaths(['first'])).toBe('first');
-	expect(joinPaths(['first', 'final'])).toBe('first/final');
-	expect(joinPaths(['/first/', '//fi///nal'])).toBe('first/fi/nal');
-	expect(joinPaths([])).toBe('');
+	expect(join('first')).toBe('first');
+	expect(join('first', 'final')).toBe('first/final');
+	expect(join('/first/', '//fi///nal')).toBe('first/fi/nal');
+	expect(join()).toBe('');
 });
 
 it('strips top path', () => {
