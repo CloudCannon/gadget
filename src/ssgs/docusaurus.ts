@@ -1,4 +1,4 @@
-import { Paths, SnippetsImports } from '@cloudcannon/configuration-types';
+import type { Paths, SnippetsImports } from '@cloudcannon/configuration-types';
 import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg';
 
 export default class Docusaurus extends Ssg {
@@ -6,19 +6,15 @@ export default class Docusaurus extends Ssg {
 		super('docusaurus');
 	}
 
-
 	configPaths(): string[] {
 		return ['docusaurus.config.ts', 'docusaurus.config.js'];
 	}
 
 	// https://docusaurus.io/docs/static-assets
 	ignoredFolders(): string[] {
-		return super.ignoredFolders().concat([
-			'static/',
-			'public/',
-		]);
+		return super.ignoredFolders().concat(['static/', 'public/']);
 	}
-	
+
 	/**
 	 * Generates path configuration.
 	 */

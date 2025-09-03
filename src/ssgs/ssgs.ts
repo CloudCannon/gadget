@@ -1,6 +1,7 @@
 import type { SsgKey } from '@cloudcannon/configuration-types';
 import Astro from './astro';
 import Bridgetown from './bridgetown';
+import Docusaurus from './docusaurus';
 import Eleventy from './eleventy';
 import Gatsby from './gatsby';
 import Hugo from './hugo';
@@ -12,7 +13,6 @@ import NuxtJs from './nuxt-js';
 import Ssg from './ssg';
 import Static from './static';
 import Sveltekit from './sveltekit';
-import Docusaurus from './docusaurus';
 
 export const ssgs: Record<SsgKey, Ssg> = {
 	hugo: new Hugo(),
