@@ -12,6 +12,7 @@ import NuxtJs from './nuxt-js';
 import Ssg from './ssg';
 import Static from './static';
 import Sveltekit from './sveltekit';
+import Docusaurus from './docusaurus';
 
 export const ssgs: Record<SsgKey, Ssg> = {
 	hugo: new Hugo(),
@@ -23,7 +24,7 @@ export const ssgs: Record<SsgKey, Ssg> = {
 	bridgetown: new Bridgetown(),
 	lume: new Lume(),
 	mkdocs: new MkDocs(),
-	docusaurus: new Ssg('docusaurus'),
+	docusaurus: new Docusaurus(),
 	gatsby: new Gatsby(),
 	hexo: new Ssg('hexo'),
 	nuxtjs: new NuxtJs(),
