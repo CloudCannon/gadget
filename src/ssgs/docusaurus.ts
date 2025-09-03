@@ -43,14 +43,6 @@ export default class Docusaurus extends Ssg {
 			value: 'build',
 			attribution: 'most common for Docusaurus sites',
 		});
-		commands.preserved.push({
-			value: '.deno_cache/',
-			attribution: 'recommended for speeding up Deno installs',
-		});
-		commands.environment.DENO_DIR = {
-			value: '/usr/local/__site/src/.deno_cache/',
-			attribution: 'recommended for speeding up Deno installs',
-		};
 
 		return commands;
 	}
