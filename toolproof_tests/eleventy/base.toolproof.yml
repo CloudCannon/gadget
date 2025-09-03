@@ -30,7 +30,6 @@ steps:
       ╎      "key": "pages",
       ╎      "config": {
       ╎        "path": "",
-      ╎        "name": "Pages",
       ╎        "icon": "wysiwyg"
       ╎      },
       ╎      "collections": [
@@ -38,7 +37,6 @@ steps:
       ╎          "key": "blog",
       ╎          "config": {
       ╎            "path": "blog",
-      ╎            "name": "Blog",
       ╎            "icon": "event_available"
       ╎          },
       ╎          "collections": [
@@ -46,7 +44,6 @@ steps:
       ╎              "key": "blog_follow_up",
       ╎              "config": {
       ╎                "path": "blog/follow-up",
-      ╎                "name": "Blog Follow Up",
       ╎                "icon": "clock_arrow_up"
       ╎              },
       ╎              "collections": []
@@ -57,7 +54,6 @@ steps:
       ╎          "key": "data",
       ╎          "config": {
       ╎            "path": "_data",
-      ╎            "name": "Data",
       ╎            "icon": "data_usage",
       ╎            "disable_url": true,
       ╎            "disable_add": true,

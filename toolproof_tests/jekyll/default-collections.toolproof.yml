@@ -45,7 +45,6 @@ steps:
       ╎      "key": "pages",
       ╎      "config": {
       ╎        "path": "",
-      ╎        "name": "Pages",
       ╎        "icon": "wysiwyg"
       ╎      },
       ╎      "collections": [
@@ -53,7 +52,6 @@ steps:
       ╎          "key": "news",
       ╎          "config": {
       ╎            "path": "news",
-      ╎            "name": "News",
       ╎            "icon": "newsmode",
       ╎            "disable_url": true
       ╎          },
@@ -62,7 +60,6 @@ steps:
       ╎              "key": "news_posts",
       ╎              "config": {
       ╎                "path": "news/_posts",
-      ╎                "name": "News Posts",
       ╎                "icon": "newsmode",
       ╎                "create": {
       ╎                  "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
@@ -99,10 +96,8 @@ steps:
       ╎              "key": "news_drafts",
       ╎              "config": {
       ╎                "path": "news/_drafts",
-      ╎                "name": "News Drafts",
       ╎                "icon": "drafts",
       ╎                "create": {
-      ╎                  "path": "",
       ╎                  "publish_to": "news_posts"
       ╎                },
       ╎                "_inputs": {
@@ -130,7 +125,6 @@ steps:
       ╎          "key": "data",
       ╎          "config": {
       ╎            "path": "_data",
-      ╎            "name": "Data",
       ╎            "icon": "data_usage",
       ╎            "disable_url": true,
       ╎            "disable_add": true,
@@ -142,7 +136,6 @@ steps:
       ╎              "key": "data_animals",
       ╎              "config": {
       ╎                "path": "_data/animals",
-      ╎                "name": "Data Animals",
       ╎                "icon": "data_array",
       ╎                "disable_url": true
       ╎              },
@@ -154,7 +147,6 @@ steps:
       ╎          "key": "posts",
       ╎          "config": {
       ╎            "path": "_posts",
-      ╎            "name": "Posts",
       ╎            "icon": "event_available",
       ╎            "create": {
       ╎              "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
@@ -191,10 +183,8 @@ steps:
       ╎          "key": "drafts",
       ╎          "config": {
       ╎            "path": "_drafts",
-      ╎            "name": "Drafts",
       ╎            "icon": "event",
       ╎            "create": {
-      ╎              "path": "",
       ╎              "publish_to": "posts"
       ╎            },
       ╎            "_inputs": {

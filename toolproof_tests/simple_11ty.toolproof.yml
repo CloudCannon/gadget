@@ -75,7 +75,6 @@ steps:
       ╎      "key": "source",
       ╎      "config": {
       ╎        "path": "",
-      ╎        "name": "Source",
       ╎        "icon": "package_2"
       ╎      },
       ╎      "collections": [
@@ -83,7 +82,6 @@ steps:
       ╎          "key": "pages",
       ╎          "config": {
       ╎            "path": "pages",
-      ╎            "name": "Pages",
       ╎            "icon": "wysiwyg"
       ╎          },
       ╎          "collections": []
@@ -92,7 +90,6 @@ steps:
       ╎          "key": "staff_members",
       ╎          "config": {
       ╎            "path": "staff-members",
-      ╎            "name": "Staff Members",
       ╎            "icon": "group"
       ╎          },
       ╎          "collections": []

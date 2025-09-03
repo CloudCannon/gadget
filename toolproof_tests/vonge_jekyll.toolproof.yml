@@ -41,7 +41,6 @@ steps:
       ╎      "key": "source",
       ╎      "config": {
       ╎        "path": "",
-      ╎        "name": "Source",
       ╎        "icon": "package_2",
       ╎        "disable_url": true
       ╎      },
@@ -50,7 +49,6 @@ steps:
       ╎          "key": "data",
       ╎          "config": {
       ╎            "path": "_data",
-      ╎            "name": "Data",
       ╎            "icon": "data_usage",
       ╎            "disable_url": true,
       ╎            "disable_add": true,
@@ -63,7 +61,6 @@ steps:
       ╎          "key": "collections",
       ╎          "config": {
       ╎            "path": "collections",
-      ╎            "name": "Collections",
       ╎            "icon": "conditions",
       ╎            "disable_url": true
       ╎          },
@@ -72,7 +69,6 @@ steps:
       ╎              "key": "pages",
       ╎              "config": {
       ╎                "path": "collections/_pages",
-      ╎                "name": "Pages",
       ╎                "icon": "wysiwyg"
       ╎              },
       ╎              "collections": []
@@ -81,7 +77,6 @@ steps:
       ╎              "key": "posts",
       ╎              "config": {
       ╎                "path": "collections/_posts",
-      ╎                "name": "Posts",
       ╎                "icon": "event_available",
       ╎                "create": {
       ╎                  "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
@@ -118,10 +113,8 @@ steps:
       ╎              "key": "drafts",
       ╎              "config": {
       ╎                "path": "collections/_drafts",
-      ╎                "name": "Drafts",
       ╎                "icon": "event",
       ╎                "create": {
-      ╎                  "path": "",
       ╎                  "publish_to": "posts"
       ╎                },
       ╎                "_inputs": {
@@ -147,7 +140,6 @@ steps:
       ╎              "key": "projects",
       ╎              "config": {
       ╎                "path": "collections/_projects",
-      ╎                "name": "Projects",
       ╎                "icon": "eject"
       ╎              },
       ╎              "collections": []
@@ -156,7 +148,6 @@ steps:
       ╎              "key": "testimonials",
       ╎              "config": {
       ╎                "path": "collections/_testimonials",
-      ╎                "name": "Testimonials",
       ╎                "icon": "festival",
       ╎                "disable_url": true
       ╎              },

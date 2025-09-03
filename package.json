@@ -45,7 +45,6 @@
 		"@sindresorhus/slugify": "^2.2.1",
 		"fastest-levenshtein": "^1.0.16",
 		"he": "^1.2.0",
-		"js-yaml": "^4.1.0",
-		"titleize": "^4.0.0"
+		"js-yaml": "^4.1.0"
 	}
 }

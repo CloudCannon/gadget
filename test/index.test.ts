@@ -44,14 +44,12 @@ it('generates configuration', async () => {
 				config: {
 					path: '',
 					icon: 'wysiwyg',
-					name: 'Pages',
 				},
 				collections: [
 					{
 						key: 'data',
 						config: {
 							icon: 'data_usage',
-							name: 'Data',
 							path: '_data',
 						},
 						collections: [
@@ -59,7 +57,6 @@ it('generates configuration', async () => {
 								key: 'data_authors',
 								config: {
 									icon: 'data_alert',
-									name: 'Data Authors',
 									path: '_data/authors',
 								},
 								collections: [],
@@ -68,7 +65,6 @@ it('generates configuration', async () => {
 								key: 'data_locations',
 								config: {
 									icon: 'add_location',
-									name: 'Data Locations',
 									path: '_data/locations',
 								},
 								collections: [],
@@ -79,7 +75,6 @@ it('generates configuration', async () => {
 						collections: [],
 						config: {
 							icon: 'contacts',
-							name: 'Contact',
 							path: 'contact',
 						},
 						key: 'contact',
@@ -88,7 +83,6 @@ it('generates configuration', async () => {
 						key: 'content',
 						config: {
 							icon: 'wysiwyg',
-							name: 'Content',
 							path: 'content',
 						},
 						collections: [
@@ -96,7 +90,6 @@ it('generates configuration', async () => {
 								key: 'about',
 								config: {
 									icon: 'bolt',
-									name: 'About',
 									path: 'content/about',
 								},
 								collections: [],
@@ -105,7 +98,6 @@ it('generates configuration', async () => {
 								key: 'posts',
 								config: {
 									icon: 'event_available',
-									name: 'Posts',
 									path: 'content/posts',
 								},
 								collections: [],

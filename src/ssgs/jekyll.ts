@@ -171,19 +171,13 @@ export default class Jekyll extends Ssg {
 			};
 
 			collectionConfig._inputs = generatePostsInputs(key);
-
 			collectionConfig.add_options ||= [
-				{ name: `Add ${collectionConfig.singular_name || 'Post'}` },
+				{ name: 'Add Post' },
 				{ name: 'Add Draft', collection: toDraftsKey(key) },
 			];
 		} else if (isDraftsPath(collectionConfig.path)) {
 			const postsKey = toPostsKey(key);
-
-			collectionConfig.create ||= {
-				path: '', // TODO: this should not be required if publish_to is set
-				publish_to: postsKey,
-			};
-
+			collectionConfig.create ||= { publish_to: postsKey };
 			collectionConfig._inputs = generatePostsInputs(postsKey);
 		}
 
@@ -385,7 +379,6 @@ export default class Jekyll extends Ssg {
 		if (seenKeys.source && !seenKeys.pages) {
 			// Clean up the source collection if there is no pages entry
 			seenKeys.source.key = 'pages';
-			seenKeys.source.config.name = 'Pages';
 			seenKeys.source.config.icon = findIcon('pages');
 			delete seenKeys.source.config.disable_url;
 		}

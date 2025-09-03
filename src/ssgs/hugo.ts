@@ -34,6 +34,14 @@ export default class Hugo extends Ssg {
 		]);
 	}
 
+	isConfigPath(filePath: string): boolean {
+		return (
+			super.isConfigPath(filePath) ||
+			filePath.startsWith('config/') || // Default configDir
+			filePath.includes('/config/') // Default configDir
+		);
+	}
+
 	partialFolders(): string[] {
 		return super.partialFolders().concat([
 			'archetypes/', // scaffolding templates
