@@ -35,7 +35,6 @@ steps:
       ╎      "key": "source",
       ╎      "config": {
       ╎        "path": "",
-      ╎        "name": "Source",
       ╎        "icon": "package_2"
       ╎      },
       ╎      "collections": [
@@ -43,7 +42,6 @@ steps:
       ╎          "key": "data",
       ╎          "config": {
       ╎            "path": "_data",
-      ╎            "name": "Data",
       ╎            "icon": "data_usage",
       ╎            "disable_url": true,
       ╎            "disable_add": true,
@@ -56,7 +54,6 @@ steps:
       ╎          "key": "pages",
       ╎          "config": {
       ╎            "path": "content",
-      ╎            "name": "Pages",
       ╎            "icon": "wysiwyg"
       ╎          },
       ╎          "collections": [
@@ -64,7 +61,6 @@ steps:
       ╎              "key": "blog",
       ╎              "config": {
       ╎                "path": "content/blog",
-      ╎                "name": "Blog",
       ╎                "icon": "event_available"
       ╎              },
       ╎              "collections": [
@@ -72,7 +68,6 @@ steps:
       ╎                  "key": "blog_follow_up",
       ╎                  "config": {
       ╎                    "path": "content/blog/follow-up",
-      ╎                    "name": "Blog Follow Up",
       ╎                    "icon": "clock_arrow_up"
       ╎                  },
       ╎                  "collections": []

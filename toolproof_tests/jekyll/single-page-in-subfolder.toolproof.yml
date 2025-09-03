@@ -42,7 +42,6 @@ steps:
       ╎      "key": "pages",
       ╎      "config": {
       ╎        "path": "pages",
-      ╎        "name": "Pages",
       ╎        "icon": "wysiwyg"
       ╎      },
       ╎      "collections": []

@@ -45,7 +45,6 @@ steps:
       ╎      "key": "staff",
       ╎      "config": {
       ╎        "path": "_staff",
-      ╎        "name": "Staff",
       ╎        "icon": "group",
       ╎        "disable_url": true,
       ╎        "sort_options": [

@@ -44,7 +44,6 @@ steps:
       ╎      "key": "blog",
       ╎      "config": {
       ╎        "path": "content/blog",
-      ╎        "name": "Blog",
       ╎        "icon": "event_available"
       ╎      },
       ╎      "collections": []

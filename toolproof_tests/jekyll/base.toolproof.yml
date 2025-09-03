@@ -109,7 +109,6 @@ steps:
       ╎      "key": "pages",
       ╎      "config": {
       ╎        "path": "",
-      ╎        "name": "Pages",
       ╎        "icon": "wysiwyg"
       ╎      },
       ╎      "collections": [
@@ -117,7 +116,6 @@ steps:
       ╎          "key": "data",
       ╎          "config": {
       ╎            "path": "_data",
-      ╎            "name": "Data",
       ╎            "icon": "data_usage",
       ╎            "disable_url": true,
       ╎            "disable_add": true,
@@ -129,7 +127,6 @@ steps:
       ╎              "key": "data_animals",
       ╎              "config": {
       ╎                "path": "_data/animals",
-      ╎                "name": "Data Animals",
       ╎                "icon": "data_array",
       ╎                "disable_url": true
       ╎              },
@@ -141,7 +138,6 @@ steps:
       ╎          "key": "about",
       ╎          "config": {
       ╎            "path": "about",
-      ╎            "name": "About",
       ╎            "icon": "bolt",
       ╎            "disable_url": true
       ╎          },
@@ -151,7 +147,6 @@ steps:
       ╎          "key": "collections",
       ╎          "config": {
       ╎            "path": "collections",
-      ╎            "name": "Collections",
       ╎            "icon": "conditions",
       ╎            "disable_url": true
       ╎          },
@@ -160,7 +155,6 @@ steps:
       ╎              "key": "news",
       ╎              "config": {
       ╎                "path": "collections/news",
-      ╎                "name": "News",
       ╎                "icon": "newsmode",
       ╎                "disable_url": true
       ╎              },
@@ -169,7 +163,6 @@ steps:
       ╎                  "key": "news_posts",
       ╎                  "config": {
       ╎                    "path": "collections/news/_posts",
-      ╎                    "name": "News Posts",
       ╎                    "icon": "newsmode",
       ╎                    "create": {
       ╎                      "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
@@ -206,10 +199,8 @@ steps:
       ╎                  "key": "news_drafts",
       ╎                  "config": {
       ╎                    "path": "collections/news/_drafts",
-      ╎                    "name": "News Drafts",
       ╎                    "icon": "drafts",
       ╎                    "create": {
-      ╎                      "path": "",
       ╎                      "publish_to": "news_posts"
       ╎                    },
       ╎                    "_inputs": {
@@ -237,7 +228,6 @@ steps:
       ╎              "key": "collections_data",
       ╎              "config": {
       ╎                "path": "collections/_data",
-      ╎                "name": "Collections Data",
       ╎                "icon": "collections_bookmark",
       ╎                "disable_url": true
       ╎              },
@@ -247,7 +237,6 @@ steps:
       ╎              "key": "posts",
       ╎              "config": {
       ╎                "path": "collections/_posts",
-      ╎                "name": "Posts",
       ╎                "icon": "event_available",
       ╎                "create": {
       ╎                  "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
@@ -284,7 +273,6 @@ steps:
       ╎              "key": "staff",
       ╎              "config": {
       ╎                "path": "collections/_staff",
-      ╎                "name": "Staff",
       ╎                "icon": "group",
       ╎                "disable_url": true
       ╎              },
@@ -294,10 +282,8 @@ steps:
       ╎              "key": "drafts",
       ╎              "config": {
       ╎                "path": "collections/_drafts",
-      ╎                "name": "Drafts",
       ╎                "icon": "event",
       ╎                "create": {
-      ╎                  "path": "",
       ╎                  "publish_to": "posts"
       ╎                },
       ╎                "_inputs": {

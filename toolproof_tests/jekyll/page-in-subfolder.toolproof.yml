@@ -56,7 +56,6 @@ steps:
       ╎      "key": "webpages",
       ╎      "config": {
       ╎        "path": "webpages",
-      ╎        "name": "Webpages",
       ╎        "icon": "pages",
       ╎        "disable_url": true
       ╎      },

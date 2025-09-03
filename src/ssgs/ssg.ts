@@ -7,10 +7,9 @@ import type {
 	Timezone,
 } from '@cloudcannon/configuration-types';
 import slugify from '@sindresorhus/slugify';
-import titleize from 'titleize';
 import { findBasePath, getCollectionPaths } from '../collections';
 import { findIcon } from '../icons';
-import { basename, extname, last, parseDataFile, stripBottomPath, stripTopPath } from '../utility';
+import { extname, last, parseDataFile, stripBottomPath, stripTopPath } from '../utility';
 
 export interface CollectionConfigTree {
 	key: string;
@@ -389,11 +388,8 @@ export default class Ssg {
 		path: string,
 		_options: GenerateCollectionConfigOptions
 	): CollectionConfig {
-		const name = titleize(basename(key).replace(/[_-]/g, ' ').trim());
-
 		return {
 			path,
-			name,
 			icon: findIcon(key),
 		};
 	}
@@ -559,7 +555,6 @@ export default class Ssg {
 		if (seenKeys.source && !seenKeys.pages) {
 			// Clean up the source collection if there is no pages entry
 			seenKeys.source.key = 'pages';
-			seenKeys.source.config.name = 'Pages';
 			seenKeys.source.config.icon = findIcon('pages');
 		}
 

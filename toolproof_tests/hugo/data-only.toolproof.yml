@@ -45,7 +45,6 @@ steps:
       ╎      "key": "data",
       ╎      "config": {
       ╎        "path": "data",
-      ╎        "name": "Data",
       ╎        "icon": "data_usage",
       ╎        "disable_url": true,
       ╎        "disable_add": true,
