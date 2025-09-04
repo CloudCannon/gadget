@@ -35,10 +35,6 @@ export default class Docusaurus extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.push({
-			value: 'npm run build',
-			attribution: 'most common for Docusaurus sites',
-		});
 		commands.output.unshift({
 			value: 'build',
 			attribution: 'most common for Docusaurus sites',
