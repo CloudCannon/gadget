@@ -1,0 +1,95 @@
+name: Docusaurus starter
+
+steps:
+  - I run "cp -R %test_sites%/docusaurus-starter src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "docusaurus",
+      ╎  "config": {
+      ╎    "paths": {
+      ╎      "static": "static",
+      ╎      "uploads": "static/uploads"
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {}
+      ╎    },
+      ╎    "_snippets_imports": {
+      ╎      "mdx": true,
+      ╎      "docusaurus_mdx": true
+      ╎    }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "pages",
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "src",
+      ╎          "config": {
+      ╎            "path": "src",
+      ╎            "icon": "abc"
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "src_pages",
+      ╎              "config": {
+      ╎                "path": "src/pages",
+      ╎                "icon": "fit_page"
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "blog",
+      ╎          "config": {
+      ╎            "path": "blog",
+      ╎            "icon": "event_available"
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "blog_2021_08_26_welcome",
+      ╎              "config": {
+      ╎                "path": "blog/2021-08-26-welcome",
+      ╎                "icon": "bottom_panel_close"
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "docs",
+      ╎          "config": {
+      ╎            "path": "docs",
+      ╎            "icon": "docs"
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "docs_tutorial_basics",
+      ╎              "config": {
+      ╎                "path": "docs/tutorial-basics",
+      ╎                "icon": "dock_to_bottom"
+      ╎              },
+      ╎              "collections": []
+      ╎            },
+      ╎            {
+      ╎              "key": "docs_tutorial_extras",
+      ╎              "config": {
+      ╎                "path": "docs/tutorial-extras",
+      ╎                "icon": "dock_to_left"
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
+      ╎}
