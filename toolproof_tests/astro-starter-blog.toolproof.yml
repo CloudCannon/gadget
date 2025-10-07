@@ -23,6 +23,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "src",
+      ╎      "suggested": false,
       ╎      "config": {
       ╎        "path": "src",
       ╎        "icon": "abc",
@@ -31,6 +32,7 @@ steps:
       ╎      "collections": [
       ╎        {
       ╎          "key": "pages",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "src/pages",
       ╎            "icon": "wysiwyg"
@@ -38,6 +40,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "pages_blog",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "src/pages/blog",
       ╎                "icon": "call_log"
@@ -48,6 +51,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "content",
+      ╎          "suggested": false,
       ╎          "config": {
       ╎            "path": "src/content",
       ╎            "icon": "wysiwyg"
@@ -55,6 +59,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "blog",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "src/content/blog",
       ╎                "icon": "event_available"

@@ -23,6 +23,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "source",
+      ╎      "suggested": false,
       ╎      "config": {
       ╎        "path": "",
       ╎        "icon": "package_2",
@@ -31,6 +32,7 @@ steps:
       ╎      "collections": [
       ╎        {
       ╎          "key": "src",
+      ╎          "suggested": false,
       ╎          "config": {
       ╎            "path": "src",
       ╎            "icon": "abc",
@@ -39,6 +41,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "pages",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "src/pages",
       ╎                "icon": "wysiwyg"
@@ -47,6 +50,7 @@ steps:
       ╎            },
       ╎            {
       ╎              "key": "shared",
+      ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "src/shared",
       ╎                "icon": "share",
@@ -55,6 +59,7 @@ steps:
       ╎              "collections": [
       ╎                {
       ╎                  "key": "shared_astro",
+      ╎                  "suggested": true,
       ╎                  "config": {
       ╎                    "path": "src/shared/astro",
       ╎                    "icon": "share_eta",
@@ -66,6 +71,7 @@ steps:
       ╎            },
       ╎            {
       ╎              "key": "content",
+      ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "src/content",
       ╎                "icon": "wysiwyg"
@@ -73,6 +79,7 @@ steps:
       ╎              "collections": [
       ╎                {
       ╎                  "key": "blog",
+      ╎                  "suggested": true,
       ╎                  "config": {
       ╎                    "path": "src/content/blog",
       ╎                    "icon": "event_available"
@@ -81,6 +88,7 @@ steps:
       ╎                },
       ╎                {
       ╎                  "key": "content_pages",
+      ╎                  "suggested": true,
       ╎                  "config": {
       ╎                    "path": "src/content/pages",
       ╎                    "icon": "contact_page"
@@ -93,6 +101,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "data",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "data",
       ╎            "icon": "data_usage",

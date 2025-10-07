@@ -25,6 +25,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "pages",
+      ╎      "suggested": false,
       ╎      "config": {
       ╎        "path": "",
       ╎        "icon": "wysiwyg"
@@ -32,6 +33,7 @@ steps:
       ╎      "collections": [
       ╎        {
       ╎          "key": "src",
+      ╎          "suggested": false,
       ╎          "config": {
       ╎            "path": "src",
       ╎            "icon": "abc"
@@ -39,6 +41,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "src_pages",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "src/pages",
       ╎                "icon": "fit_page"
@@ -49,6 +52,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "blog",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "blog",
       ╎            "icon": "event_available"
@@ -56,6 +60,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "blog_2021_08_26_welcome",
+      ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "blog/2021-08-26-welcome",
       ╎                "icon": "bottom_panel_close"
@@ -66,6 +71,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "docs",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "docs",
       ╎            "icon": "docs"
@@ -73,6 +79,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "docs_tutorial_basics",
+      ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "docs/tutorial-basics",
       ╎                "icon": "dock_to_bottom"
@@ -81,6 +88,7 @@ steps:
       ╎            },
       ╎            {
       ╎              "key": "docs_tutorial_extras",
+      ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "docs/tutorial-extras",
       ╎                "icon": "dock_to_left"

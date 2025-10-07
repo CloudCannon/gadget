@@ -23,6 +23,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "source",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "",
       ╎        "icon": "package_2"
@@ -30,6 +31,7 @@ steps:
       ╎      "collections": [
       ╎        {
       ╎          "key": "data",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "_data",
       ╎            "icon": "data_usage",
@@ -42,6 +44,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "pages",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "pages",
       ╎            "icon": "wysiwyg"
@@ -50,6 +53,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "posts",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "posts",
       ╎            "icon": "event_available"
@@ -58,6 +62,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "staff_members",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "staff-members",
       ╎            "icon": "group"

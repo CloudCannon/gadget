@@ -1,8 +1,11 @@
 import type { CollectionConfig, MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
+import type { ExternalConfig } from '..';
+import { getDecapPaths } from '../external';
 import Ssg, {
 	type BuildCommands,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
+	type GenerateCollectionsConfigOptions,
 } from './ssg';
 
 export default class Astro extends Ssg {
@@ -22,6 +25,10 @@ export default class Astro extends Ssg {
 			'dist/', // default output
 			'.astro', // generated types
 		]);
+	}
+
+	partialFolders(): string[] {
+		return super.partialFolders().concat(['src/components', 'src/layouts']);
 	}
 
 	isIgnoredFile(filePath: string): boolean {
@@ -66,6 +73,14 @@ export default class Astro extends Ssg {
 		return collectionConfig;
 	}
 
+	isBaseCollectionPath(
+		path: string,
+		_collectionPaths: string[],
+		_options: GenerateCollectionsConfigOptions
+	): boolean {
+		return path === 'src' || path === 'src/content' || path === 'src/pages';
+	}
+
 	/**
 	 * Generates a list of build suggestions.
 	 */
@@ -90,12 +105,13 @@ export default class Astro extends Ssg {
 	/**
 	 * Generates path configuration.
 	 */
-	getPaths(): Paths | undefined {
-		return {
-			...super.getPaths(),
-			static: 'public',
-			uploads: 'public/uploads',
-		};
+	getPaths(externalConfig: ExternalConfig): Paths | undefined {
+		return (
+			getDecapPaths(externalConfig.decap) || {
+				static: 'public',
+				uploads: 'public/uploads',
+			}
+		);
 	}
 
 	generateMarkdown(_config: Record<string, any> | undefined): MarkdownSettings {

@@ -43,6 +43,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "blog",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "content/blog",
       ╎        "icon": "event_available"

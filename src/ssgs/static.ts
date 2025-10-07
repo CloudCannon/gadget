@@ -1,9 +1,4 @@
-import type { CollectionConfig } from '@cloudcannon/configuration-types';
-import Ssg, {
-	type BuildCommands,
-	type GenerateBuildCommandsOptions,
-	type GenerateCollectionsConfigOptions,
-} from './ssg';
+import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg';
 
 export default class Static extends Ssg {
 	constructor() {
@@ -12,21 +7,6 @@ export default class Static extends Ssg {
 
 	configPaths(): string[] {
 		return super.configPaths().concat(['.nojekyll']);
-	}
-
-	/**
-	 * Generates collections config from a set of paths.
-	 */
-	generateCollectionsConfig(
-		collectionPaths: string[],
-		options: GenerateCollectionsConfigOptions
-	): Record<string, CollectionConfig> {
-		return {
-			pages: this.generateCollectionConfig('pages', options?.source ?? '', {
-				...options,
-				collectionPaths,
-			}),
-		};
 	}
 
 	/**

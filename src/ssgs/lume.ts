@@ -5,6 +5,10 @@ export default class Lume extends Ssg {
 		super('lume');
 	}
 
+	partialFolders(): string[] {
+		return super.partialFolders().concat(['_includes/']);
+	}
+
 	/**
 	 * Generates a list of build suggestions.
 	 */

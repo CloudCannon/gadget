@@ -1,4 +1,6 @@
 import type { Paths, SnippetsImports } from '@cloudcannon/configuration-types';
+import type { ExternalConfig } from '..';
+import { getDecapPaths } from '../external';
 import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg';
 
 export default class Docusaurus extends Ssg {
@@ -18,12 +20,13 @@ export default class Docusaurus extends Ssg {
 	/**
 	 * Generates path configuration.
 	 */
-	getPaths(): Paths | undefined {
-		return {
-			...super.getPaths(),
-			static: 'static',
-			uploads: 'static/uploads',
-		};
+	getPaths(externalConfig: ExternalConfig): Paths | undefined {
+		return (
+			getDecapPaths(externalConfig.decap) || {
+				static: 'static',
+				uploads: 'static/uploads',
+			}
+		);
 	}
 
 	/**

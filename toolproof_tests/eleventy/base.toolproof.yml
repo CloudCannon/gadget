@@ -28,6 +28,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "pages",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "",
       ╎        "icon": "wysiwyg"
@@ -35,6 +36,7 @@ steps:
       ╎      "collections": [
       ╎        {
       ╎          "key": "blog",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "blog",
       ╎            "icon": "event_available"
@@ -42,6 +44,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "blog_follow_up",
+      ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "blog/follow-up",
       ╎                "icon": "clock_arrow_up"
@@ -52,6 +55,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "data",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "_data",
       ╎            "icon": "data_usage",
