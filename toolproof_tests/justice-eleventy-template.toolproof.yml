@@ -52,11 +52,11 @@ steps:
       ╎          "collections": []
       ╎        },
       ╎        {
-      ╎          "key": "posts",
+      ╎          "key": "posts_1",
       ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "posts",
-      ╎            "icon": "event_available"
+      ╎            "icon": "post"
       ╎          },
       ╎          "collections": []
       ╎        },

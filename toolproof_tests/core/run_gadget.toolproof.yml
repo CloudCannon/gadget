@@ -11,6 +11,7 @@ steps:
         "dependencies": {
           "@cloudcannon/gadget": "file:%gadget_dir%",
           "tsx": "^4.20.4",
+          "js-yaml": "^4.1.0",
           "fdir": "^6.1.1"
         },
         "scripts": {
@@ -22,15 +23,19 @@ steps:
       import { fdir } from 'fdir';
       import { readFile } from 'fs/promises';
       import { generateConfiguration } from '@cloudcannon/gadget';
+      import yaml from 'js-yaml';
 
       const crawler = new fdir().withRelativePaths().withFullPaths();
       const filePaths = await crawler.crawl("src").withPromise();
       filePaths.sort();
+
+      const ccConfig = filePaths.includes('cloudcannon.config.yml')
+        ? yaml.load(await readFile('src/cloudcannon.config.yml'))
+        : undefined;
+
       const config = await generateConfiguration(filePaths, {
         readFile: (path) => path ? readFile('src/' + path) : '',
-        config: {
-          timezone: 'Pacific/Auckland'
-        }
+        config: { ...ccConfig, timezone: 'Pacific/Auckland' }
       });
 
       console.log(JSON.stringify(config, undefined, 2));

@@ -217,8 +217,8 @@ export default class Jekyll extends Ssg {
 		collectionPaths: string[],
 		options: GenerateCollectionsConfigOptions
 	): CollectionConfigTree[] {
-		const collectionsDir = options.config?.collections_dir || '';
-		const collections = getJekyllCollections(options.config?.collections);
+		const collectionsDir = options.ssgConfig?.collections_dir || '';
+		const collections = getJekyllCollections(options.ssgConfig?.collections);
 
 		// Handle defined collections.
 		for (const key of Object.keys(collections)) {
@@ -259,14 +259,23 @@ export default class Jekyll extends Ssg {
 		const seenPaths: Record<string, CollectionConfigTree> = {};
 		const trees: CollectionConfigTree[] = [];
 		const contentPrefix = `${slugify(collectionsDir, { separator: '_' })}_`;
+		const existingCollections = this.getExistingCollections(
+			options?.config?.collections_config || {}
+		);
 
 		for (let i = 0; i < sortedPaths.length; i++) {
 			const path = stripTopPath(sortedPaths[i], options.source);
 
-			const key = this.generateCollectionsConfigKey(path, Object.keys(seenKeys), {
-				fallback: !path ? 'source' : 'pages',
-				contentPrefix,
-			});
+			const key =
+				existingCollections.byPath[path]?.key ||
+				this.generateCollectionsConfigKey(
+					path,
+					Object.keys(seenKeys).concat(existingCollections.keys),
+					{
+						fallback: !path ? 'source' : 'pages',
+						contentPrefix,
+					}
+				);
 
 			let collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
 			if (!collection) {
@@ -284,11 +293,13 @@ export default class Jekyll extends Ssg {
 					jekyllCollections: collections,
 					jekyllCollectionsDir: collectionsDir,
 				}),
-				config: this.generateCollectionConfig(key, path, {
-					...options,
-					collectionPaths,
-					collection,
-				}),
+				config:
+					existingCollections.byPath[path]?.config ||
+					this.generateCollectionConfig(key, path, {
+						...options,
+						collectionPaths,
+						collection,
+					}),
 				collections: [],
 			};
 
@@ -305,8 +316,8 @@ export default class Jekyll extends Ssg {
 			}
 		}
 
-		if (seenKeys.source && !seenKeys.pages) {
-			// Clean up the source collection if there is no pages entry
+		if (seenKeys.source && !seenKeys.pages && !existingCollections.keys.includes('source')) {
+			// Clean up the generated source collection if there is no pages entry
 			seenKeys.source.key = 'pages';
 			seenKeys.source.config.icon = findIcon('pages');
 			delete seenKeys.source.config.disable_url;
@@ -315,12 +326,12 @@ export default class Jekyll extends Ssg {
 		return trees;
 	}
 
-	generateMarkdown(config: Record<string, any> | undefined): MarkdownSettings {
-		const engine = config?.markdown?.includes('CommonMark') ? 'commonmark' : 'kramdown';
+	generateMarkdown(ssgConfig: Record<string, any> | undefined): MarkdownSettings {
+		const engine = ssgConfig?.markdown?.includes('CommonMark') ? 'commonmark' : 'kramdown';
 		const options: MarkdownSettings['options'] = {};
 
 		if (engine === 'kramdown') {
-			const kramdownConfig = config?.kramdown || {};
+			const kramdownConfig = ssgConfig?.kramdown || {};
 			// https://kramdown.gettalong.org/options.html
 			options.heading_ids = !!kramdownConfig.auto_ids;
 			options.gfm = kramdownConfig.input === 'GFM';
@@ -343,8 +354,8 @@ export default class Jekyll extends Ssg {
 
 			options.attributes = true;
 			options.attribute_elements = kramdownAttributeElementOptions;
-		} else if (config) {
-			const commonmarkConfig = config?.commonmark || {};
+		} else if (ssgConfig) {
+			const commonmarkConfig = ssgConfig?.commonmark || {};
 
 			const checkOption = (name: string): boolean => {
 				return (

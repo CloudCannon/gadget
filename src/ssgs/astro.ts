@@ -114,7 +114,7 @@ export default class Astro extends Ssg {
 		);
 	}
 
-	generateMarkdown(_config: Record<string, any> | undefined): MarkdownSettings {
+	generateMarkdown(_ssgConfig: Record<string, any> | undefined): MarkdownSettings {
 		return {
 			engine: 'commonmark',
 			options: {

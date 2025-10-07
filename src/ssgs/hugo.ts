@@ -100,7 +100,7 @@ export default class Hugo extends Ssg {
 			collectionConfig.glob.push('!_index.md');
 		}
 
-		const dataPath = this.getHugoDataPath(options.config);
+		const dataPath = this.getHugoDataPath(options.ssgConfig);
 
 		if (path === dataPath || path.endsWith(`/${dataPath}`)) {
 			collectionConfig.disable_url = true;
@@ -128,7 +128,7 @@ export default class Hugo extends Ssg {
 		collectionPaths: string[],
 		options: GenerateCollectionsConfigOptions
 	): string[] {
-		const dataPath = this.getHugoDataPath(options.config, options.basePath);
+		const dataPath = this.getHugoDataPath(options.ssgConfig, options.basePath);
 		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
 	}
 
@@ -171,8 +171,8 @@ export default class Hugo extends Ssg {
 		return super.generateCollectionsConfigTree(collectionPaths, options);
 	}
 
-	generateMarkdown(config: Record<string, any> | undefined): MarkdownSettings {
-		const goldmark = config?.markup?.goldmark || {};
+	generateMarkdown(ssgConfig: Record<string, any> | undefined): MarkdownSettings {
+		const goldmark = ssgConfig?.markup?.goldmark || {};
 		const { extensions, parser, renderer } = goldmark;
 		const extras = extensions?.extras || {};
 

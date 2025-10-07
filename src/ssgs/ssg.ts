@@ -1,5 +1,6 @@
 import type {
 	CollectionConfig,
+	Configuration,
 	MarkdownSettings,
 	Paths,
 	SnippetsImports,
@@ -42,7 +43,8 @@ export interface GroupedFileSummaries {
 }
 
 export interface GenerateCollectionsConfigOptions {
-	config?: Record<string, any>;
+	ssgConfig?: Record<string, any>;
+	config?: Configuration;
 	source?: string;
 	basePath: string;
 	filePaths: string[];
@@ -497,6 +499,26 @@ export default class Ssg {
 		return collectionPaths.includes(path) && !hasNonBaseParentCollectionWithFiles;
 	}
 
+	getExistingCollections(existingCollectionsConfig: Record<string, CollectionConfig>): {
+		keys: string[];
+		byPath: Record<string, { config: CollectionConfig | undefined; key: string }>;
+	} {
+		const keys = Object.keys(existingCollectionsConfig);
+		const byPath: Record<string, { config: CollectionConfig | undefined; key: string }> = {};
+
+		for (let i = 0; i < keys.length; i++) {
+			const path = existingCollectionsConfig[keys[i]]?.path;
+			if (path || path === '') {
+				byPath[normalisePath(path)] = {
+					config: existingCollectionsConfig[keys[i]],
+					key: keys[i],
+				};
+			}
+		}
+
+		return { keys, byPath };
+	}
+
 	/**
 	 * Generates a tree from a set of paths for selectively creating a collections_config.
 	 */
@@ -536,26 +558,37 @@ export default class Ssg {
 		const seenPaths: Record<string, CollectionConfigTree> = {};
 		const trees: CollectionConfigTree[] = [];
 		const hasPages = sortedPaths.some((path) => path === 'pages' || path.endsWith('/pages'));
+		const existingCollections = this.getExistingCollections(
+			options?.config?.collections_config || {}
+		);
 
 		for (let i = 0; i < sortedPaths.length; i++) {
 			const path = stripTopPath(sortedPaths[i], options.source);
-			const pathInBasePath = stripTopPath(path, basePath);
-			const key = this.generateCollectionsConfigKey(pathInBasePath, Object.keys(seenKeys), {
-				fallback: !path
-					? 'source'
-					: path === basePath && !hasPages
-						? 'pages'
-						: slugify(path, { separator: '_' }),
-			});
+
+			const key =
+				existingCollections.byPath[path]?.key ||
+				this.generateCollectionsConfigKey(
+					stripTopPath(path, basePath),
+					Object.keys(seenKeys).concat(existingCollections.keys),
+					{
+						fallback: !path
+							? 'source'
+							: path === basePath && !hasPages
+								? 'pages'
+								: slugify(path, { separator: '_' }),
+					}
+				);
 
 			const tree: CollectionConfigTree = {
 				key,
 				suggested: this.isSuggestedCollection(path, collectionPaths, options),
-				config: this.generateCollectionConfig(key, path, {
-					...options,
-					collectionPaths,
-					basePath,
-				}),
+				config:
+					existingCollections.byPath[path]?.config ||
+					this.generateCollectionConfig(key, path, {
+						...options,
+						collectionPaths,
+						basePath,
+					}),
 				collections: [],
 			};
 
@@ -572,8 +605,8 @@ export default class Ssg {
 			}
 		}
 
-		if (seenKeys.source && !seenKeys.pages) {
-			// Clean up the source collection if there is no pages entry
+		if (seenKeys.source && !seenKeys.pages && !existingCollections.keys.includes('source')) {
+			// Clean up the generated source collection if there is no pages entry
 			seenKeys.source.key = 'pages';
 			seenKeys.source.config.icon = findIcon('pages');
 		}
@@ -619,7 +652,7 @@ export default class Ssg {
 		return sorted;
 	}
 
-	generateMarkdown(_config: Record<string, any> | undefined): MarkdownSettings {
+	generateMarkdown(_ssgConfig: Record<string, any> | undefined): MarkdownSettings {
 		return {
 			engine: 'commonmark',
 			options: {},
