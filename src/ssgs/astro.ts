@@ -73,6 +73,18 @@ export default class Astro extends Ssg {
 		return collectionConfig;
 	}
 
+	isSuggestedCollection(
+		path: string,
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): boolean {
+		return (
+			path !== 'src/shared' &&
+			!path.startsWith('src/shared/') &&
+			super.isSuggestedCollection(path, collectionPaths, options)
+		);
+	}
+
 	isBaseCollectionPath(
 		path: string,
 		_collectionPaths: string[],

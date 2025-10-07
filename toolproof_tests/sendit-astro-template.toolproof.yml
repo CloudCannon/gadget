@@ -59,7 +59,7 @@ steps:
       ╎              "collections": [
       ╎                {
       ╎                  "key": "shared_astro",
-      ╎                  "suggested": true,
+      ╎                  "suggested": false,
       ╎                  "config": {
       ╎                    "path": "src/shared/astro",
       ╎                    "icon": "share_eta",
