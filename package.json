@@ -30,13 +30,13 @@
 	},
 	"author": "CloudCannon <support@cloudcannon.com>",
 	"devDependencies": {
-		"@biomejs/biome": "^2.2.2",
+		"@biomejs/biome": "^2.2.5",
 		"@cloudcannon/configuration-types": "^0.0.40",
 		"@types/he": "^1.2.3",
 		"@types/js-yaml": "^4.0.9",
-		"@types/node": "^24.3.0",
+		"@types/node": "^24.7.0",
 		"@vitest/coverage-v8": "^3.2.4",
-		"typescript": "^5.9.2",
+		"typescript": "^5.9.3",
 		"vitest": "^3.2.4"
 	},
 	"license": "MIT",

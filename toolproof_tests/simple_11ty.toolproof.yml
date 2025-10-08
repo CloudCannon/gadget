@@ -73,6 +73,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "source",
+      ╎      "suggested": false,
       ╎      "config": {
       ╎        "path": "",
       ╎        "icon": "package_2"
@@ -80,6 +81,7 @@ steps:
       ╎      "collections": [
       ╎        {
       ╎          "key": "pages",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "pages",
       ╎            "icon": "wysiwyg"
@@ -88,6 +90,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "staff_members",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "staff-members",
       ╎            "icon": "group"

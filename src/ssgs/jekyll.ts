@@ -184,106 +184,30 @@ export default class Jekyll extends Ssg {
 		return collectionConfig;
 	}
 
-	/**
-	 * Generates collections config from a set of paths.
-	 */
-	generateCollectionsConfig(
+	isSuggestedCollection(
+		path: string,
 		collectionPaths: string[],
-		options: GenerateCollectionsConfigOptions
-	): Record<string, CollectionConfig> {
-		const collectionsConfig: Record<string, CollectionConfig> = {};
-		const collectionsDir = options.config?.collections_dir || '';
-		const collections = getJekyllCollections(options.config?.collections);
+		options: GenerateCollectionsConfigOptions & {
+			jekyllCollections: Record<string, any>;
+			jekyllCollectionsDir: string | undefined;
+		}
+	): boolean {
+		const isDefaultCollection =
+			collectionPaths.length === 1 || // a subfolder if no content files in root
+			path === '' || // root folder
+			path === '_data' ||
+			path.startsWith('_data/') ||
+			path === '_posts' ||
+			path.endsWith('/_posts') ||
+			path === '_drafts' ||
+			path.endsWith('/_drafts');
 
-		// Handle defined collections.
-		for (const key of Object.keys(collections)) {
-			const collectionKey = key === 'pages' || key === 'data' ? `collection_${key}` : key;
-			const path = join(collectionsDir, `_${key}`);
-			const collection = collections[key];
-
-			collectionsConfig[collectionKey] = this.generateCollectionConfig(collectionKey, path, {
-				...options,
-				collectionPaths,
-				collection,
-			});
+		if (isDefaultCollection) {
+			return true;
 		}
 
-		const sortedPaths = collectionPaths.sort((a, b) => a.length - b.length);
-
-		// Use detected content folders to handle automatic/default collections.
-		for (const fullPath of sortedPaths) {
-			const path = stripTopPath(fullPath, options.source);
-
-			const isDefaultCollection =
-				sortedPaths.length === 1 || // a subfolder if no content files in root
-				path === '' || // root folder
-				path === '_data' ||
-				path.startsWith('_data/') ||
-				path === '_posts' ||
-				path.endsWith('/_posts') ||
-				path === '_drafts' ||
-				path.endsWith('/_drafts');
-
-			if (!isDefaultCollection) {
-				continue;
-			}
-
-			const exists = Object.keys(collectionsConfig).some((key) => {
-				return collectionsConfig[key].path === path;
-			});
-
-			if (exists) {
-				continue;
-			}
-
-			const pathInCollectionsDir = stripTopPath(path, collectionsDir);
-			const key = this.generateCollectionsConfigKey(
-				pathInCollectionsDir,
-				Object.keys(collectionsConfig)
-			);
-			const collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
-			collectionsConfig[key] = this.generateCollectionConfig(key, path, {
-				...options,
-				collectionPaths,
-				collection,
-			});
-		}
-
-		// Add matching post/draft collections
-		for (const key of Object.keys(collectionsConfig)) {
-			const collectionConfig = collectionsConfig[key];
-			if (!collectionConfig.path) {
-				continue;
-			}
-
-			if (isDraftsPath(collectionConfig.path)) {
-				// Ensure there is a matching posts collection
-				const postsKey = toPostsKey(key);
-				collectionsConfig[postsKey] ||= this.generateCollectionConfig(
-					postsKey,
-					toPostsPath(collectionConfig.path),
-					{
-						...options,
-						collectionPaths,
-						collection: collections?.posts,
-					}
-				);
-			} else if (isPostsPath(collectionConfig.path)) {
-				// Ensure there is a matching drafts collection
-				const draftsKey = toDraftsKey(key);
-				collectionsConfig[draftsKey] ||= this.generateCollectionConfig(
-					draftsKey,
-					toDraftsPath(collectionConfig.path),
-					{
-						...options,
-						collectionPaths,
-						collection: collections?.drafts || collections?.posts,
-					}
-				);
-			}
-		}
-
-		return collectionsConfig;
+		const collectionKey = stripTopPath(path, options.jekyllCollectionsDir).replace(/^\/?_/, '');
+		return collectionKey in options.jekyllCollections;
 	}
 
 	/**
@@ -293,8 +217,8 @@ export default class Jekyll extends Ssg {
 		collectionPaths: string[],
 		options: GenerateCollectionsConfigOptions
 	): CollectionConfigTree[] {
-		const collectionsDir = options.config?.collections_dir || '';
-		const collections = getJekyllCollections(options.config?.collections);
+		const collectionsDir = options.ssgConfig?.collections_dir || '';
+		const collections = getJekyllCollections(options.ssgConfig?.collections);
 
 		// Handle defined collections.
 		for (const key of Object.keys(collections)) {
@@ -335,14 +259,23 @@ export default class Jekyll extends Ssg {
 		const seenPaths: Record<string, CollectionConfigTree> = {};
 		const trees: CollectionConfigTree[] = [];
 		const contentPrefix = `${slugify(collectionsDir, { separator: '_' })}_`;
+		const existingCollections = this.getExistingCollections(
+			options?.config?.collections_config || {}
+		);
 
 		for (let i = 0; i < sortedPaths.length; i++) {
 			const path = stripTopPath(sortedPaths[i], options.source);
 
-			const key = this.generateCollectionsConfigKey(path, Object.keys(seenKeys), {
-				fallback: !path ? 'source' : 'pages',
-				contentPrefix,
-			});
+			const key =
+				existingCollections.byPath[path]?.key ||
+				this.generateCollectionsConfigKey(
+					path,
+					Object.keys(seenKeys).concat(existingCollections.keys),
+					{
+						fallback: !path ? 'source' : 'pages',
+						contentPrefix,
+					}
+				);
 
 			let collection = collections[stripTopPath(path, collectionsDir).replace(/^\/?_/, '')];
 			if (!collection) {
@@ -355,11 +288,18 @@ export default class Jekyll extends Ssg {
 
 			const tree: CollectionConfigTree = {
 				key,
-				config: this.generateCollectionConfig(key, path, {
+				suggested: this.isSuggestedCollection(path, collectionPaths, {
 					...options,
-					collectionPaths,
-					collection,
+					jekyllCollections: collections,
+					jekyllCollectionsDir: collectionsDir,
 				}),
+				config:
+					existingCollections.byPath[path]?.config ||
+					this.generateCollectionConfig(key, path, {
+						...options,
+						collectionPaths,
+						collection,
+					}),
 				collections: [],
 			};
 
@@ -376,8 +316,8 @@ export default class Jekyll extends Ssg {
 			}
 		}
 
-		if (seenKeys.source && !seenKeys.pages) {
-			// Clean up the source collection if there is no pages entry
+		if (seenKeys.source && !seenKeys.pages && !existingCollections.keys.includes('source')) {
+			// Clean up the generated source collection if there is no pages entry
 			seenKeys.source.key = 'pages';
 			seenKeys.source.config.icon = findIcon('pages');
 			delete seenKeys.source.config.disable_url;
@@ -386,12 +326,12 @@ export default class Jekyll extends Ssg {
 		return trees;
 	}
 
-	generateMarkdown(config: Record<string, any> | undefined): MarkdownSettings {
-		const engine = config?.markdown?.includes('CommonMark') ? 'commonmark' : 'kramdown';
+	generateMarkdown(ssgConfig: Record<string, any> | undefined): MarkdownSettings {
+		const engine = ssgConfig?.markdown?.includes('CommonMark') ? 'commonmark' : 'kramdown';
 		const options: MarkdownSettings['options'] = {};
 
 		if (engine === 'kramdown') {
-			const kramdownConfig = config?.kramdown || {};
+			const kramdownConfig = ssgConfig?.kramdown || {};
 			// https://kramdown.gettalong.org/options.html
 			options.heading_ids = !!kramdownConfig.auto_ids;
 			options.gfm = kramdownConfig.input === 'GFM';
@@ -414,8 +354,8 @@ export default class Jekyll extends Ssg {
 
 			options.attributes = true;
 			options.attribute_elements = kramdownAttributeElementOptions;
-		} else if (config) {
-			const commonmarkConfig = config?.commonmark || {};
+		} else if (ssgConfig) {
+			const commonmarkConfig = ssgConfig?.commonmark || {};
 
 			const checkOption = (name: string): boolean => {
 				return (

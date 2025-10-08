@@ -1,5 +1,6 @@
 import type {
 	CollectionConfig,
+	Configuration,
 	MarkdownSettings,
 	Paths,
 	SnippetsImports,
@@ -7,14 +8,25 @@ import type {
 	Timezone,
 } from '@cloudcannon/configuration-types';
 import slugify from '@sindresorhus/slugify';
+import type { ExternalConfig } from '..';
 import { findBasePath, getCollectionPaths } from '../collections';
+import { getDecapPaths } from '../external';
 import { findIcon } from '../icons';
-import { extname, last, parseDataFile, stripBottomPath, stripTopPath } from '../utility';
+import {
+	extname,
+	join,
+	last,
+	normalisePath,
+	parseDataFile,
+	stripBottomPath,
+	stripTopPath,
+} from '../utility';
 
 export interface CollectionConfigTree {
 	key: string;
 	config: CollectionConfig;
 	collections: CollectionConfigTree[];
+	suggested: boolean;
 }
 
 export type FileType = 'config' | 'content' | 'template' | 'partial' | 'ignored' | 'other';
@@ -31,10 +43,12 @@ export interface GroupedFileSummaries {
 }
 
 export interface GenerateCollectionsConfigOptions {
-	config?: Record<string, any>;
+	ssgConfig?: Record<string, any>;
+	config?: Configuration;
 	source?: string;
 	basePath: string;
 	filePaths: string[];
+	externalConfig: ExternalConfig;
 }
 
 export interface GenerateBuildCommandsOptions {
@@ -162,7 +176,7 @@ export default class Ssg {
 				if (config) {
 					return config;
 				}
-			} catch (_e) {
+			} catch {
 				// Intentionally ignored
 			}
 		}
@@ -434,48 +448,75 @@ export default class Ssg {
 		return collectionPaths;
 	}
 
-	/**
-	 * Generates collections config from a set of paths.
-	 */
-	generateCollectionsConfig(
+	isBaseCollectionPath(
+		path: string,
 		collectionPaths: string[],
 		options: GenerateCollectionsConfigOptions
-	): Record<string, CollectionConfig> {
+	): boolean {
 		const contentCollectionPaths = this.filterContentCollectionPaths(collectionPaths, options);
 
 		const hasNonContentCollection =
 			collectionPaths.length && collectionPaths.length !== contentCollectionPaths.length;
 
-		const basePath = stripTopPath(
-			hasNonContentCollection ? findBasePath(contentCollectionPaths) : options.basePath,
-			options.source
+		const basePath = hasNonContentCollection
+			? findBasePath(contentCollectionPaths)
+			: options.basePath;
+
+		return path === basePath;
+	}
+
+	isSuggestedCollection(
+		path: string,
+		collectionPaths: string[],
+		options: GenerateCollectionsConfigOptions
+	): boolean {
+		path = join(options.source, path);
+
+		const isDecapFolderCollectionPath = options.externalConfig.decap?.collections?.some(
+			(decapCollection: unknown) =>
+				decapCollection &&
+				typeof decapCollection === 'object' &&
+				'folder' in decapCollection &&
+				typeof decapCollection.folder === 'string' &&
+				normalisePath(decapCollection.folder) === path
 		);
 
-		const sortedPaths = collectionPaths.sort((a, b) => a.length - b.length);
-		const seenPaths: string[] = [];
-		const collectionsConfig: Record<string, CollectionConfig> = {};
-
-		for (const fullPath of sortedPaths) {
-			const path = stripTopPath(fullPath, options.source);
-			const pathInBasePath = stripTopPath(path, basePath);
-
-			if (seenPaths.some((seenPath) => pathInBasePath.startsWith(seenPath))) {
-				// Skip collection if higher level path seen before
-				continue;
-			}
-			if (pathInBasePath) {
-				seenPaths.push(`${pathInBasePath}/`);
-			}
-
-			const key = this.generateCollectionsConfigKey(pathInBasePath, Object.keys(collectionsConfig));
-			collectionsConfig[key] = this.generateCollectionConfig(key, path, {
-				...options,
-				collectionPaths,
-				basePath,
-			});
+		if (isDecapFolderCollectionPath) {
+			return true;
 		}
 
-		return collectionsConfig;
+		const pathParts = path.split('/');
+		let hasNonBaseParentCollectionWithFiles = false;
+
+		for (let i = 0; i < pathParts.length - 1 && !hasNonBaseParentCollectionWithFiles; i++) {
+			const parentPath = pathParts.slice(0, i + 1).join('/');
+
+			hasNonBaseParentCollectionWithFiles =
+				collectionPaths.includes(parentPath) &&
+				!this.isBaseCollectionPath(parentPath, collectionPaths, options);
+		}
+
+		return collectionPaths.includes(path) && !hasNonBaseParentCollectionWithFiles;
+	}
+
+	getExistingCollections(existingCollectionsConfig: Record<string, CollectionConfig>): {
+		keys: string[];
+		byPath: Record<string, { config: CollectionConfig | undefined; key: string }>;
+	} {
+		const keys = Object.keys(existingCollectionsConfig);
+		const byPath: Record<string, { config: CollectionConfig | undefined; key: string }> = {};
+
+		for (let i = 0; i < keys.length; i++) {
+			const path = existingCollectionsConfig[keys[i]]?.path;
+			if (path || path === '') {
+				byPath[normalisePath(path)] = {
+					config: existingCollectionsConfig[keys[i]],
+					key: keys[i],
+				};
+			}
+		}
+
+		return { keys, byPath };
 	}
 
 	/**
@@ -517,25 +558,37 @@ export default class Ssg {
 		const seenPaths: Record<string, CollectionConfigTree> = {};
 		const trees: CollectionConfigTree[] = [];
 		const hasPages = sortedPaths.some((path) => path === 'pages' || path.endsWith('/pages'));
+		const existingCollections = this.getExistingCollections(
+			options?.config?.collections_config || {}
+		);
 
 		for (let i = 0; i < sortedPaths.length; i++) {
 			const path = stripTopPath(sortedPaths[i], options.source);
-			const pathInBasePath = stripTopPath(path, basePath);
-			const key = this.generateCollectionsConfigKey(pathInBasePath, Object.keys(seenKeys), {
-				fallback: !path
-					? 'source'
-					: path === basePath && !hasPages
-						? 'pages'
-						: slugify(path, { separator: '_' }),
-			});
+
+			const key =
+				existingCollections.byPath[path]?.key ||
+				this.generateCollectionsConfigKey(
+					stripTopPath(path, basePath),
+					Object.keys(seenKeys).concat(existingCollections.keys),
+					{
+						fallback: !path
+							? 'source'
+							: path === basePath && !hasPages
+								? 'pages'
+								: slugify(path, { separator: '_' }),
+					}
+				);
 
 			const tree: CollectionConfigTree = {
 				key,
-				config: this.generateCollectionConfig(key, path, {
-					...options,
-					collectionPaths,
-					basePath,
-				}),
+				suggested: this.isSuggestedCollection(path, collectionPaths, options),
+				config:
+					existingCollections.byPath[path]?.config ||
+					this.generateCollectionConfig(key, path, {
+						...options,
+						collectionPaths,
+						basePath,
+					}),
 				collections: [],
 			};
 
@@ -552,8 +605,8 @@ export default class Ssg {
 			}
 		}
 
-		if (seenKeys.source && !seenKeys.pages) {
-			// Clean up the source collection if there is no pages entry
+		if (seenKeys.source && !seenKeys.pages && !existingCollections.keys.includes('source')) {
+			// Clean up the generated source collection if there is no pages entry
 			seenKeys.source.key = 'pages';
 			seenKeys.source.config.icon = findIcon('pages');
 		}
@@ -599,7 +652,7 @@ export default class Ssg {
 		return sorted;
 	}
 
-	generateMarkdown(_config: Record<string, any> | undefined): MarkdownSettings {
+	generateMarkdown(_ssgConfig: Record<string, any> | undefined): MarkdownSettings {
 		return {
 			engine: 'commonmark',
 			options: {},
@@ -674,7 +727,7 @@ export default class Ssg {
 						}
 					}
 				}
-			} catch (_e) {}
+			} catch {}
 		}
 
 		/**
@@ -710,7 +763,7 @@ export default class Ssg {
 						forestrySettingsPath,
 						'install'
 					);
-				} catch (_e) {}
+				} catch {}
 			}
 
 			const netlifySettingsPath = 'netlify.toml';
@@ -720,7 +773,7 @@ export default class Ssg {
 					const parsed = await parseDataFile(netlifySettingsPath, options.readFile);
 					validateAndAddCommandFromSettings(parsed?.build?.command, netlifySettingsPath, 'build');
 					validateAndAddCommandFromSettings(parsed?.build?.publish, netlifySettingsPath, 'output');
-				} catch (_e) {}
+				} catch {}
 			}
 
 			const vercelSettingsPath = 'vercel.json';
@@ -731,7 +784,7 @@ export default class Ssg {
 					validateAndAddCommandFromSettings(parsed?.installCommand, vercelSettingsPath, 'install');
 					validateAndAddCommandFromSettings(parsed?.buildCommand, vercelSettingsPath, 'build');
 					validateAndAddCommandFromSettings(parsed?.outputDirectory, vercelSettingsPath, 'output');
-				} catch (_e) {}
+				} catch {}
 			}
 		}
 
@@ -741,11 +794,13 @@ export default class Ssg {
 	/**
 	 * Generates path configuration.
 	 */
-	getPaths(): Paths | undefined {
-		return {
-			static: '',
-			uploads: 'uploads',
-		};
+	getPaths(externalConfig: ExternalConfig): Paths | undefined {
+		return (
+			getDecapPaths(externalConfig.decap) || {
+				static: '',
+				uploads: 'uploads',
+			}
+		);
 	}
 
 	getSnippetsImports(): SnippetsImports | undefined {

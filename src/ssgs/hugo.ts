@@ -5,7 +5,9 @@ import type {
 	Paths,
 	SnippetsImports,
 } from '@cloudcannon/configuration-types';
+import type { ExternalConfig } from '..';
 import { findBasePath } from '../collections';
+import { getDecapPaths } from '../external';
 import { decodeEntity, join, normalisePath } from '../utility';
 import Ssg, {
 	type BuildCommands,
@@ -98,7 +100,7 @@ export default class Hugo extends Ssg {
 			collectionConfig.glob.push('!_index.md');
 		}
 
-		const dataPath = this.getHugoDataPath(options.config);
+		const dataPath = this.getHugoDataPath(options.ssgConfig);
 
 		if (path === dataPath || path.endsWith(`/${dataPath}`)) {
 			collectionConfig.disable_url = true;
@@ -126,47 +128,8 @@ export default class Hugo extends Ssg {
 		collectionPaths: string[],
 		options: GenerateCollectionsConfigOptions
 	): string[] {
-		const dataPath = this.getHugoDataPath(options.config, options.basePath);
+		const dataPath = this.getHugoDataPath(options.ssgConfig, options.basePath);
 		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
-	}
-
-	/**
-	 * Generates collections config from a set of paths.
-	 */
-	generateCollectionsConfig(
-		collectionPaths: string[],
-		options: GenerateCollectionsConfigOptions
-	): Record<string, CollectionConfig> {
-		// Remove collection paths with a parent collection path and only a branch index file
-		collectionPaths = collectionPaths.filter((collectionPath) => {
-			const hasNonBranchIndexFile = options.filePaths.some(
-				(filePath) => filePath.startsWith(`${collectionPath}/`) && !filePath.endsWith('/_index.md')
-			);
-
-			const hasParentCollectionPath = collectionPaths.some((otherCollectionPath) =>
-				collectionPath.startsWith(`${otherCollectionPath}/`)
-			);
-
-			return hasNonBranchIndexFile || !hasParentCollectionPath;
-		});
-
-		const collectionPathsOutsideExampleSite = collectionPaths.filter(
-			(path) => !path.includes('exampleSite/')
-		);
-
-		const hasNonExampleSiteCollections =
-			collectionPathsOutsideExampleSite.length &&
-			collectionPathsOutsideExampleSite.length !== collectionPaths.length;
-
-		if (hasNonExampleSiteCollections) {
-			// Exclude collections found inside the exampleSite folder, unless they are the only collections
-			return super.generateCollectionsConfig(collectionPathsOutsideExampleSite, {
-				...options,
-				basePath: findBasePath(collectionPathsOutsideExampleSite),
-			});
-		}
-
-		return super.generateCollectionsConfig(collectionPaths, options);
 	}
 
 	/**
@@ -208,8 +171,8 @@ export default class Hugo extends Ssg {
 		return super.generateCollectionsConfigTree(collectionPaths, options);
 	}
 
-	generateMarkdown(config: Record<string, any> | undefined): MarkdownSettings {
-		const goldmark = config?.markup?.goldmark || {};
+	generateMarkdown(ssgConfig: Record<string, any> | undefined): MarkdownSettings {
+		const goldmark = ssgConfig?.markup?.goldmark || {};
 		const { extensions, parser, renderer } = goldmark;
 		const extras = extensions?.extras || {};
 
@@ -322,11 +285,12 @@ export default class Hugo extends Ssg {
 	/**
 	 * Generates path configuration.
 	 */
-	getPaths(): Paths | undefined {
-		return {
-			...super.getPaths(),
-			static: 'static',
-			uploads: 'static/uploads',
-		};
+	getPaths(externalConfig: ExternalConfig): Paths | undefined {
+		return (
+			getDecapPaths(externalConfig.decap) || {
+				static: 'static',
+				uploads: 'static/uploads',
+			}
+		);
 	}
 }

@@ -2,7 +2,7 @@ name: Test
 
 on:
   push:
-    branches: ["main", "library-rework"]
+    branches: ["main"]
   pull_request:
     branches: [main]
 
@@ -24,13 +24,13 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Install 
+      - name: Install
         run: npm ci
 
-      - name: Build 
+      - name: Build
         run: npm run build
 
-      - name: Unit Test 
+      - name: Unit Test
         run: npm run test
 
       - name: Behavior Test

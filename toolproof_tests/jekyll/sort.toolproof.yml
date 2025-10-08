@@ -43,6 +43,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "staff",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "_staff",
       ╎        "icon": "group",

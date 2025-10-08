@@ -43,6 +43,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "data",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "data",
       ╎        "icon": "data_usage",

@@ -54,6 +54,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "webpages",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "webpages",
       ╎        "icon": "pages",

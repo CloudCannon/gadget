@@ -42,6 +42,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "has_no_files",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "_has_no_files",
       ╎        "icon": "audio_file"

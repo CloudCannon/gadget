@@ -43,6 +43,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "content",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "content",
       ╎        "icon": "wysiwyg"

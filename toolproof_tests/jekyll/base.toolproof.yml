@@ -107,6 +107,7 @@ steps:
       ╎  "collections": [
       ╎    {
       ╎      "key": "pages",
+      ╎      "suggested": true,
       ╎      "config": {
       ╎        "path": "",
       ╎        "icon": "wysiwyg"
@@ -114,6 +115,7 @@ steps:
       ╎      "collections": [
       ╎        {
       ╎          "key": "data",
+      ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "_data",
       ╎            "icon": "data_usage",
@@ -125,6 +127,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "data_animals",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "_data/animals",
       ╎                "icon": "data_array",
@@ -136,6 +139,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "about",
+      ╎          "suggested": false,
       ╎          "config": {
       ╎            "path": "about",
       ╎            "icon": "bolt",
@@ -145,6 +149,7 @@ steps:
       ╎        },
       ╎        {
       ╎          "key": "collections",
+      ╎          "suggested": false,
       ╎          "config": {
       ╎            "path": "collections",
       ╎            "icon": "conditions",
@@ -153,6 +158,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "news",
+      ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "collections/news",
       ╎                "icon": "newsmode",
@@ -161,6 +167,7 @@ steps:
       ╎              "collections": [
       ╎                {
       ╎                  "key": "news_posts",
+      ╎                  "suggested": true,
       ╎                  "config": {
       ╎                    "path": "collections/news/_posts",
       ╎                    "icon": "newsmode",
@@ -197,6 +204,7 @@ steps:
       ╎                },
       ╎                {
       ╎                  "key": "news_drafts",
+      ╎                  "suggested": true,
       ╎                  "config": {
       ╎                    "path": "collections/news/_drafts",
       ╎                    "icon": "drafts",
@@ -226,6 +234,7 @@ steps:
       ╎            },
       ╎            {
       ╎              "key": "collections_data",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "collections/_data",
       ╎                "icon": "collections_bookmark",
@@ -235,6 +244,7 @@ steps:
       ╎            },
       ╎            {
       ╎              "key": "posts",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "collections/_posts",
       ╎                "icon": "event_available",
@@ -271,6 +281,7 @@ steps:
       ╎            },
       ╎            {
       ╎              "key": "staff",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "collections/_staff",
       ╎                "icon": "group",
@@ -280,6 +291,7 @@ steps:
       ╎            },
       ╎            {
       ╎              "key": "drafts",
+      ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "collections/_drafts",
       ╎                "icon": "event",

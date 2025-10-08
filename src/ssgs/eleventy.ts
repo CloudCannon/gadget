@@ -91,7 +91,7 @@ export default class Eleventy extends Ssg {
 		return collectionPaths.filter((path) => path !== dataPath && !path.startsWith(`${dataPath}/`));
 	}
 
-	generateMarkdown(_config: Record<string, any> | undefined): MarkdownSettings {
+	generateMarkdown(_ssgConfig: Record<string, any> | undefined): MarkdownSettings {
 		return {
 			engine: 'commonmark',
 			options: {

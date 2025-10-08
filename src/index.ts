@@ -1,11 +1,16 @@
 import type { Configuration, SsgKey } from '@cloudcannon/configuration-types';
 import { findBasePath } from './collections';
+import { parseDecapConfigFile } from './external';
 import type { BuildCommands, CollectionConfigTree } from './ssgs/ssg';
 import { guessSsg, ssgs } from './ssgs/ssgs';
 import { normalisePath } from './utility';
 
 export { ssgs } from './ssgs/ssgs';
 export type { CollectionConfigTree, Configuration, SsgKey, BuildCommands };
+
+export interface ExternalConfig {
+	decap: Record<string, any> | undefined;
+}
 
 export interface GenerateOptions {
 	/** Current configuration, or user overrides for generation. */
@@ -59,16 +64,20 @@ export async function generateConfiguration(
 	const files = ssg.groupFiles(filePaths);
 
 	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
-	const config = options?.readFile
+	const ssgConfig = options?.readFile
 		? await ssg.parseConfig(configFilePaths, options.readFile)
 		: undefined;
 
 	const collectionPaths = Object.keys(files.collectionPathCounts);
 
+	const externalConfig: ExternalConfig = {
+		decap: await parseDecapConfigFile(filePaths, options?.readFile),
+	};
+
 	const configuration: Configuration = {
-		paths: options?.config?.paths ?? ssg.getPaths(),
+		paths: options?.config?.paths ?? ssg.getPaths(externalConfig),
 		timezone: options?.config?.timezone ?? ssg.getTimezone(),
-		markdown: options?.config?.markdown ?? ssg.generateMarkdown(config),
+		markdown: options?.config?.markdown ?? ssg.generateMarkdown(ssgConfig),
 	};
 
 	if (source) {
@@ -84,10 +93,12 @@ export async function generateConfiguration(
 		ssg: ssg.key,
 		config: configuration,
 		collections: ssg.generateCollectionsConfigTree(collectionPaths, {
+			config: options?.config,
 			source,
-			config,
+			ssgConfig,
 			basePath: findBasePath(collectionPaths),
 			filePaths,
+			externalConfig,
 		}),
 	};
 }
