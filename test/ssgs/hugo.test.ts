@@ -1,5 +1,6 @@
-import { expect, it } from 'vitest';
-import Hugo from '../../src/ssgs/hugo';
+import { test } from 'node:test';
+import assert from 'node:assert';
+import Hugo from '../../src/ssgs/hugo.ts';
 
 const readFileMock = async (path: string): Promise<string> => {
 	if (path.endsWith('.yml') || path.endsWith('.yaml')) {
@@ -23,22 +24,22 @@ async function parseConfigFromMultipleCandidates(
 ): Promise<void> {
 	const hugo = new Hugo();
 	const config = await hugo.parseConfig(filePaths, readFileMock);
-	expect(config).toStrictEqual({ path: expectedFile });
+	assert.deepStrictEqual(config, { path: expectedFile });
 }
 
-it('reads config', async () => {
+test('reads config', async () => {
 	await parseConfigFromMultipleCandidates(['config.toml'], 'config.toml');
 });
 
-it('prefers yaml over json config', async () => {
+test('prefers yaml over json config', async () => {
 	await parseConfigFromMultipleCandidates(['hugo.json', 'hugo.yaml'], 'hugo.yaml');
 });
 
-it('prefers toml over yaml config', async () => {
+test('prefers toml over yaml config', async () => {
 	await parseConfigFromMultipleCandidates(['hugo.json', 'hugo.toml', 'hugo.yaml'], 'hugo.toml');
 });
 
-it('prefers new config over older config', async () => {
+test('prefers new config over older config', async () => {
 	await parseConfigFromMultipleCandidates(
 		['config.toml', 'config.yaml', 'config.json', 'hugo.toml'],
 		'hugo.toml'

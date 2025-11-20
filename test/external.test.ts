@@ -1,34 +1,38 @@
-import { expect, it } from 'vitest';
-import { getDecapPaths } from '../src/external';
+import { test } from 'node:test';
+import assert from 'node:assert';
+import { getDecapPaths } from '../src/external.ts';
 
-it('get paths', () => {
+test('get paths', () => {
 	// uploaded to "static/images/uploads", referenced at "/images/uploads/*"
-	expect(
+	assert.deepStrictEqual(
 		getDecapPaths({
 			media_folder: 'static/images/uploads',
 			public_folder: '/images/uploads',
-		})
-	).toStrictEqual({
-		static: 'static',
-		uploads: 'static/images/uploads',
-	});
+		}),
+		{
+			static: 'static',
+			uploads: 'static/images/uploads',
+		}
+	);
 
 	// uploaded to "uploads", referenced at "/other/*"
 	// not supported
-	expect(
+	assert.strictEqual(
 		getDecapPaths({
 			media_folder: 'uploads',
 			public_folder: '/other',
-		})
-	).toBeUndefined();
+		}),
+		undefined
+	);
 
 	// public_folder defaults to media_folder value if unset
-	expect(
+	assert.deepStrictEqual(
 		getDecapPaths({
 			media_folder: 'images/uploads',
-		})
-	).toStrictEqual({
-		static: '',
-		uploads: 'images/uploads',
-	});
+		}),
+		{
+			static: '',
+			uploads: 'images/uploads',
+		}
+	);
 });

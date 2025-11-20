@@ -5,17 +5,17 @@ import type {
 	SnippetsImports,
 } from '@cloudcannon/configuration-types';
 import slugify from '@sindresorhus/slugify';
-import { getCollectionPaths } from '../collections';
-import { kramdownAttributeElementOptions } from '../defaults';
-import { findIcon } from '../icons';
-import { decodeEntity, join, stripBottomPath, stripTopPath } from '../utility';
+import { getCollectionPaths } from '../collections.ts';
+import { kramdownAttributeElementOptions } from '../defaults.ts';
+import { findIcon } from '../icons.ts';
+import { decodeEntity, join, stripBottomPath, stripTopPath } from '../utility.ts';
 import Ssg, {
 	type BuildCommands,
 	type CollectionConfigTree,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
 	type GenerateCollectionsConfigOptions,
-} from './ssg';
+} from './ssg.ts';
 
 export interface GenerateCollectionConfigOptionsJekyll extends GenerateCollectionConfigOptions {
 	/** The matching Jekyll collection from _config.yml */

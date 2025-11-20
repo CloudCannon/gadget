@@ -1,12 +1,12 @@
 import type { CollectionConfig, MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
-import type { ExternalConfig } from '..';
-import { getDecapPaths } from '../external';
+import type { ExternalConfig } from '../index.ts';
+import { getDecapPaths } from '../external.ts';
 import Ssg, {
 	type BuildCommands,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
 	type GenerateCollectionsConfigOptions,
-} from './ssg';
+} from './ssg.ts';
 
 export default class Astro extends Ssg {
 	constructor() {

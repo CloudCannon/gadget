@@ -8,10 +8,10 @@ import type {
 	Timezone,
 } from '@cloudcannon/configuration-types';
 import slugify from '@sindresorhus/slugify';
-import type { ExternalConfig } from '..';
-import { findBasePath, getCollectionPaths } from '../collections';
-import { getDecapPaths } from '../external';
-import { findIcon } from '../icons';
+import type { ExternalConfig } from '../index.ts';
+import { findBasePath, getCollectionPaths } from '../collections.ts';
+import { getDecapPaths } from '../external.ts';
+import { findIcon } from '../icons.ts';
 import {
 	extname,
 	join,
@@ -20,7 +20,7 @@ import {
 	parseDataFile,
 	stripBottomPath,
 	stripTopPath,
-} from '../utility';
+} from '../utility.ts';
 
 export interface CollectionConfigTree {
 	key: string;

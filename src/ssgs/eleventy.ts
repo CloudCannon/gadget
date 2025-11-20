@@ -1,11 +1,11 @@
 import type { CollectionConfig, MarkdownSettings } from '@cloudcannon/configuration-types';
-import { join, stripBottomPath } from '../utility';
+import { join, stripBottomPath } from '../utility.ts';
 import Ssg, {
 	type BuildCommands,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
 	type GenerateCollectionsConfigOptions,
-} from './ssg';
+} from './ssg.ts';
 
 export default class Eleventy extends Ssg {
 	constructor() {
