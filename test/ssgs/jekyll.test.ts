@@ -1,5 +1,5 @@
-import { test } from 'node:test';
 import assert from 'node:assert';
+import { test } from 'node:test';
 import Jekyll from '../../src/ssgs/jekyll.ts';
 
 test('gets source path from convention path', () => {

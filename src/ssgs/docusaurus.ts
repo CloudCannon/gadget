@@ -1,6 +1,6 @@
 import type { Paths, SnippetsImports } from '@cloudcannon/configuration-types';
-import type { ExternalConfig } from '../index.ts';
 import { getDecapPaths } from '../external.ts';
+import type { ExternalConfig } from '../index.ts';
 import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
 
 export default class Docusaurus extends Ssg {

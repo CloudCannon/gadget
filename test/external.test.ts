@@ -1,5 +1,5 @@
-import { test } from 'node:test';
 import assert from 'node:assert';
+import { test } from 'node:test';
 import { getDecapPaths } from '../src/external.ts';
 
 test('get paths', () => {

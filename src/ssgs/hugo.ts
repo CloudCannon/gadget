@@ -5,9 +5,9 @@ import type {
 	Paths,
 	SnippetsImports,
 } from '@cloudcannon/configuration-types';
-import type { ExternalConfig } from '../index.ts';
 import { findBasePath } from '../collections.ts';
 import { getDecapPaths } from '../external.ts';
+import type { ExternalConfig } from '../index.ts';
 import { decodeEntity, join, normalisePath } from '../utility.ts';
 import Ssg, {
 	type BuildCommands,

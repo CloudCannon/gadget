@@ -8,10 +8,10 @@ import type {
 	Timezone,
 } from '@cloudcannon/configuration-types';
 import slugify from '@sindresorhus/slugify';
-import type { ExternalConfig } from '../index.ts';
 import { findBasePath, getCollectionPaths } from '../collections.ts';
 import { getDecapPaths } from '../external.ts';
 import { findIcon } from '../icons.ts';
+import type { ExternalConfig } from '../index.ts';
 import {
 	extname,
 	join,

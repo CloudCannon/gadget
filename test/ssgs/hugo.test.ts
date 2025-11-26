@@ -1,5 +1,5 @@
-import { test } from 'node:test';
 import assert from 'node:assert';
+import { test } from 'node:test';
 import Hugo from '../../src/ssgs/hugo.ts';
 
 const readFileMock = async (path: string): Promise<string> => {

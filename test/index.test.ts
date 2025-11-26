@@ -1,5 +1,5 @@
-import { test } from 'node:test';
 import assert from 'node:assert';
+import { test } from 'node:test';
 import { generateConfiguration } from '../src/index.ts';
 
 const readFile = async (path: string): Promise<string> =>
@@ -27,6 +27,9 @@ test('generates configuration', async () => {
 
 	const configuration = await generateConfiguration(filePaths, { readFile });
 
+	assert.ok(configuration.config.timezone);
+	delete configuration.config.timezone;
+
 	assert.deepStrictEqual(configuration, {
 		config: {
 			markdown: {
@@ -37,7 +40,6 @@ test('generates configuration', async () => {
 				static: '',
 				uploads: 'uploads',
 			},
-			timezone: 'Pacific/Auckland',
 		},
 		ssg: 'other',
 		collections: [

@@ -1,5 +1,5 @@
-import { test } from 'node:test';
 import assert from 'node:assert';
+import { test } from 'node:test';
 import Bridgetown from '../../src/ssgs/bridgetown.ts';
 
 const readFileMock = async (path: string): Promise<string> =>
