@@ -12,13 +12,18 @@ jobs:
       - name: Clone
         uses: actions/checkout@v3
 
-      - name: Install 
+      - uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version-file: ".nvmrc"
+
+      - name: Install
         run: npm ci
 
       - name: Build
         run: npm run build
 
-      - name: Unit Test 
+      - name: Unit Test
         run: npm run test
 
       - name: Behavior Test
@@ -86,19 +91,24 @@ jobs:
         run: |
           npm --no-git-tag-version version $GIT_VERSION
 
-      - name: Install 
+      - uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version-file: ".nvmrc"
+
+      - name: Install
         run: npm ci
 
-      - name: Build 
+      - name: Build
         run: npm run build
-      
+
       - name: Publish internal
         uses: JS-DevTools/npm-publish@v3
         with:
           tag: ${{ env.NPM_TAG }}
           token: ${{ secrets.GITHUB_TOKEN }}
           registry: "https://npm.pkg.github.com"
-      
+
       - name: Publish external
         uses: JS-DevTools/npm-publish@v3
         with:
