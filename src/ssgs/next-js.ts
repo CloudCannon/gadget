@@ -1,4 +1,4 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg';
+import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
 
 export default class NextJs extends Ssg {
 	constructor() {

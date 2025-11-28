@@ -1,5 +1,5 @@
 import type { Paths } from '@cloudcannon/configuration-types';
-import { join, normalisePath, parseDataFile } from './utility';
+import { join, normalisePath, parseDataFile } from './utility.ts';
 
 export async function parseDecapConfigFile(
 	filePaths: string[],

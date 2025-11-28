@@ -1,11 +1,12 @@
-import { expect, it } from 'vitest';
-import { findIcon } from '../src/icons';
+import assert from 'node:assert';
+import { test } from 'node:test';
+import { findIcon } from '../src/icons.ts';
 
-it('finds an icon', () => {
-	expect(findIcon('motels')).toBe('hotel');
-	expect(findIcon('dragons')).toBe('dialogs');
+test('finds an icon', () => {
+	assert.strictEqual(findIcon('motels'), 'hotel');
+	assert.strictEqual(findIcon('dragons'), 'dialogs');
 });
 
-it('finds an icon by override', () => {
-	expect(findIcon('pages')).toBe('wysiwyg');
+test('finds an icon by override', () => {
+	assert.strictEqual(findIcon('pages'), 'wysiwyg');
 });

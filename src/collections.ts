@@ -1,4 +1,4 @@
-import { join } from './utility';
+import { join } from './utility.ts';
 
 /**
  * Produces an ordered set of paths that a file at this path could belong to.

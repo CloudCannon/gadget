@@ -1,10 +1,11 @@
-import { expect, it } from 'vitest';
-import { generateConfiguration } from '../src/index';
+import assert from 'node:assert';
+import { test } from 'node:test';
+import { generateConfiguration } from '../src/index.ts';
 
 const readFile = async (path: string): Promise<string> =>
 	path.endsWith('.yml') || path.endsWith('.yaml') ? `path: ${path}` : '';
 
-it('generates configuration', async () => {
+test('generates configuration', async () => {
 	const filePaths = [
 		'index.html',
 		'about.html',
@@ -26,7 +27,10 @@ it('generates configuration', async () => {
 
 	const configuration = await generateConfiguration(filePaths, { readFile });
 
-	expect(configuration).toMatchObject({
+	assert.ok(configuration.config.timezone);
+	delete configuration.config.timezone;
+
+	assert.deepStrictEqual(configuration, {
 		config: {
 			markdown: {
 				engine: 'commonmark',
@@ -45,6 +49,7 @@ it('generates configuration', async () => {
 					path: '',
 					icon: 'wysiwyg',
 				},
+				suggested: true,
 				collections: [
 					{
 						key: 'data',
@@ -52,6 +57,7 @@ it('generates configuration', async () => {
 							icon: 'data_usage',
 							path: '_data',
 						},
+						suggested: false,
 						collections: [
 							{
 								key: 'data_authors',
@@ -59,6 +65,7 @@ it('generates configuration', async () => {
 									icon: 'data_alert',
 									path: '_data/authors',
 								},
+								suggested: true,
 								collections: [],
 							},
 							{
@@ -67,6 +74,7 @@ it('generates configuration', async () => {
 									icon: 'add_location',
 									path: '_data/locations',
 								},
+								suggested: true,
 								collections: [],
 							},
 						],
@@ -78,6 +86,7 @@ it('generates configuration', async () => {
 							path: 'contact',
 						},
 						key: 'contact',
+						suggested: true,
 					},
 					{
 						key: 'content',
@@ -85,6 +94,7 @@ it('generates configuration', async () => {
 							icon: 'wysiwyg',
 							path: 'content',
 						},
+						suggested: true,
 						collections: [
 							{
 								key: 'about',
@@ -92,6 +102,7 @@ it('generates configuration', async () => {
 									icon: 'bolt',
 									path: 'content/about',
 								},
+								suggested: false,
 								collections: [],
 							},
 							{
@@ -100,6 +111,7 @@ it('generates configuration', async () => {
 									icon: 'event_available',
 									path: 'content/posts',
 								},
+								suggested: false,
 								collections: [],
 							},
 						],

@@ -1,18 +1,18 @@
 import type { SsgKey } from '@cloudcannon/configuration-types';
-import Astro from './astro';
-import Bridgetown from './bridgetown';
-import Docusaurus from './docusaurus';
-import Eleventy from './eleventy';
-import Gatsby from './gatsby';
-import Hugo from './hugo';
-import Jekyll from './jekyll';
-import Lume from './lume';
-import MkDocs from './mkdocs';
-import NextJs from './next-js';
-import NuxtJs from './nuxt-js';
-import Ssg from './ssg';
-import Static from './static';
-import Sveltekit from './sveltekit';
+import Astro from './astro.ts';
+import Bridgetown from './bridgetown.ts';
+import Docusaurus from './docusaurus.ts';
+import Eleventy from './eleventy.ts';
+import Gatsby from './gatsby.ts';
+import Hugo from './hugo.ts';
+import Jekyll from './jekyll.ts';
+import Lume from './lume.ts';
+import MkDocs from './mkdocs.ts';
+import NextJs from './next-js.ts';
+import NuxtJs from './nuxt-js.ts';
+import Ssg from './ssg.ts';
+import Static from './static.ts';
+import Sveltekit from './sveltekit.ts';
 
 export const ssgs: Record<SsgKey, Ssg> = {
 	hugo: new Hugo(),

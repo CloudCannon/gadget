@@ -5,17 +5,17 @@ import type {
 	Paths,
 	SnippetsImports,
 } from '@cloudcannon/configuration-types';
-import type { ExternalConfig } from '..';
-import { findBasePath } from '../collections';
-import { getDecapPaths } from '../external';
-import { decodeEntity, join, normalisePath } from '../utility';
+import { findBasePath } from '../collections.ts';
+import { getDecapPaths } from '../external.ts';
+import type { ExternalConfig } from '../index.ts';
+import { decodeEntity, join, normalisePath } from '../utility.ts';
 import Ssg, {
 	type BuildCommands,
 	type CollectionConfigTree,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
 	type GenerateCollectionsConfigOptions,
-} from './ssg';
+} from './ssg.ts';
 
 export default class Hugo extends Ssg {
 	constructor() {

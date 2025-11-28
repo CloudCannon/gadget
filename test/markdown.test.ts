@@ -1,17 +1,18 @@
-import { expect, it } from 'vitest';
-import Eleventy from '../src/ssgs/eleventy';
-import Hugo from '../src/ssgs/hugo';
-import Jekyll from '../src/ssgs/jekyll';
-import Ssg from '../src/ssgs/ssg';
+import assert from 'node:assert';
+import { test } from 'node:test';
+import Eleventy from '../src/ssgs/eleventy.ts';
+import Hugo from '../src/ssgs/hugo.ts';
+import Jekyll from '../src/ssgs/jekyll.ts';
+import Ssg from '../src/ssgs/ssg.ts';
 
-it('Defaults to CommonMark', () => {
-	expect(new Ssg().generateMarkdown({})).toStrictEqual({
+test('Defaults to CommonMark', () => {
+	assert.deepStrictEqual(new Ssg().generateMarkdown({}), {
 		engine: 'commonmark',
 		options: {},
 	});
 });
 
-it('Respects Jekyll Kramdown options enabled', () => {
+test('Respects Jekyll Kramdown options enabled', () => {
 	const markdown = new Jekyll().generateMarkdown({
 		kramdown: {
 			input: 'GFM',
@@ -21,16 +22,16 @@ it('Respects Jekyll Kramdown options enabled', () => {
 			smart_quotes: 'lsquo,rsquo,ldquo,rdquo',
 		},
 	});
-	expect(markdown.engine).toBe('kramdown');
-	expect(markdown.options.quotes).toBe('‘’“”');
-	expect(markdown.options.breaks).toBe(true);
-	expect(markdown.options.gfm).toBe(true);
-	expect(markdown.options.heading_ids).toBe(true);
-	expect(markdown.options.typographer).toBe(true);
-	expect(markdown.options.treat_indentation_as_code).toBe(true);
+	assert.strictEqual(markdown.engine, 'kramdown');
+	assert.strictEqual(markdown.options.quotes, '‘’“”');
+	assert.strictEqual(markdown.options.breaks, true);
+	assert.strictEqual(markdown.options.gfm, true);
+	assert.strictEqual(markdown.options.heading_ids, true);
+	assert.strictEqual(markdown.options.typographer, true);
+	assert.strictEqual(markdown.options.treat_indentation_as_code, true);
 });
 
-it('Respects Jekyll Kramdown options disabled', () => {
+test('Respects Jekyll Kramdown options disabled', () => {
 	const markdown = new Jekyll().generateMarkdown({
 		kramdown: {
 			input: 'not_gfm',
@@ -39,15 +40,15 @@ it('Respects Jekyll Kramdown options disabled', () => {
 			auto_ids: false,
 		},
 	});
-	expect(markdown.engine).toBe('kramdown');
-	expect(markdown.options.breaks).toBe(false);
-	expect(markdown.options.gfm).toBe(false);
-	expect(markdown.options.heading_ids).toBe(false);
-	expect(markdown.options.typographer).toBe(false);
-	expect(markdown.options.treat_indentation_as_code).toBe(true);
+	assert.strictEqual(markdown.engine, 'kramdown');
+	assert.strictEqual(markdown.options.breaks, false);
+	assert.strictEqual(markdown.options.gfm, false);
+	assert.strictEqual(markdown.options.heading_ids, false);
+	assert.strictEqual(markdown.options.typographer, false);
+	assert.strictEqual(markdown.options.treat_indentation_as_code, true);
 });
 
-it('Respects Jekyll CommonMark options', () => {
+test('Respects Jekyll CommonMark options', () => {
 	const markdown = new Jekyll().generateMarkdown({
 		markdown: 'CommonMark',
 		commonmark: {
@@ -55,18 +56,18 @@ it('Respects Jekyll CommonMark options', () => {
 			extensions: ['strikethrough', 'table', 'autolink', 'superscript', 'header_ids'],
 		},
 	});
-	expect(markdown.engine).toBe('commonmark');
-	expect(markdown.options.breaks).toBe(true);
-	expect(markdown.options.gfm).toBe(true);
-	expect(markdown.options.strikethrough).toBe(true);
-	expect(markdown.options.superscript).toBe(true);
-	expect(markdown.options.linkify).toBe(true);
-	expect(markdown.options.heading_ids).toBe(true);
-	expect(markdown.options.table).toBe(true);
-	expect(markdown.options.treat_indentation_as_code).toBe(true);
+	assert.strictEqual(markdown.engine, 'commonmark');
+	assert.strictEqual(markdown.options.breaks, true);
+	assert.strictEqual(markdown.options.gfm, true);
+	assert.strictEqual(markdown.options.strikethrough, true);
+	assert.strictEqual(markdown.options.superscript, true);
+	assert.strictEqual(markdown.options.linkify, true);
+	assert.strictEqual(markdown.options.heading_ids, true);
+	assert.strictEqual(markdown.options.table, true);
+	assert.strictEqual(markdown.options.treat_indentation_as_code, true);
 });
 
-it('Respects Hugo options', () => {
+test('Respects Hugo options', () => {
 	const markdown = new Hugo().generateMarkdown({
 		markup: {
 			goldmark: {
@@ -95,23 +96,23 @@ it('Respects Hugo options', () => {
 			},
 		},
 	});
-	expect(markdown.engine).toBe('commonmark');
-	expect(markdown.options.quotes).toBe('‘’“”');
-	expect(markdown.options.attributes).toBe(true);
-	expect(markdown.options.linkify).toBe(true);
-	expect(markdown.options.strikethrough).toBe(true);
-	expect(markdown.options.table).toBe(true);
-	expect(markdown.options.treat_indentation_as_code).toBe(true);
-	expect(markdown.options.typographer).toBe(true);
-	expect(markdown.options.breaks).toBe(true);
-	expect(markdown.options.gfm).toBe(true);
-	expect(markdown.options.subscript).toBe(true);
-	expect(markdown.options.superscript).toBe(true);
-	expect(markdown.options.heading_ids).toBe(true);
-	expect(markdown.options.xhtml).toBe(true);
+	assert.strictEqual(markdown.engine, 'commonmark');
+	assert.strictEqual(markdown.options.quotes, '‘’“”');
+	assert.strictEqual(markdown.options.attributes, true);
+	assert.strictEqual(markdown.options.linkify, true);
+	assert.strictEqual(markdown.options.strikethrough, true);
+	assert.strictEqual(markdown.options.table, true);
+	assert.strictEqual(markdown.options.treat_indentation_as_code, true);
+	assert.strictEqual(markdown.options.typographer, true);
+	assert.strictEqual(markdown.options.breaks, true);
+	assert.strictEqual(markdown.options.gfm, true);
+	assert.strictEqual(markdown.options.subscript, true);
+	assert.strictEqual(markdown.options.superscript, true);
+	assert.strictEqual(markdown.options.heading_ids, true);
+	assert.strictEqual(markdown.options.xhtml, true);
 });
 
-it('Respects Hugo options with attributes disabled', () => {
+test('Respects Hugo options with attributes disabled', () => {
 	const noAttrConfig = new Hugo().generateMarkdown({
 		markup: {
 			goldmark: {
@@ -121,11 +122,11 @@ it('Respects Hugo options with attributes disabled', () => {
 			},
 		},
 	});
-	expect(noAttrConfig.options.attributes).toBe(false);
-	expect(noAttrConfig.options.attribute_elements).toBe(undefined);
+	assert.strictEqual(noAttrConfig.options.attributes, false);
+	assert.strictEqual(noAttrConfig.options.attribute_elements, undefined);
 });
 
-it('Respects Hugo options with heading attributes enabled', () => {
+test('Respects Hugo options with heading attributes enabled', () => {
 	const noAttrConfig = new Hugo().generateMarkdown({
 		markup: {
 			goldmark: {
@@ -135,14 +136,14 @@ it('Respects Hugo options with heading attributes enabled', () => {
 			},
 		},
 	});
-	expect(noAttrConfig.options.attributes).toBe(true);
-	expect(noAttrConfig.options.attribute_elements?.h1).toBe('space right');
-	expect(noAttrConfig.options.attribute_elements?.h6).toBe('space right');
-	expect(noAttrConfig.options.attribute_elements?.blockquote).toBe('none');
-	expect(noAttrConfig.options.attribute_elements?.table).toBe('none');
+	assert.strictEqual(noAttrConfig.options.attributes, true);
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.h1, 'space right');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.h6, 'space right');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.blockquote, 'none');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.table, 'none');
 });
 
-it('Respects Hugo options with block attributes enabled', () => {
+test('Respects Hugo options with block attributes enabled', () => {
 	const noAttrConfig = new Hugo().generateMarkdown({
 		markup: {
 			goldmark: {
@@ -152,17 +153,17 @@ it('Respects Hugo options with block attributes enabled', () => {
 			},
 		},
 	});
-	expect(noAttrConfig.options.attributes).toBe(true);
-	expect(noAttrConfig.options.attribute_elements?.h1).toBe('none');
-	expect(noAttrConfig.options.attribute_elements?.img).toBe('none');
-	expect(noAttrConfig.options.attribute_elements?.blockquote).toBe('below');
-	expect(noAttrConfig.options.attribute_elements?.ul).toBe('below');
-	expect(noAttrConfig.options.attribute_elements?.ol).toBe('below');
-	expect(noAttrConfig.options.attribute_elements?.table).toBe('below');
-	expect(noAttrConfig.options.attribute_elements?.p).toBe('below');
+	assert.strictEqual(noAttrConfig.options.attributes, true);
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.h1, 'none');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.img, 'none');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.blockquote, 'below');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.ul, 'below');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.ol, 'below');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.table, 'below');
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.p, 'below');
 });
 
-it('Respects Hugo options to enable attributes on standalone image', () => {
+test('Respects Hugo options to enable attributes on standalone image', () => {
 	const noAttrConfig = new Hugo().generateMarkdown({
 		markup: {
 			goldmark: {
@@ -173,12 +174,12 @@ it('Respects Hugo options to enable attributes on standalone image', () => {
 			},
 		},
 	});
-	expect(noAttrConfig.options.attributes).toBe(true);
-	expect(noAttrConfig.options.attribute_elements?.img).toBe('below');
+	assert.strictEqual(noAttrConfig.options.attributes, true);
+	assert.strictEqual(noAttrConfig.options.attribute_elements?.img, 'below');
 });
 
-it('Has good 11ty defaults', () => {
-	expect(new Eleventy().generateMarkdown(undefined)).toStrictEqual({
+test('Has good 11ty defaults', () => {
+	assert.deepStrictEqual(new Eleventy().generateMarkdown(undefined), {
 		engine: 'commonmark',
 		options: {
 			html: true,

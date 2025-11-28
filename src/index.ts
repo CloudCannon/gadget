@@ -1,11 +1,11 @@
 import type { Configuration, SsgKey } from '@cloudcannon/configuration-types';
-import { findBasePath } from './collections';
-import { parseDecapConfigFile } from './external';
-import type { BuildCommands, CollectionConfigTree } from './ssgs/ssg';
-import { guessSsg, ssgs } from './ssgs/ssgs';
-import { normalisePath } from './utility';
+import { findBasePath } from './collections.ts';
+import { parseDecapConfigFile } from './external.ts';
+import type { BuildCommands, CollectionConfigTree } from './ssgs/ssg.ts';
+import { guessSsg, ssgs } from './ssgs/ssgs.ts';
+import { normalisePath } from './utility.ts';
 
-export { ssgs } from './ssgs/ssgs';
+export { ssgs } from './ssgs/ssgs.ts';
 export type { CollectionConfigTree, Configuration, SsgKey, BuildCommands };
 
 export interface ExternalConfig {
