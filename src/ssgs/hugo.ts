@@ -23,22 +23,22 @@ export default class Hugo extends Ssg {
 	}
 
 	configPaths(): string[] {
+		return super.configPaths().concat(['hugo.toml', 'hugo.yml', 'hugo.yaml', 'hugo.json']);
+	}
+
+	secondaryConfigPaths(): string[] {
 		return super.configPaths().concat([
-			'hugo.toml',
-			'hugo.yml',
-			'hugo.yaml',
-			'hugo.json',
-			'theme.toml', // on theme repos
-			'config.toml',
-			'config.yml',
-			'config.yaml',
-			'config.json',
+			'theme.toml', // config file for a hugo theme repo
+			'config.toml', // legacy config filename
+			'config.yml', // legacy config filename
+			'config.yaml', // legacy config filename
+			'config.json', // legacy config filename
 		]);
 	}
 
-	isConfigPath(filePath: string): boolean {
+	isSecondaryConfigPath(filePath: string): boolean {
 		return (
-			super.isConfigPath(filePath) ||
+			super.isSecondaryConfigPath(filePath) ||
 			filePath.startsWith('config/') || // Default configDir
 			filePath.includes('/config/') // Default configDir
 		);
@@ -51,9 +51,7 @@ export default class Hugo extends Ssg {
 	}
 
 	ignoredFiles(): string[] {
-		return super.ignoredFiles().concat([
-			'theme.toml', // config file for a hugo theme repo
-		]);
+		return super.ignoredFiles().concat(this.secondaryConfigPaths());
 	}
 
 	ignoredFolders(): string[] {
