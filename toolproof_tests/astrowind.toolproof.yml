@@ -1,0 +1,96 @@
+name: AstroWind
+
+steps:
+  - I run "cp -R %test_sites%/astrowind src"
+  - ref: ./core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "astro",
+      ╎  "config": {
+      ╎    "paths": {
+      ╎      "static": "public",
+      ╎      "uploads": "public/uploads"
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true
+      ╎      }
+      ╎    }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "source",
+      ╎      "suggested": true,
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "icon": "package_2",
+      ╎        "disable_url": true
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "src",
+      ╎          "suggested": true,
+      ╎          "config": {
+      ╎            "path": "src",
+      ╎            "icon": "abc",
+      ╎            "disable_url": true
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "data",
+      ╎              "suggested": false,
+      ╎              "config": {
+      ╎                "path": "src/data",
+      ╎                "icon": "data_usage",
+      ╎                "disable_url": true
+      ╎              },
+      ╎              "collections": [
+      ╎                {
+      ╎                  "key": "data_post",
+      ╎                  "suggested": true,
+      ╎                  "config": {
+      ╎                    "path": "src/data/post",
+      ╎                    "icon": "data_alert",
+      ╎                    "disable_url": true
+      ╎                  },
+      ╎                  "collections": []
+      ╎                }
+      ╎              ]
+      ╎            },
+      ╎            {
+      ╎              "key": "pages",
+      ╎              "suggested": true,
+      ╎              "config": {
+      ╎                "path": "src/pages",
+      ╎                "icon": "wysiwyg"
+      ╎              },
+      ╎              "collections": [
+      ╎                {
+      ╎                  "key": "homes",
+      ╎                  "suggested": true,
+      ╎                  "config": {
+      ╎                    "path": "src/pages/homes",
+      ╎                    "icon": "home"
+      ╎                  },
+      ╎                  "collections": []
+      ╎                },
+      ╎                {
+      ╎                  "key": "landing",
+      ╎                  "suggested": true,
+      ╎                  "config": {
+      ╎                    "path": "src/pages/landing",
+      ╎                    "icon": "padding"
+      ╎                  },
+      ╎                  "collections": []
+      ╎                }
+      ╎              ]
+      ╎            }
+      ╎          ]
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
+      ╎}

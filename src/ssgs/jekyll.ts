@@ -258,7 +258,7 @@ export default class Jekyll extends Ssg {
 		const seenKeys: Record<string, CollectionConfigTree> = {};
 		const seenPaths: Record<string, CollectionConfigTree> = {};
 		const trees: CollectionConfigTree[] = [];
-		const contentPrefix = `${slugify(collectionsDir, { separator: '_' })}_`;
+		const contentPrefix = slugify(collectionsDir, { separator: '_' });
 		const existingCollections = this.getExistingCollections(
 			options?.config?.collections_config || {}
 		);

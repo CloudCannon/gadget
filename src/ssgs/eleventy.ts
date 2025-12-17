@@ -52,7 +52,7 @@ export default class Eleventy extends Ssg {
 			return source;
 		}
 
-		const configFilePath = filePaths.find(this.isConfigPath.bind(this));
+		const configFilePath = filePaths.find((filePath) => this.isConfigPath(filePath));
 		if (configFilePath) {
 			return stripBottomPath(configFilePath) || undefined;
 		}

@@ -75,6 +75,16 @@ export interface BuildCommands {
 	preserved: BuildCommandSuggestion[];
 }
 
+function isInFilePaths(filePath: string, filePaths: string[]): boolean {
+	for (let i = 0; i < filePaths.length; i++) {
+		if (filePath === filePaths[i] || filePath.endsWith(`/${filePaths[i]}`)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 export default class Ssg {
 	key: SsgKey;
 
@@ -154,6 +164,10 @@ export default class Ssg {
 		return [];
 	}
 
+	secondaryConfigPaths(): string[] {
+		return [];
+	}
+
 	/**
 	 * Returns a prioritised list of config file paths from the provided set.
 	 */
@@ -204,7 +218,6 @@ export default class Ssg {
 	partialFolders(): string[] {
 		return [
 			'layouts/', // general partials
-			'components/', // general partials
 			'component-library/', // general partials
 			'schemas/', // CloudCannon schema files
 		];
@@ -257,15 +270,14 @@ export default class Ssg {
 	 * Checks if the file at this path is an SSG configuration file.
 	 */
 	isConfigPath(filePath: string): boolean {
-		const configPaths = this.configPaths();
+		return isInFilePaths(filePath, this.configPaths());
+	}
 
-		for (let i = 0; i < configPaths.length; i++) {
-			if (filePath === configPaths[i] || filePath.endsWith(`/${configPaths[i]}`)) {
-				return true;
-			}
-		}
-
-		return false;
+	/**
+	 * Checks if the file at this path is a supporting SSG configuration file.
+	 */
+	isSecondaryConfigPath(filePath: string): boolean {
+		return isInFilePaths(filePath, this.secondaryConfigPaths());
 	}
 
 	/**
@@ -276,7 +288,15 @@ export default class Ssg {
 			return 0;
 		}
 
-		return this.isConfigPath(filePath) ? 1 : 0;
+		if (this.isConfigPath(filePath)) {
+			return 50;
+		}
+
+		if (this.isSecondaryConfigPath(filePath)) {
+			return 1;
+		}
+
+		return 0;
 	}
 
 	/**
@@ -298,15 +318,7 @@ export default class Ssg {
 	 * Checks if a file at this path is ignored.
 	 */
 	isIgnoredFile(filePath: string): boolean {
-		const ignoredFiles = this.ignoredFiles();
-
-		for (let i = 0; i < ignoredFiles.length; i++) {
-			if (filePath === ignoredFiles[i] || filePath.endsWith(`/${ignoredFiles[i]}`)) {
-				return true;
-			}
-		}
-
-		return false;
+		return isInFilePaths(filePath, this.ignoredFiles());
 	}
 
 	/**
@@ -359,7 +371,7 @@ export default class Ssg {
 	 * Finds the likely type of the file at this path.
 	 */
 	getFileType(filePath: string): FileType {
-		if (this.isConfigPath(filePath)) {
+		if (this.isConfigPath(filePath) || this.isSecondaryConfigPath(filePath)) {
 			return 'config';
 		}
 
@@ -417,18 +429,25 @@ export default class Ssg {
 		options?: { fallback?: string; contentPrefix?: string }
 	): string {
 		let key = slugify(path, { separator: '_' }) || options?.fallback || 'pages';
-		const contentPrefix = options?.contentPrefix || 'content_';
+		const contentPrefixes = ['content', 'src'];
+		if (options?.contentPrefix) {
+			contentPrefixes.push(options.contentPrefix);
+		}
+		let trimmedKey = key;
 
-		if (key.startsWith(contentPrefix)) {
-			const trimmedKey = key.replace(contentPrefix, '');
-
-			if (!existingKeys.includes(trimmedKey)) {
-				return trimmedKey;
+		for (let i = 0; i < contentPrefixes.length; i++) {
+			if (trimmedKey.startsWith(`${contentPrefixes[i]}_`)) {
+				trimmedKey = trimmedKey.replace(`${contentPrefixes[i]}_`, '');
+			} else {
+				trimmedKey = trimmedKey.replace(new RegExp(`_${contentPrefixes[i]}_`), '_');
 			}
 		}
 
-		let suffix = 1;
+		if (!existingKeys.includes(trimmedKey)) {
+			return trimmedKey;
+		}
 
+		let suffix = 1;
 		while (existingKeys.includes(key)) {
 			key = `${key.replace(/_\d+$/, '')}_${suffix++}`;
 		}

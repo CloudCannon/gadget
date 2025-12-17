@@ -24,11 +24,11 @@ steps:
       ╎  },
       ╎  "collections": [
       ╎    {
-      ╎      "key": "pages",
+      ╎      "key": "source",
       ╎      "suggested": false,
       ╎      "config": {
       ╎        "path": "",
-      ╎        "icon": "wysiwyg"
+      ╎        "icon": "package_2"
       ╎      },
       ╎      "collections": [
       ╎        {
@@ -40,11 +40,11 @@ steps:
       ╎          },
       ╎          "collections": [
       ╎            {
-      ╎              "key": "src_pages",
+      ╎              "key": "pages",
       ╎              "suggested": true,
       ╎              "config": {
       ╎                "path": "src/pages",
-      ╎                "icon": "fit_page"
+      ╎                "icon": "wysiwyg"
       ╎              },
       ╎              "collections": []
       ╎            }
