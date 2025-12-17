@@ -172,7 +172,7 @@ export default class Ssg {
 	 * Returns a prioritised list of config file paths from the provided set.
 	 */
 	sortConfigFilePaths(configFilePaths: string[]): string[] {
-		const configPaths = this.configPaths();
+		const configPaths = this.configPaths().concat(this.secondaryConfigPaths());
 		return configFilePaths.sort((a, b) => configPaths.indexOf(a) - configPaths.indexOf(b));
 	}
 
