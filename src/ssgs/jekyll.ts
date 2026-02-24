@@ -10,6 +10,7 @@ import { kramdownAttributeElementOptions } from '../defaults.ts';
 import { findIcon } from '../icons.ts';
 import { decodeEntity, join, stripBottomPath, stripTopPath } from '../utility.ts';
 import Ssg, {
+	addBuildSuggestion,
 	type BuildCommands,
 	type CollectionConfigTree,
 	type GenerateBuildCommandsOptions,
@@ -399,18 +400,23 @@ export default class Jekyll extends Ssg {
 
 		const gemfilePath = filePaths.find((path) => path === 'Gemfile' || path.endsWith('/Gemfile'));
 		if (gemfilePath) {
-			commands.install.unshift({
+			addBuildSuggestion(commands, 'install', {
 				value: 'bundle install',
 				attribution: 'because of your Gemfile',
+				group: 'ruby',
 			});
-			commands.build.unshift({
+
+			addBuildSuggestion(commands, 'build', {
 				value: 'bundle exec jekyll build',
 				attribution: 'because of your Gemfile',
+				group: 'ssg',
 			});
-			commands.preserved.push({
+
+			addBuildSuggestion(commands, 'preserved', {
 				value: '.bundle_cache/',
 				attribution: 'recommended for speeding up bundler installs',
 			});
+
 			commands.environment.GEM_HOME = {
 				value: '/usr/local/__site/src/.bundle_cache/',
 				attribution: 'recommended for speeding up bundler installs',
@@ -423,13 +429,14 @@ export default class Jekyll extends Ssg {
 				};
 			}
 		} else {
-			commands.build.unshift({
+			addBuildSuggestion(commands, 'build', {
 				value: 'jekyll build',
 				attribution: 'most common for Jekyll sites',
+				group: 'ssg',
 			});
 		}
 
-		commands.output.unshift({
+		addBuildSuggestion(commands, 'output', {
 			value: '_site',
 			attribution: 'most common for Jekyll sites',
 		});

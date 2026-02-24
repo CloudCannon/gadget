@@ -1,4 +1,8 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class Bridgetown extends Ssg {
 	constructor() {
@@ -24,14 +28,17 @@ export default class Bridgetown extends Ssg {
 
 		const gemfilePath = filePaths.find((path) => path === 'Gemfile' || path.endsWith('/Gemfile'));
 		if (gemfilePath) {
-			commands.install.unshift({
+			addBuildSuggestion(commands, 'install', {
 				value: 'bundle install',
 				attribution: 'because of your Gemfile',
+				group: 'ruby',
 			});
-			commands.preserved.push({
+
+			addBuildSuggestion(commands, 'preserved', {
 				value: '.bundle_cache/',
 				attribution: 'recommended for speeding up bundler installs',
 			});
+
 			commands.environment.GEM_HOME = {
 				value: '/usr/local/__site/src/.bundle_cache/',
 				attribution: 'recommended for speeding up bundler installs',
@@ -46,13 +53,14 @@ export default class Bridgetown extends Ssg {
 		}
 
 		if (filePaths.includes('bin/bridgetown')) {
-			commands.build.unshift({
+			addBuildSuggestion(commands, 'build', {
 				value: 'bin/bridgetown deploy',
 				attribution: 'most common for Bridgetown sites',
+				group: 'ssg',
 			});
 		}
 
-		commands.output.unshift({
+		addBuildSuggestion(commands, 'output', {
 			value: 'output',
 			attribution: 'most common for Bridgetown sites',
 		});

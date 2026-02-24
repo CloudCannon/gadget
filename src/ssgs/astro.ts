@@ -1,7 +1,9 @@
 import type { CollectionConfig, MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
 import { getDecapPaths } from '../external.ts';
 import type { ExternalConfig } from '../index.ts';
+import { extname, stripBottomPath } from '../utility.ts';
 import Ssg, {
+	addBuildSuggestion,
 	type BuildCommands,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
@@ -46,7 +48,7 @@ export default class Astro extends Ssg {
 	 */
 	filterContentCollectionPaths(
 		collectionPaths: string[],
-		_options: { config?: Record<string, any>; source?: string; basePath: string }
+		_options: GenerateCollectionConfigOptions
 	): string[] {
 		return collectionPaths.filter(
 			(path) => path.startsWith('src/content') || path.startsWith('src/pages')
@@ -78,7 +80,27 @@ export default class Astro extends Ssg {
 		collectionPaths: string[],
 		options: GenerateCollectionsConfigOptions
 	): boolean {
+		const astroFilePaths: Record<string, true> = {};
+
+		for (let j = 0; j < collectionPaths.length; j++) {
+			for (let i = 0; i < options.filePaths.length; i++) {
+				if (
+					extname(options.filePaths[i]) === '.astro' &&
+					stripBottomPath(options.filePaths[i]) === collectionPaths[j]
+				) {
+					astroFilePaths[collectionPaths[j]] = true;
+					break;
+				}
+			}
+		}
+
+		const pathsWithAstroFile = Object.keys(astroFilePaths);
+		const topMostPathsWithAstroFile = pathsWithAstroFile.filter((folder) =>
+			pathsWithAstroFile.every((other) => (folder === other ? true : !folder.startsWith(other)))
+		);
+
 		return (
+			(!astroFilePaths[path] || topMostPathsWithAstroFile.includes(path)) &&
 			path !== 'src/shared' &&
 			!path.startsWith('src/shared/') &&
 			super.isSuggestedCollection(path, collectionPaths, options)
@@ -102,11 +124,13 @@ export default class Astro extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.push({
+		addBuildSuggestion(commands, 'build', {
 			value: 'npx astro build',
 			attribution: 'most common for Astro sites',
+			group: 'ssg',
 		});
-		commands.output.push({
+
+		addBuildSuggestion(commands, 'output', {
 			value: 'dist',
 			attribution: 'most common for Astro sites',
 		});

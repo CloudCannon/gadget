@@ -1,4 +1,8 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class NextJs extends Ssg {
 	constructor() {
@@ -34,15 +38,18 @@ export default class NextJs extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.unshift({
+		addBuildSuggestion(commands, 'build', {
 			value: 'npx next build && npx next export',
 			attribution: 'most common for Next.js sites',
+			group: 'ssg',
 		});
-		commands.output.unshift({
+
+		addBuildSuggestion(commands, 'output', {
 			value: 'out',
 			attribution: 'most common for Next.js sites',
 		});
-		commands.preserved.push({
+
+		addBuildSuggestion(commands, 'preserved', {
 			value: '.next/',
 			attribution: 'recommended for Next.js sites',
 		});

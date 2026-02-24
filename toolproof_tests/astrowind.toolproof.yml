@@ -70,7 +70,7 @@ steps:
       ╎              "collections": [
       ╎                {
       ╎                  "key": "homes",
-      ╎                  "suggested": true,
+      ╎                  "suggested": false,
       ╎                  "config": {
       ╎                    "path": "src/pages/homes",
       ╎                    "icon": "home"
@@ -79,7 +79,7 @@ steps:
       ╎                },
       ╎                {
       ╎                  "key": "landing",
-      ╎                  "suggested": true,
+      ╎                  "suggested": false,
       ╎                  "config": {
       ╎                    "path": "src/pages/landing",
       ╎                    "icon": "padding"

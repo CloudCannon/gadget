@@ -10,6 +10,7 @@ import { getDecapPaths } from '../external.ts';
 import type { ExternalConfig } from '../index.ts';
 import { decodeEntity, join, normalisePath } from '../utility.ts';
 import Ssg, {
+	addBuildSuggestion,
 	type BuildCommands,
 	type CollectionConfigTree,
 	type GenerateBuildCommandsOptions,
@@ -243,11 +244,13 @@ export default class Hugo extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.unshift({
+		addBuildSuggestion(commands, 'build', {
 			value: 'hugo -b /',
 			attribution: 'most common for Hugo sites',
+			group: 'ssg',
 		});
-		commands.output.unshift({
+
+		addBuildSuggestion(commands, 'output', {
 			value: 'public',
 			attribution: 'most common for Hugo sites',
 		});
@@ -257,16 +260,15 @@ export default class Hugo extends Ssg {
 			attribution: 'recommended for Hugo sites',
 		};
 
-		commands.preserved.push(
-			{
-				value: 'resources/',
-				attribution: 'recommended for speeding up Hugo builds',
-			},
-			{
-				value: '.hugo_cache/',
-				attribution: 'recommended for speeding up Hugo builds',
-			}
-		);
+		addBuildSuggestion(commands, 'preserved', {
+			value: 'resources/',
+			attribution: 'recommended for speeding up Hugo builds',
+		});
+
+		addBuildSuggestion(commands, 'preserved', {
+			value: '.hugo_cache/',
+			attribution: 'recommended for speeding up Hugo builds',
+		});
 
 		return commands;
 	}

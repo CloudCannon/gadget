@@ -1,4 +1,8 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class MkDocs extends Ssg {
 	constructor() {
@@ -22,19 +26,22 @@ export default class MkDocs extends Ssg {
 		const usePip = filePaths.includes('requirements.txt');
 		const usePipEnv = filePaths.includes('Pipfile');
 
-		commands.build.push({
+		addBuildSuggestion(commands, 'build', {
 			value: 'mkdocs build',
 			attribution: 'most common for MkDocs sites',
+			group: 'ssg',
 		});
-		commands.output.unshift({
+
+		addBuildSuggestion(commands, 'output', {
 			value: 'site',
 			attribution: 'most common for MkDocs sites',
 		});
 
 		if (usePip) {
-			commands.install.push({
+			addBuildSuggestion(commands, 'install', {
 				value: 'pip install -r requirements.txt',
 				attribution: 'because of your `requirements.txt` file',
+				group: 'python',
 			});
 
 			commands.environment.PIP_CACHE_DIR = {
@@ -42,16 +49,17 @@ export default class MkDocs extends Ssg {
 				attribution: 'recommended for speeding up pip installs',
 			};
 
-			commands.preserved.push({
+			addBuildSuggestion(commands, 'preserved', {
 				value: '.pip_cache/',
 				attribution: 'recommended for speeding up pip installs',
 			});
 		}
 
 		if (usePipEnv) {
-			commands.install.push({
+			addBuildSuggestion(commands, 'install', {
 				value: 'pipenv install',
 				attribution: 'because of your `Pipfile`',
+				group: 'python',
 			});
 
 			commands.environment.PIPENV_CACHE_DIR = {
@@ -59,7 +67,7 @@ export default class MkDocs extends Ssg {
 				attribution: 'recommended for speeding up pipenv installs',
 			};
 
-			commands.preserved.push({
+			addBuildSuggestion(commands, 'preserved', {
 				value: '.pipenv_cache/',
 				attribution: 'recommended for speeding up pipenv installs',
 			});
