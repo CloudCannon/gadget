@@ -56,7 +56,7 @@ export default class Bridgetown extends Ssg {
 			addBuildSuggestion(commands, 'build', {
 				value: 'bin/bridgetown deploy',
 				attribution: 'most common for Bridgetown sites',
-				group: 'ssg',
+				group: 'ruby',
 			});
 		}
 

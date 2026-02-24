@@ -29,7 +29,7 @@ export default class Lume extends Ssg {
 		addBuildSuggestion(commands, 'build', {
 			value: 'deno task lume',
 			attribution: 'most common for Lume sites',
-			group: 'ssg',
+			group: 'deno',
 		});
 
 		addBuildSuggestion(commands, 'output', {

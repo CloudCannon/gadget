@@ -35,7 +35,7 @@ export default class Gatsby extends Ssg {
 		addBuildSuggestion(commands, 'build', {
 			value: 'npx gatsby build',
 			attribution: 'default for Gatsby sites',
-			group: 'ssg',
+			group: 'node',
 		});
 
 		addBuildSuggestion(commands, 'output', {

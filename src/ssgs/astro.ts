@@ -127,7 +127,7 @@ export default class Astro extends Ssg {
 		addBuildSuggestion(commands, 'build', {
 			value: 'npx astro build',
 			attribution: 'most common for Astro sites',
-			group: 'ssg',
+			group: 'node',
 		});
 
 		addBuildSuggestion(commands, 'output', {

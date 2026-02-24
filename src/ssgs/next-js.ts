@@ -41,7 +41,7 @@ export default class NextJs extends Ssg {
 		addBuildSuggestion(commands, 'build', {
 			value: 'npx next build && npx next export',
 			attribution: 'most common for Next.js sites',
-			group: 'ssg',
+			group: 'node',
 		});
 
 		addBuildSuggestion(commands, 'output', {

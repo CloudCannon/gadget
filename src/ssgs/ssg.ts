@@ -61,7 +61,7 @@ export interface GenerateCollectionConfigOptions extends GenerateCollectionsConf
 	collectionPaths: string[];
 }
 
-export type BuildSuggestionGroup = 'ssg' | 'node' | 'python' | 'ruby';
+export type BuildSuggestionGroup = 'node' | 'deno' | 'python' | 'ruby';
 
 export interface BuildCommandSuggestion {
 	value: string;
@@ -783,15 +783,23 @@ export default class Ssg {
 				if (type === 'install' || type === 'build') {
 					let group: BuildSuggestionGroup | undefined;
 
-					if (type === 'build') {
-						group = 'ssg';
-					} else if (
+					if (
+						value.startsWith('npx ') ||
+						value.startsWith('node ') ||
 						value.startsWith('npm ') ||
 						value.startsWith('yarn ') ||
 						value.startsWith('pnpm ')
 					) {
 						group = 'node';
-					} else if (value.startsWith('bundle ')) {
+					} else if (value.startsWith('deno ')) {
+						group = 'deno';
+					} else if (
+						value.startsWith('bundle ') ||
+						value.startsWith('ruby ') ||
+						value.startsWith('bridgetown ') ||
+						value.startsWith('bin/bridgetown ') ||
+						value.startsWith('jekyll ')
+					) {
 						group = 'ruby';
 					} else if (value.startsWith('pip ') || value.startsWith('pipenv ')) {
 						group = 'python';

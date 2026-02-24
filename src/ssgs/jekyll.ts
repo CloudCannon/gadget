@@ -409,7 +409,7 @@ export default class Jekyll extends Ssg {
 			addBuildSuggestion(commands, 'build', {
 				value: 'bundle exec jekyll build',
 				attribution: 'because of your Gemfile',
-				group: 'ssg',
+				group: 'ruby',
 			});
 
 			addBuildSuggestion(commands, 'preserved', {
@@ -432,7 +432,7 @@ export default class Jekyll extends Ssg {
 			addBuildSuggestion(commands, 'build', {
 				value: 'jekyll build',
 				attribution: 'most common for Jekyll sites',
-				group: 'ssg',
+				group: 'ruby',
 			});
 		}
 

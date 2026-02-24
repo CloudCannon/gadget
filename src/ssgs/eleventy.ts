@@ -113,7 +113,7 @@ export default class Eleventy extends Ssg {
 		addBuildSuggestion(commands, 'build', {
 			value: 'npx @11ty/eleventy',
 			attribution: 'most common for 11ty sites',
-			group: 'ssg',
+			group: 'node',
 		});
 
 		addBuildSuggestion(commands, 'output', {
