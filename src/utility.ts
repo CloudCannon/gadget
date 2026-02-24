@@ -52,10 +52,15 @@ export function stripBottomPath(path: string): string {
 }
 
 /**
- * Removes duplicate, leading, and trailing slashes.
+ * Removes duplicate, leading, and trailing slashes. Collapses "./".
  */
 export function normalisePath(path: string): string {
-	return path.replace(/\/+/g, '/').replace(/^\//, '').replace(/\/$/, '');
+	return path
+		.replace(/\/+/g, '/')
+		.replace(/^\.\//, '')
+		.replace(/\/\.\//, '/')
+		.replace(/^\//, '')
+		.replace(/\/$/, '');
 }
 
 /**

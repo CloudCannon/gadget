@@ -1,4 +1,8 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class Sveltekit extends Ssg {
 	constructor() {
@@ -45,13 +49,14 @@ export default class Sveltekit extends Ssg {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
 		if (filePaths.includes('vite.config.js')) {
-			commands.build.push({
+			addBuildSuggestion(commands, 'build', {
 				value: 'npx vite build',
 				attribution: 'because of your `vite.config.js` file',
+				group: 'ssg',
 			});
 		}
 
-		commands.output.push({
+		addBuildSuggestion(commands, 'output', {
 			value: 'build',
 			attribution: 'most common for SvelteKit sites',
 		});

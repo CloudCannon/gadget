@@ -1,7 +1,11 @@
 import type { Paths, SnippetsImports } from '@cloudcannon/configuration-types';
 import { getDecapPaths } from '../external.ts';
 import type { ExternalConfig } from '../index.ts';
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class Docusaurus extends Ssg {
 	constructor() {
@@ -38,7 +42,7 @@ export default class Docusaurus extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.output.unshift({
+		addBuildSuggestion(commands, 'output', {
 			value: 'build',
 			attribution: 'most common for Docusaurus sites',
 		});

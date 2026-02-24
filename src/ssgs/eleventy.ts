@@ -1,6 +1,7 @@
 import type { CollectionConfig, MarkdownSettings } from '@cloudcannon/configuration-types';
 import { join, stripBottomPath } from '../utility.ts';
 import Ssg, {
+	addBuildSuggestion,
 	type BuildCommands,
 	type GenerateBuildCommandsOptions,
 	type GenerateCollectionConfigOptions,
@@ -109,15 +110,18 @@ export default class Eleventy extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.unshift({
+		addBuildSuggestion(commands, 'build', {
 			value: 'npx @11ty/eleventy',
 			attribution: 'most common for 11ty sites',
+			group: 'ssg',
 		});
-		commands.output.unshift({
+
+		addBuildSuggestion(commands, 'output', {
 			value: '_site',
 			attribution: 'most common for 11ty sites',
 		});
-		commands.preserved.unshift({
+
+		addBuildSuggestion(commands, 'preserved', {
 			value: '.cache',
 			attribution: 'most common for 11ty sites',
 		});

@@ -40,7 +40,7 @@ steps:
       ╎          "collections": [
       ╎            {
       ╎              "key": "pages_blog",
-      ╎              "suggested": true,
+      ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "src/pages/blog",
       ╎                "icon": "call_log"

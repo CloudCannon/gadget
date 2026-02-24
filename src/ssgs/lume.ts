@@ -1,8 +1,16 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class Lume extends Ssg {
 	constructor() {
 		super('lume');
+	}
+
+	configPaths(): string[] {
+		return super.configPaths().concat(['_config.js', '_config.ts']);
 	}
 
 	partialFolders(): string[] {
@@ -18,18 +26,22 @@ export default class Lume extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.push({
+		addBuildSuggestion(commands, 'build', {
 			value: 'deno task lume',
 			attribution: 'most common for Lume sites',
+			group: 'ssg',
 		});
-		commands.output.unshift({
+
+		addBuildSuggestion(commands, 'output', {
 			value: '_site',
 			attribution: 'most common for Lume sites',
 		});
-		commands.preserved.push({
+
+		addBuildSuggestion(commands, 'preserved', {
 			value: '.deno_cache/',
 			attribution: 'recommended for speeding up Deno installs',
 		});
+
 		commands.environment.DENO_DIR = {
 			value: '/usr/local/__site/src/.deno_cache/',
 			attribution: 'recommended for speeding up Deno installs',

@@ -1,8 +1,18 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class Gatsby extends Ssg {
 	constructor() {
 		super('gatsby');
+	}
+
+	configPaths(): string[] {
+		return super
+			.configPaths()
+			.concat(['gatsby-config.js', 'gatsby-config.mjs', 'gatsby-config.ts']);
 	}
 
 	isIgnoredFile(filePath: string): boolean {
@@ -22,11 +32,13 @@ export default class Gatsby extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.unshift({
+		addBuildSuggestion(commands, 'build', {
 			value: 'npx gatsby build',
 			attribution: 'default for Gatsby sites',
+			group: 'ssg',
 		});
-		commands.output.unshift({
+
+		addBuildSuggestion(commands, 'output', {
 			value: 'public',
 			attribution: 'default for Gatsby sites',
 		});

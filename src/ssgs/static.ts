@@ -1,4 +1,8 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class Static extends Ssg {
 	constructor() {
@@ -18,7 +22,7 @@ export default class Static extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.output.unshift({
+		addBuildSuggestion(commands, 'output', {
 			value: '.',
 			attribution: 'common for static sites without build',
 		});

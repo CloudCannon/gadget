@@ -61,10 +61,12 @@ export interface GenerateCollectionConfigOptions extends GenerateCollectionsConf
 	collectionPaths: string[];
 }
 
+export type BuildSuggestionGroup = 'ssg' | 'node' | 'python' | 'ruby';
+
 export interface BuildCommandSuggestion {
 	value: string;
-	/** Describes why this build suggestion was made */
 	attribution: string;
+	group?: BuildSuggestionGroup;
 }
 
 export interface BuildCommands {
@@ -73,6 +75,20 @@ export interface BuildCommands {
 	output: BuildCommandSuggestion[];
 	environment: Record<string, BuildCommandSuggestion>;
 	preserved: BuildCommandSuggestion[];
+}
+
+export function addBuildSuggestion(
+	commands: BuildCommands,
+	type: keyof Omit<BuildCommands, 'environment'>,
+	suggestion: BuildCommandSuggestion
+): void {
+	const existing = commands[type].find((command) => command.value === suggestion.value);
+
+	if (existing) {
+		existing.attribution += `; ${suggestion.attribution}`;
+	} else {
+		commands[type].push(suggestion);
+	}
 }
 
 function isInFilePaths(filePath: string, filePaths: string[]): boolean {
@@ -702,18 +718,21 @@ export default class Ssg {
 				commands.install.push({
 					value: 'npm i',
 					attribution: 'because of your `package.json` file',
+					group: 'node',
 				});
 			}
 			if (useYarn) {
 				commands.install.push({
 					value: 'yarn',
 					attribution: 'because of your `yarn.lock` file',
+					group: 'node',
 				});
 			}
 			if (usePnpm) {
 				commands.install.push({
 					value: 'pnpm i',
 					attribution: 'because of your `pnpm-lock.yaml` file',
+					group: 'node',
 				});
 			}
 
@@ -730,18 +749,21 @@ export default class Ssg {
 							commands.build.push({
 								value: 'npm run build',
 								attribution: 'found in your `package.json` file',
+								group: 'node',
 							});
 						}
 						if (useYarn) {
 							commands.build.push({
 								value: 'yarn build',
 								attribution: 'found in your `package.json` file',
+								group: 'node',
 							});
 						}
 						if (usePnpm) {
 							commands.build.push({
 								value: 'pnpm build',
 								attribution: 'found in your `package.json` file',
+								group: 'node',
 							});
 						}
 					}
@@ -755,16 +777,38 @@ export default class Ssg {
 		const validateAndAddCommandFromSettings = (
 			value: unknown,
 			filename: string,
-			type: keyof BuildCommands
+			type: keyof Omit<BuildCommands, 'environment'>
 		): void => {
 			if (value && typeof value === 'string') {
-				if (type === 'environment') {
-					commands[type].value = {
+				if (type === 'install' || type === 'build') {
+					let group: BuildSuggestionGroup | undefined;
+
+					if (type === 'build') {
+						group = 'ssg';
+					} else if (
+						value.startsWith('npm ') ||
+						value.startsWith('yarn ') ||
+						value.startsWith('pnpm ')
+					) {
+						group = 'node';
+					} else if (value.startsWith('bundle ')) {
+						group = 'ruby';
+					} else if (value.startsWith('pip ') || value.startsWith('pipenv ')) {
+						group = 'python';
+					}
+
+					addBuildSuggestion(commands, type, {
 						value,
 						attribution: `found in your \`${filename}\` file`,
-					};
+						group,
+					});
+				} else if (type === 'output') {
+					addBuildSuggestion(commands, type, {
+						value: normalisePath(value),
+						attribution: `found in your \`${filename}\` file`,
+					});
 				} else {
-					commands[type].push({
+					addBuildSuggestion(commands, type, {
 						value,
 						attribution: `found in your \`${filename}\` file`,
 					});

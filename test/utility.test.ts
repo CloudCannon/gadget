@@ -6,6 +6,7 @@ import {
 	extname,
 	join,
 	last,
+	normalisePath,
 	stripBottomPath,
 	stripTopPath,
 } from '../src/utility.ts';
@@ -41,6 +42,16 @@ test('joins paths', () => {
 	assert.strictEqual(join('first', 'final'), 'first/final');
 	assert.strictEqual(join('/first/', '//fi///nal'), 'first/fi/nal');
 	assert.strictEqual(join(), '');
+});
+
+test('normalises paths', () => {
+	assert.strictEqual(normalisePath('first'), 'first');
+	assert.strictEqual(normalisePath('/first///fi///nal'), 'first/fi/nal');
+	assert.strictEqual(normalisePath('./first/second'), 'first/second');
+	assert.strictEqual(normalisePath('first/'), 'first');
+	assert.strictEqual(normalisePath('/first'), 'first');
+	assert.strictEqual(normalisePath('.first/second'), '.first/second');
+	assert.strictEqual(normalisePath('/.first/second/'), '.first/second');
 });
 
 test('strips top path', () => {

@@ -1,8 +1,16 @@
-import Ssg, { type BuildCommands, type GenerateBuildCommandsOptions } from './ssg.ts';
+import Ssg, {
+	addBuildSuggestion,
+	type BuildCommands,
+	type GenerateBuildCommandsOptions,
+} from './ssg.ts';
 
 export default class NuxtJs extends Ssg {
 	constructor() {
 		super('nuxtjs');
+	}
+
+	configPaths(): string[] {
+		return super.configPaths().concat(['nuxt.config.ts']);
 	}
 
 	isIgnoredFile(filePath: string): boolean {
@@ -22,21 +30,23 @@ export default class NuxtJs extends Ssg {
 	): Promise<BuildCommands> {
 		const commands = await super.generateBuildCommands(filePaths, options);
 
-		commands.build.push({
+		addBuildSuggestion(commands, 'build', {
 			value: 'npx nuxt generate',
 			attribution: 'most common for Nuxt sites',
+			group: 'ssg',
 		});
-		commands.output.unshift(
-			{
-				value: 'dist',
-				attribution: 'most common for Nuxt sites',
-			},
-			{
-				value: '.output/public',
-				attribution: 'for Nuxt sites with "ssr" config property set to false',
-			}
-		);
-		commands.preserved.push({
+
+		addBuildSuggestion(commands, 'output', {
+			value: 'dist',
+			attribution: 'most common for Nuxt sites',
+		});
+
+		addBuildSuggestion(commands, 'output', {
+			value: '.output/public',
+			attribution: 'for Nuxt sites with "ssr" config property set to false',
+		});
+
+		addBuildSuggestion(commands, 'preserved', {
 			value: '.nuxt/',
 			attribution: 'recommended for Nuxt sites',
 		});
