@@ -52,7 +52,7 @@ export default class Sveltekit extends Ssg {
 			addBuildSuggestion(commands, 'build', {
 				value: 'npx vite build',
 				attribution: 'because of your `vite.config.js` file',
-				group: 'ssg',
+				group: 'node',
 			});
 		}
 

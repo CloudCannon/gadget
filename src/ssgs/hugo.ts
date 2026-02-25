@@ -247,7 +247,6 @@ export default class Hugo extends Ssg {
 		addBuildSuggestion(commands, 'build', {
 			value: 'hugo -b /',
 			attribution: 'most common for Hugo sites',
-			group: 'ssg',
 		});
 
 		addBuildSuggestion(commands, 'output', {

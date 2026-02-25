@@ -33,7 +33,7 @@ export default class NuxtJs extends Ssg {
 		addBuildSuggestion(commands, 'build', {
 			value: 'npx nuxt generate',
 			attribution: 'most common for Nuxt sites',
-			group: 'ssg',
+			group: 'node',
 		});
 
 		addBuildSuggestion(commands, 'output', {

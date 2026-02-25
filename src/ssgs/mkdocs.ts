@@ -29,7 +29,6 @@ export default class MkDocs extends Ssg {
 		addBuildSuggestion(commands, 'build', {
 			value: 'mkdocs build',
 			attribution: 'most common for MkDocs sites',
-			group: 'ssg',
 		});
 
 		addBuildSuggestion(commands, 'output', {
