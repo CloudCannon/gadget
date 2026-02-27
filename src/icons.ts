@@ -16,6 +16,8 @@ const overrides: Record<string, Icon> = {
 	post: 'event_available',
 	blog: 'event_available',
 	drafts: 'event',
+	changelog: 'change_history',
+	changelogs: 'change_history',
 	draft: 'event',
 	stats: 'analytics',
 	data: 'data_usage',

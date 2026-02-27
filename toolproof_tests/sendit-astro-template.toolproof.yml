@@ -26,8 +26,7 @@ steps:
       ╎      "suggested": false,
       ╎      "config": {
       ╎        "path": "",
-      ╎        "icon": "package_2",
-      ╎        "disable_url": true
+      ╎        "icon": "package_2"
       ╎      },
       ╎      "collections": [
       ╎        {
@@ -35,8 +34,7 @@ steps:
       ╎          "suggested": false,
       ╎          "config": {
       ╎            "path": "src",
-      ╎            "icon": "abc",
-      ╎            "disable_url": true
+      ╎            "icon": "abc"
       ╎          },
       ╎          "collections": [
       ╎            {
@@ -53,8 +51,7 @@ steps:
       ╎              "suggested": false,
       ╎              "config": {
       ╎                "path": "src/shared",
-      ╎                "icon": "share",
-      ╎                "disable_url": true
+      ╎                "icon": "share"
       ╎              },
       ╎              "collections": [
       ╎                {
@@ -62,8 +59,7 @@ steps:
       ╎                  "suggested": false,
       ╎                  "config": {
       ╎                    "path": "src/shared/astro",
-      ╎                    "icon": "share_eta",
-      ╎                    "disable_url": true
+      ╎                    "icon": "share_eta"
       ╎                  },
       ╎                  "collections": []
       ╎                }
@@ -96,6 +92,34 @@ steps:
       ╎                  "collections": []
       ╎                }
       ╎              ]
+      ╎            },
+      ╎            {
+      ╎              "key": "changelogs",
+      ╎              "suggested": true,
+      ╎              "config": {
+      ╎                "path": "src/changelogs",
+      ╎                "icon": "change_history"
+      ╎              },
+      ╎              "collections": [
+      ╎                {
+      ╎                  "key": "changelogs_2021",
+      ╎                  "suggested": false,
+      ╎                  "config": {
+      ╎                    "path": "src/changelogs/2021",
+      ╎                    "icon": "change_history"
+      ╎                  },
+      ╎                  "collections": []
+      ╎                },
+      ╎                {
+      ╎                  "key": "changelogs_2022",
+      ╎                  "suggested": false,
+      ╎                  "config": {
+      ╎                    "path": "src/changelogs/2022",
+      ╎                    "icon": "change_history"
+      ╎                  },
+      ╎                  "collections": []
+      ╎                }
+      ╎              ]
       ╎            }
       ╎          ]
       ╎        },
@@ -104,8 +128,7 @@ steps:
       ╎          "suggested": true,
       ╎          "config": {
       ╎            "path": "data",
-      ╎            "icon": "data_usage",
-      ╎            "disable_url": true
+      ╎            "icon": "data_usage"
       ╎          },
       ╎          "collections": []
       ╎        }

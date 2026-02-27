@@ -26,8 +26,7 @@ steps:
       ╎      "suggested": false,
       ╎      "config": {
       ╎        "path": "src",
-      ╎        "icon": "abc",
-      ╎        "disable_url": true
+      ╎        "icon": "abc"
       ╎      },
       ╎      "collections": [
       ╎        {

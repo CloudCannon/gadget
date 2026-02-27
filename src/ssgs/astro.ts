@@ -1,4 +1,4 @@
-import type { CollectionConfig, MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
+import type { MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
 import { getDecapPaths } from '../external.ts';
 import type { ExternalConfig } from '../index.ts';
 import { extname, stripBottomPath } from '../utility.ts';
@@ -53,26 +53,6 @@ export default class Astro extends Ssg {
 		return collectionPaths.filter(
 			(path) => path.startsWith('src/content') || path.startsWith('src/pages')
 		);
-	}
-
-	/**
-	 * Generates a collection config entry.
-	 */
-	generateCollectionConfig(
-		key: string,
-		path: string,
-		options: GenerateCollectionConfigOptions
-	): CollectionConfig {
-		const collectionConfig = super.generateCollectionConfig(key, path, options);
-
-		if (
-			!collectionConfig.path?.startsWith('src/pages') &&
-			!collectionConfig.path?.startsWith('src/content')
-		) {
-			collectionConfig.disable_url = true;
-		}
-
-		return collectionConfig;
 	}
 
 	isSuggestedCollection(
