@@ -521,6 +521,12 @@ export default class Ssg {
 		}
 
 		const pathParts = path.split('/');
+
+		// Avoids suggesting folders like "404" and "/changelogs/2026"
+		if (pathParts[pathParts.length - 1]?.match(/^[-_\d]+$/)) {
+			return false;
+		}
+
 		let hasNonBaseParentCollectionWithFiles = false;
 
 		for (let i = 0; i < pathParts.length - 1 && !hasNonBaseParentCollectionWithFiles; i++) {
@@ -531,7 +537,18 @@ export default class Ssg {
 				!this.isBaseCollectionPath(parentPath, collectionPaths, options);
 		}
 
-		return collectionPaths.includes(path) && !hasNonBaseParentCollectionWithFiles;
+		const isCollectionPath =
+			// is a path with content files
+			collectionPaths.includes(path) ||
+			// is a parent folder number-only-path with content files
+			(!!path &&
+				collectionPaths.every(
+					(collectionPath) =>
+						!collectionPath.startsWith(`${path}/`) ||
+						stripTopPath(collectionPath, path).match(/^[-_\d/]+$/)
+				));
+
+		return isCollectionPath && !hasNonBaseParentCollectionWithFiles;
 	}
 
 	getExistingCollections(existingCollectionsConfig: Record<string, CollectionConfig>): {
