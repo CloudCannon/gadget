@@ -1,0 +1,9 @@
+name: CLI generate --json outputs to stdout
+
+steps:
+  - I run "cp -R %test_sites%/sendit-astro-template src"
+  - ref: ./core/run_gadget_cli.toolproof.yml
+  - I run "npm -s run gadget -- generate src --auto --json"
+  - stdout should contain "\"ssg\": \"astro\""
+  - stdout should contain "collections_config"
+  - stdout should contain "collections"

@@ -1,0 +1,18 @@
+name: Run the Gadget CLI
+type: reference
+
+steps:
+  - step: I have a "package.json" file with the content {json}
+    json: |-
+      {
+        "name": "gadget-cli-test-env",
+        "type": "module",
+        "private": "true",
+        "dependencies": {
+          "@cloudcannon/gadget": "file:%gadget_dir%"
+        },
+        "scripts": {
+          "gadget": "node --experimental-strip-types --no-warnings ./node_modules/@cloudcannon/gadget/src/cli.ts"
+        }
+      }
+  - I run "npm i"

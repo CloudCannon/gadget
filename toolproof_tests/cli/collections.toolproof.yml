@@ -1,0 +1,9 @@
+name: CLI collections subcommand
+
+steps:
+  - I run "cp -R %test_sites%/sendit-astro-template src"
+  - ref: ./core/run_gadget_cli.toolproof.yml
+  - I run "npm -s run gadget -- collections src --ssg astro"
+  - stdout should contain "\"ssg\": \"astro\""
+  - stdout should contain "pages"
+  - stdout should contain "blog"

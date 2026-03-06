@@ -1,12 +1,16 @@
 {
 	"compilerOptions": {
 		"strict": true,
+		"target": "es2022",
+		"module": "es2022",
+		"moduleResolution": "bundler",
 		"esModuleInterop": true,
 		"noEmit": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
-		"allowImportingTsExtensions": true
+		"allowImportingTsExtensions": true,
+		"skipLibCheck": true
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules", "dist"]
