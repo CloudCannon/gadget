@@ -1,10 +1,10 @@
-name: CLI generate --auto
+name: CLI generate auto
 
 steps:
   - I run "cp -R %test_sites%/sendit-astro-template src"
-  - ref: ./core/run_gadget_cli.toolproof.yml
+  - ref: ../core/run_gadget_cli.toolproof.yml
   - I run "npm -s run gadget -- generate src --auto"
-  - step: I read the file "src/cloudcannon.config.yml"
+  - I run "cat src/cloudcannon.config.yml"
   - stdout should contain "yaml-language-server"
   - stdout should contain "collections_config"
   - stdout should contain "pages"

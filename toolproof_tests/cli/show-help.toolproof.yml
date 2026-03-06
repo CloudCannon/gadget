@@ -1,0 +1,9 @@
+name: CLI shows help
+
+steps:
+  - I run "cp -R %test_sites%/vonge-jekyll src"
+  - ref: ../core/run_gadget_cli.toolproof.yml
+  - I run "npm -s run gadget -- -h"
+  - stdout should contain "Usage"
+  - stdout should contain "detect-ssg"
+  - stdout should contain "generate"

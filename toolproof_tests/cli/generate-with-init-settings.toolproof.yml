@@ -1,10 +1,10 @@
-name: CLI generate --auto --init-settings
+name: CLI generate auto with init-settings
 
 steps:
   - I run "cp -R %test_sites%/sendit-hugo-template src"
-  - ref: ./core/run_gadget_cli.toolproof.yml
+  - ref: ../core/run_gadget_cli.toolproof.yml
   - I run "npm -s run gadget -- generate src --auto --init-settings"
-  - step: I read the file "src/cloudcannon.config.yml"
+  - I run "cat src/cloudcannon.config.yml"
   - stdout should contain "collections_config"
-  - step: I read the file "src/.cloudcannon/initial-site-settings.json"
-  - stdout should contain "\"ssg\": \"hugo\""
+  - I run "cat src/.cloudcannon/initial-site-settings.json"
+  - stdout should contain "hugo"

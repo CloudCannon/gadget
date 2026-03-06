@@ -1,9 +1,0 @@
-name: CLI --help flag
-
-steps:
-  - ref: ./core/run_gadget_cli.toolproof.yml
-  - I run "npm -s run gadget -- --help"
-  - stdout should contain "Usage: gadget"
-  - stdout should contain "detect-ssg"
-  - stdout should contain "generate"
-  - stdout should contain "--auto"

@@ -12,7 +12,7 @@ steps:
           "@cloudcannon/gadget": "file:%gadget_dir%"
         },
         "scripts": {
-          "gadget": "node --experimental-strip-types --no-warnings ./node_modules/@cloudcannon/gadget/src/cli.ts"
+          "gadget": "node --experimental-strip-types --no-warnings ./node_modules/@cloudcannon/gadget/cli.ts"
         }
       }
   - I run "npm i"

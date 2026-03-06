@@ -2,7 +2,7 @@ name: CLI detect-ssg subcommand
 
 steps:
   - I run "cp -R %test_sites%/sendit-astro-template src"
-  - ref: ./core/run_gadget_cli.toolproof.yml
+  - ref: ./../core/run_gadget_cli.toolproof.yml
   - I run "npm -s run gadget -- detect-ssg src"
   - snapshot: stdout
     snapshot_content: |-
