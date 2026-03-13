@@ -1,7 +1,7 @@
 import type { MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
 import { getDecapPaths } from '../external.ts';
 import type { ExternalConfig } from '../index.ts';
-import { extname, stripBottomPath } from '../utility.ts';
+import { stripBottomPath } from '../utility.ts';
 import Ssg, {
 	addBuildSuggestion,
 	type BuildCommands,
