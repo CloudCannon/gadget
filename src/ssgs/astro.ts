@@ -1,7 +1,7 @@
 import type { MarkdownSettings, Paths } from '@cloudcannon/configuration-types';
 import { getDecapPaths } from '../external.ts';
 import type { ExternalConfig } from '../index.ts';
-import { extname, stripBottomPath } from '../utility.ts';
+import { stripBottomPath } from '../utility.ts';
 import Ssg, {
 	addBuildSuggestion,
 	type BuildCommands,
@@ -65,7 +65,8 @@ export default class Astro extends Ssg {
 		for (let j = 0; j < collectionPaths.length; j++) {
 			for (let i = 0; i < options.filePaths.length; i++) {
 				if (
-					extname(options.filePaths[i]) === '.astro' &&
+					options.filePaths[i].endsWith('.astro') &&
+					options.filePaths[i].startsWith(collectionPaths[j]) &&
 					stripBottomPath(options.filePaths[i]) === collectionPaths[j]
 				) {
 					astroFilePaths[collectionPaths[j]] = true;
