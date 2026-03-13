@@ -1,0 +1,7 @@
+name: CLI detect-ssg Jekyll
+
+steps:
+  - I run "cp -R %test_sites%/vonge-jekyll src"
+  - ref: ./../core/run_gadget_cli.toolproof.yml
+  - I run "npm -s run gadget -- detect-ssg src"
+  - stdout should contain "jekyll"

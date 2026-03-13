@@ -5,8 +5,16 @@ import type { BuildCommands, CollectionConfigTree } from './ssgs/ssg.ts';
 import { guessSsg, ssgs } from './ssgs/ssgs.ts';
 import { normalisePath } from './utility.ts';
 
-export { ssgs } from './ssgs/ssgs.ts';
+export { guessSsg, ssgs } from './ssgs/ssgs.ts';
 export type { CollectionConfigTree, Configuration, SsgKey, BuildCommands };
+export type { SsgDetectionResult } from './helpers.ts';
+export { detectSsg, flattenCollectionTree, serializeConfig } from './helpers.ts';
+export type { InitialSiteSettings } from './initial-site-settings.ts';
+export {
+	buildInitialSiteSettings,
+	generateInitialSiteSettings,
+} from './initial-site-settings.ts';
+export type { BuildCommandSuggestion } from './ssgs/ssg.ts';
 
 export interface ExternalConfig {
 	decap: Record<string, any> | undefined;
