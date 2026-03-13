@@ -22,7 +22,8 @@
 	},
 	"files": [
 		"src/**/*.ts",
-		"bin/**"
+		"bin/**",
+		"docs/**"
 	],
 	"scripts": {
 		"build": "tsc",
