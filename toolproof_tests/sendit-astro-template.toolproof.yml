@@ -94,6 +94,34 @@ steps:
       ╎              ]
       ╎            },
       ╎            {
+      ╎              "key": "glossary",
+      ╎              "suggested": true,
+      ╎              "config": {
+      ╎                "path": "src/glossary",
+      ╎                "icon": "dictionary"
+      ╎              },
+      ╎              "collections": [
+      ╎                {
+      ╎                  "key": "glossary_a",
+      ╎                  "suggested": false,
+      ╎                  "config": {
+      ╎                    "path": "src/glossary/a",
+      ╎                    "icon": "forward_5"
+      ╎                  },
+      ╎                  "collections": []
+      ╎                },
+      ╎                {
+      ╎                  "key": "glossary_b",
+      ╎                  "suggested": false,
+      ╎                  "config": {
+      ╎                    "path": "src/glossary/b",
+      ╎                    "icon": "forward_5"
+      ╎                  },
+      ╎                  "collections": []
+      ╎                }
+      ╎              ]
+      ╎            },
+      ╎            {
       ╎              "key": "changelogs",
       ╎              "suggested": true,
       ╎              "config": {

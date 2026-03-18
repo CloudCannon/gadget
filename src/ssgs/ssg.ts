@@ -522,6 +522,11 @@ export default class Ssg {
 
 		const pathParts = path.split('/');
 
+		// Avoids suggesting single letter folders like "glossary/a" and "glossary/b"
+		if (pathParts[pathParts.length - 1]?.length === 1) {
+			return false;
+		}
+
 		// Avoids suggesting folders like "404" and "/changelogs/2026"
 		if (pathParts[pathParts.length - 1]?.match(/^[-_\d]+$/)) {
 			return false;
@@ -540,13 +545,16 @@ export default class Ssg {
 		const isCollectionPath =
 			// is a path with content files
 			collectionPaths.includes(path) ||
-			// is a parent folder number-only-path with content files
+			// is a parent folder number-only-or-single-character-path with content files
 			(!!path &&
-				collectionPaths.every(
-					(collectionPath) =>
-						!collectionPath.startsWith(`${path}/`) ||
-						stripTopPath(collectionPath, path).match(/^[-_\d/]+$/)
-				));
+				collectionPaths.every((collectionPath) => {
+					if (!collectionPath.startsWith(`${path}/`)) {
+						return true;
+					}
+
+					const pathInCollectionPath = stripTopPath(collectionPath, path);
+					return pathInCollectionPath.length === 1 || pathInCollectionPath.match(/^[-_\d/]+$/);
+				}));
 
 		return isCollectionPath && !hasNonBaseParentCollectionWithFiles;
 	}
