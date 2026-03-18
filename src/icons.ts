@@ -28,6 +28,7 @@ const overrides: Record<string, Icon> = {
 	recipes: 'local_dining',
 	news_posts: 'newsmode',
 	news: 'newsmode',
+	glossary: 'dictionary',
 };
 
 const icons: Icon[] = [
