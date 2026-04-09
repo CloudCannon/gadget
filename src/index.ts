@@ -6,7 +6,7 @@ import { guessSsg, ssgs } from './ssgs/ssgs.ts';
 import { normalisePath } from './utility.ts';
 
 export { ssgs } from './ssgs/ssgs.ts';
-export type { CollectionConfigTree, Configuration, SsgKey, BuildCommands };
+export type { BuildCommands, CollectionConfigTree, Configuration, SsgKey };
 
 export interface ExternalConfig {
 	decap: Record<string, any> | undefined;

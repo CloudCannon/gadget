@@ -10,9 +10,9 @@ steps:
         "private": "true",
         "dependencies": {
           "@cloudcannon/gadget": "file:%gadget_dir%",
-          "tsx": "^4.20.4",
-          "js-yaml": "^4.1.0",
-          "fdir": "^6.1.1"
+          "tsx": "4.21.0",
+          "js-yaml": "4.1.1",
+          "fdir": "6.5.0"
         },
         "scripts": {
           "go": "tsx gadget.js"

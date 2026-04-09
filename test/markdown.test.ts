@@ -23,12 +23,12 @@ test('Respects Jekyll Kramdown options enabled', () => {
 		},
 	});
 	assert.strictEqual(markdown.engine, 'kramdown');
-	assert.strictEqual(markdown.options.quotes, '‘’“”');
-	assert.strictEqual(markdown.options.breaks, true);
-	assert.strictEqual(markdown.options.gfm, true);
-	assert.strictEqual(markdown.options.heading_ids, true);
-	assert.strictEqual(markdown.options.typographer, true);
-	assert.strictEqual(markdown.options.treat_indentation_as_code, true);
+	assert.strictEqual(markdown.options?.quotes, '‘’“”');
+	assert.strictEqual(markdown.options?.breaks, true);
+	assert.strictEqual(markdown.options?.gfm, true);
+	assert.strictEqual(markdown.options?.heading_ids, true);
+	assert.strictEqual(markdown.options?.typographer, true);
+	assert.strictEqual(markdown.options?.treat_indentation_as_code, true);
 });
 
 test('Respects Jekyll Kramdown options disabled', () => {
@@ -41,11 +41,11 @@ test('Respects Jekyll Kramdown options disabled', () => {
 		},
 	});
 	assert.strictEqual(markdown.engine, 'kramdown');
-	assert.strictEqual(markdown.options.breaks, false);
-	assert.strictEqual(markdown.options.gfm, false);
-	assert.strictEqual(markdown.options.heading_ids, false);
-	assert.strictEqual(markdown.options.typographer, false);
-	assert.strictEqual(markdown.options.treat_indentation_as_code, true);
+	assert.strictEqual(markdown.options?.breaks, false);
+	assert.strictEqual(markdown.options?.gfm, false);
+	assert.strictEqual(markdown.options?.heading_ids, false);
+	assert.strictEqual(markdown.options?.typographer, false);
+	assert.strictEqual(markdown.options?.treat_indentation_as_code, true);
 });
 
 test('Respects Jekyll CommonMark options', () => {
@@ -57,14 +57,14 @@ test('Respects Jekyll CommonMark options', () => {
 		},
 	});
 	assert.strictEqual(markdown.engine, 'commonmark');
-	assert.strictEqual(markdown.options.breaks, true);
-	assert.strictEqual(markdown.options.gfm, true);
-	assert.strictEqual(markdown.options.strikethrough, true);
-	assert.strictEqual(markdown.options.superscript, true);
-	assert.strictEqual(markdown.options.linkify, true);
-	assert.strictEqual(markdown.options.heading_ids, true);
-	assert.strictEqual(markdown.options.table, true);
-	assert.strictEqual(markdown.options.treat_indentation_as_code, true);
+	assert.strictEqual(markdown.options?.breaks, true);
+	assert.strictEqual(markdown.options?.gfm, true);
+	assert.strictEqual(markdown.options?.strikethrough, true);
+	assert.strictEqual(markdown.options?.superscript, true);
+	assert.strictEqual(markdown.options?.linkify, true);
+	assert.strictEqual(markdown.options?.heading_ids, true);
+	assert.strictEqual(markdown.options?.table, true);
+	assert.strictEqual(markdown.options?.treat_indentation_as_code, true);
 });
 
 test('Respects Hugo options', () => {
@@ -97,19 +97,19 @@ test('Respects Hugo options', () => {
 		},
 	});
 	assert.strictEqual(markdown.engine, 'commonmark');
-	assert.strictEqual(markdown.options.quotes, '‘’“”');
-	assert.strictEqual(markdown.options.attributes, true);
-	assert.strictEqual(markdown.options.linkify, true);
-	assert.strictEqual(markdown.options.strikethrough, true);
-	assert.strictEqual(markdown.options.table, true);
-	assert.strictEqual(markdown.options.treat_indentation_as_code, true);
-	assert.strictEqual(markdown.options.typographer, true);
-	assert.strictEqual(markdown.options.breaks, true);
-	assert.strictEqual(markdown.options.gfm, true);
-	assert.strictEqual(markdown.options.subscript, true);
-	assert.strictEqual(markdown.options.superscript, true);
-	assert.strictEqual(markdown.options.heading_ids, true);
-	assert.strictEqual(markdown.options.xhtml, true);
+	assert.strictEqual(markdown.options?.quotes, '‘’“”');
+	assert.strictEqual(markdown.options?.attributes, true);
+	assert.strictEqual(markdown.options?.linkify, true);
+	assert.strictEqual(markdown.options?.strikethrough, true);
+	assert.strictEqual(markdown.options?.table, true);
+	assert.strictEqual(markdown.options?.treat_indentation_as_code, true);
+	assert.strictEqual(markdown.options?.typographer, true);
+	assert.strictEqual(markdown.options?.breaks, true);
+	assert.strictEqual(markdown.options?.gfm, true);
+	assert.strictEqual(markdown.options?.subscript, true);
+	assert.strictEqual(markdown.options?.superscript, true);
+	assert.strictEqual(markdown.options?.heading_ids, true);
+	assert.strictEqual(markdown.options?.xhtml, true);
 });
 
 test('Respects Hugo options with attributes disabled', () => {
@@ -122,8 +122,8 @@ test('Respects Hugo options with attributes disabled', () => {
 			},
 		},
 	});
-	assert.strictEqual(noAttrConfig.options.attributes, false);
-	assert.strictEqual(noAttrConfig.options.attribute_elements, undefined);
+	assert.strictEqual(noAttrConfig.options?.attributes, false);
+	assert.strictEqual(noAttrConfig.options?.attribute_elements, undefined);
 });
 
 test('Respects Hugo options with heading attributes enabled', () => {
@@ -136,11 +136,11 @@ test('Respects Hugo options with heading attributes enabled', () => {
 			},
 		},
 	});
-	assert.strictEqual(noAttrConfig.options.attributes, true);
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.h1, 'space right');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.h6, 'space right');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.blockquote, 'none');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.table, 'none');
+	assert.strictEqual(noAttrConfig.options?.attributes, true);
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.h1, 'space right');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.h6, 'space right');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.blockquote, 'none');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.table, 'none');
 });
 
 test('Respects Hugo options with block attributes enabled', () => {
@@ -153,14 +153,14 @@ test('Respects Hugo options with block attributes enabled', () => {
 			},
 		},
 	});
-	assert.strictEqual(noAttrConfig.options.attributes, true);
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.h1, 'none');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.img, 'none');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.blockquote, 'below');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.ul, 'below');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.ol, 'below');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.table, 'below');
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.p, 'below');
+	assert.strictEqual(noAttrConfig.options?.attributes, true);
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.h1, 'none');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.img, 'none');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.blockquote, 'below');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.ul, 'below');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.ol, 'below');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.table, 'below');
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.p, 'below');
 });
 
 test('Respects Hugo options to enable attributes on standalone image', () => {
@@ -174,8 +174,8 @@ test('Respects Hugo options to enable attributes on standalone image', () => {
 			},
 		},
 	});
-	assert.strictEqual(noAttrConfig.options.attributes, true);
-	assert.strictEqual(noAttrConfig.options.attribute_elements?.img, 'below');
+	assert.strictEqual(noAttrConfig.options?.attributes, true);
+	assert.strictEqual(noAttrConfig.options?.attribute_elements?.img, 'below');
 });
 
 test('Has good 11ty defaults', () => {

@@ -1,13 +1,24 @@
 {
 	"compilerOptions": {
+		"target": "ESNext",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"strict": true,
-		"esModuleInterop": true,
-		"noEmit": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
-		"allowImportingTsExtensions": true
+		"noEmit": false,
+		"checkJs": true,
+		"declaration": true,
+		"allowJs": true,
+		"skipLibCheck": true,
+		"rewriteRelativeImportExtensions": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"verbatimModuleSyntax": true,
+		"erasableSyntaxOnly": true,
+		"outDir": "dist",
+		"rootDir": "src"
 	},
-	"include": ["src/**/*.ts"],
+	"include": ["src/**/*.js", "src/**/*.ts"],
 	"exclude": ["node_modules", "dist"]
 }
