@@ -16,10 +16,11 @@
 		"url": "https://github.com/CloudCannon/gadget/issues",
 		"email": "support@cloudcannon.com"
 	},
-	"main": "src/index.ts",
+	"main": "dist/index.js",
 	"files": [
-		"src/**/*.ts"
+		"dist"
 	],
+	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc",
 		"test": "node --experimental-strip-types --test",
@@ -30,12 +31,12 @@
 	},
 	"author": "CloudCannon <support@cloudcannon.com>",
 	"devDependencies": {
-		"@biomejs/biome": "2.4.6",
+		"@biomejs/biome": "2.4.10",
 		"@cloudcannon/configuration-types": "0.0.54",
 		"@types/he": "^1.2.3",
 		"@types/js-yaml": "^4.0.9",
-		"@types/node": "^25.3.0",
-		"typescript": "^5.9.3"
+		"@types/node": "^25.5.2",
+		"typescript": "^6.0.2"
 	},
 	"license": "MIT",
 	"dependencies": {
