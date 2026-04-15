@@ -31,7 +31,7 @@
 	},
 	"author": "CloudCannon <support@cloudcannon.com>",
 	"devDependencies": {
-		"@biomejs/biome": "2.4.11",
+		"@biomejs/biome": "2.4.12",
 		"@cloudcannon/configuration-types": "0.0.54",
 		"@types/he": "^1.2.3",
 		"@types/js-yaml": "^4.0.9",
