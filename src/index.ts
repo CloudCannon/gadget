@@ -42,7 +42,7 @@ function filterPathsInSource(filePaths: string[], source: string | undefined): s
 }
 
 /**
- * Filters out file paths not in the provided source.
+ * Filters out ignored file paths.
  */
 function filterPathsIgnored(filePaths: string[], ssg: Ssg): string[] {
 	return filePaths.filter(
