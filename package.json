@@ -16,6 +16,9 @@
 		"url": "https://github.com/CloudCannon/gadget/issues",
 		"email": "support@cloudcannon.com"
 	},
+	"exports": {
+		".": "./dist/index.js"
+	},
 	"main": "dist/index.js",
 	"files": [
 		"dist"
@@ -26,24 +29,37 @@
 		"test": "node --experimental-strip-types --test",
 		"test:watch": "node --experimental-strip-types --test --watch",
 		"test:coverage": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info",
+		"test:toolproof": "toolproof --placeholders gadget_dir=$PWD/src/ test_sites=$PWD/toolproof-tests/test-sites",
 		"lint": "biome check && tsc --noEmit",
 		"lint:fix": "biome check --fix"
 	},
 	"author": "CloudCannon <support@cloudcannon.com>",
 	"devDependencies": {
-		"@biomejs/biome": "2.4.10",
+		"@biomejs/biome": "2.4.12",
 		"@cloudcannon/configuration-types": "0.0.54",
-		"@types/he": "^1.2.3",
-		"@types/js-yaml": "^4.0.9",
-		"@types/node": "^25.5.2",
-		"typescript": "^6.0.2"
+		"@types/he": "1.2.3",
+		"@types/js-yaml": "4.0.9",
+		"@types/node": "25.6.0",
+		"toolproof": "0.18.0",
+		"typescript": "6.0.2"
 	},
-	"license": "MIT",
+	"engines": {
+		"node": ">=24"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "npm"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"license": "ISC",
 	"dependencies": {
-		"@iarna/toml": "^2.2.5",
-		"@sindresorhus/slugify": "^3.0.0",
-		"fastest-levenshtein": "^1.0.16",
-		"he": "^1.2.0",
-		"js-yaml": "^4.1.1"
+		"@iarna/toml": "2.2.5",
+		"@sindresorhus/slugify": "3.0.0",
+		"fastest-levenshtein": "1.0.16",
+		"he": "1.2.0",
+		"js-yaml": "4.1.1"
 	}
 }

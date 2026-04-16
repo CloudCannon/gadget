@@ -2,68 +2,30 @@ name: Test
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
+  workflow_call:
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ${{matrix.os}}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        include:
-          - build: linux
-            os: ubuntu-24.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      - uses: actions/setup-node@v4
-        with:
-          cache: "npm"
-          node-version-file: ".nvmrc"
-
-      - name: Install
-        run: npm ci
-
-      - name: Lint JavaScript
-        run: npm run lint
-
   test:
     name: Test
-    runs-on: ${{matrix.os}}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        include:
-          - build: linux
-            os: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          fetch-depth: 1
-
-      - uses: actions/setup-node@v4
-        with:
-          cache: "npm"
-          node-version-file: ".nvmrc"
-
+          cache: npm
+          node-version-file: .nvmrc
       - name: Install
         run: npm ci
-
+      - name: Lint
+        run: npm run lint
       - name: Build
         run: npm run build
-
       - name: Unit Test
         run: npm run test
-
-      - name: Behavior Test
-        run: ./test_ci.sh
+      - name: Toolproof Test
+        run: npm run test:toolproof
