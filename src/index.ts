@@ -55,6 +55,7 @@ function ensureOptions(
 	options: { ssg?: SsgKey; source?: string }
 ): {
 	ssg: Ssg;
+	nonIgnoredFilePaths: string[];
 	filteredFilePaths: string[];
 	source: string;
 } {
@@ -71,6 +72,7 @@ function ensureOptions(
 		if (ssg.key === 'other') {
 			return {
 				ssg,
+				nonIgnoredFilePaths,
 				filteredFilePaths,
 				source,
 			};
@@ -83,6 +85,7 @@ function ensureOptions(
 
 	return {
 		ssg,
+		nonIgnoredFilePaths,
 		filteredFilePaths,
 		source,
 	};
@@ -149,18 +152,18 @@ export async function generateBuildCommands(
 	filePaths: string[],
 	options?: GenerateOptions
 ): Promise<BuildCommands> {
-	const { ssg, filteredFilePaths, source } = ensureOptions(filePaths, {
+	const { ssg, nonIgnoredFilePaths, source } = ensureOptions(filePaths, {
 		ssg: options?.buildConfig?.ssg,
 		source: options?.config?.source,
 	});
 
-	const files = ssg.groupFiles(filteredFilePaths);
+	const files = ssg.groupFiles(nonIgnoredFilePaths);
 	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
 	const config = options?.readFile
 		? await ssg.parseConfig(configFilePaths, options.readFile)
 		: undefined;
 
-	return ssg.generateBuildCommands(filteredFilePaths, {
+	return ssg.generateBuildCommands(nonIgnoredFilePaths, {
 		config,
 		source,
 		readFile: options?.readFile,
