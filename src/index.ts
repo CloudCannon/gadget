@@ -152,18 +152,18 @@ export async function generateBuildCommands(
 	filePaths: string[],
 	options?: GenerateOptions
 ): Promise<BuildCommands> {
-	const { ssg, nonIgnoredFilePaths, source } = ensureOptions(filePaths, {
+	const { ssg, source } = ensureOptions(filePaths, {
 		ssg: options?.buildConfig?.ssg,
 		source: options?.config?.source,
 	});
 
-	const files = ssg.groupFiles(nonIgnoredFilePaths);
+	const files = ssg.groupFiles(filePaths);
 	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
 	const config = options?.readFile
 		? await ssg.parseConfig(configFilePaths, options.readFile)
 		: undefined;
 
-	return ssg.generateBuildCommands(nonIgnoredFilePaths, {
+	return ssg.generateBuildCommands(filePaths, {
 		config,
 		source,
 		readFile: options?.readFile,
