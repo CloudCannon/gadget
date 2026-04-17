@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.4.12/schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -12,10 +12,8 @@
 			"!.zed",
 			"!package.json",
 			"!package-lock.json",
-			"!CHANGELOG.md",
 			"!.github",
-			"!.backstage",
-			"!toolproof_tests/test_sites"
+			"!toolproof-tests/test-sites"
 		]
 	},
 	"formatter": {

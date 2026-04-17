@@ -1,12 +1,13 @@
 import type { Configuration, SsgKey } from '@cloudcannon/configuration-types';
 import { findBasePath } from './collections.ts';
 import { parseDecapConfigFile } from './external.ts';
-import type { BuildCommands, CollectionConfigTree } from './ssgs/ssg.ts';
+import type Ssg from './ssgs/ssg.ts';
+import type { BuildCommandSuggestion, BuildCommands, CollectionConfigTree } from './ssgs/ssg.ts';
 import { guessSsg, ssgs } from './ssgs/ssgs.ts';
 import { normalisePath } from './utility.ts';
 
 export { ssgs } from './ssgs/ssgs.ts';
-export type { BuildCommands, CollectionConfigTree, Configuration, SsgKey };
+export type { BuildCommandSuggestion, BuildCommands, CollectionConfigTree, Configuration, SsgKey };
 
 export interface ExternalConfig {
 	decap: Record<string, any> | undefined;
@@ -35,15 +36,59 @@ export interface GenerateResult {
 /**
  * Filters out file paths not in the provided source.
  */
-function filterPaths(filePaths: string[], source: string | undefined): string[] {
-	source = `${normalisePath(source || '')}/`;
-	source = source === '/' ? '' : source;
+function filterPathsInSource(filePaths: string[], source: string | undefined): string[] {
+	source === '/' ? '' : source;
+	return source ? filePaths.filter((filePath) => filePath.startsWith(source)) : filePaths;
+}
 
-	if (!source) {
-		return filePaths;
+/**
+ * Filters out ignored file paths.
+ */
+function filterPathsIgnored(filePaths: string[], ssg: Ssg): string[] {
+	return filePaths.filter(
+		(filePath) => !ssg.isInIgnoredFolder(filePath) && !ssg.isIgnoredFile(filePath)
+	);
+}
+
+function ensureOptions(
+	filePaths: string[],
+	options: { ssg?: SsgKey; source?: string }
+): {
+	ssg: Ssg;
+	nonIgnoredFilePaths: string[];
+	filteredFilePaths: string[];
+	source: string;
+} {
+	let ssg = options?.ssg ? ssgs[options.ssg] : undefined;
+
+	if (!ssg) {
+		const source = normalisePath(options?.source ?? '');
+		// other is the base Ssg definition, so we ignore folders like node_modules and .git
+		const nonIgnoredFilePaths = filterPathsIgnored(filePaths, ssgs.other);
+		const filteredFilePaths = filterPathsInSource(nonIgnoredFilePaths, source);
+
+		ssg = guessSsg(filteredFilePaths);
+
+		if (ssg.key === 'other') {
+			return {
+				ssg,
+				nonIgnoredFilePaths,
+				filteredFilePaths,
+				source,
+			};
+		}
 	}
 
-	return filePaths.filter((filePath) => filePath.startsWith(source));
+	const nonIgnoredFilePaths = filterPathsIgnored(filePaths, ssg);
+	const source = normalisePath(options?.source ?? ssg.getSource(filePaths) ?? '');
+	const filteredFilePaths = filterPathsInSource(nonIgnoredFilePaths, source);
+
+	return {
+		ssg,
+		nonIgnoredFilePaths,
+		filteredFilePaths,
+		source,
+	};
 }
 
 /**
@@ -53,15 +98,12 @@ export async function generateConfiguration(
 	filePaths: string[],
 	options?: GenerateOptions
 ): Promise<GenerateResult> {
-	const ssg =
-		options?.buildConfig?.ssg && ssgs[options.buildConfig.ssg]
-			? ssgs[options.buildConfig.ssg]
-			: guessSsg(filterPaths(filePaths, options?.config?.source));
+	const { ssg, filteredFilePaths, source } = ensureOptions(filePaths, {
+		ssg: options?.buildConfig?.ssg,
+		source: options?.config?.source,
+	});
 
-	const source = options?.config?.source ?? ssg.getSource(filePaths);
-	filePaths = filterPaths(filePaths, source);
-
-	const files = ssg.groupFiles(filePaths);
+	const files = ssg.groupFiles(filteredFilePaths);
 
 	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
 	const ssgConfig = options?.readFile
@@ -71,7 +113,7 @@ export async function generateConfiguration(
 	const collectionPaths = Object.keys(files.collectionPathCounts);
 
 	const externalConfig: ExternalConfig = {
-		decap: await parseDecapConfigFile(filePaths, options?.readFile),
+		decap: await parseDecapConfigFile(filteredFilePaths, options?.readFile),
 	};
 
 	const configuration: Configuration = {
@@ -97,7 +139,7 @@ export async function generateConfiguration(
 			source,
 			ssgConfig,
 			basePath: findBasePath(collectionPaths),
-			filePaths,
+			filePaths: filteredFilePaths,
 			externalConfig,
 		}),
 	};
@@ -110,20 +152,20 @@ export async function generateBuildCommands(
 	filePaths: string[],
 	options?: GenerateOptions
 ): Promise<BuildCommands> {
-	let source = options?.config?.source ? normalisePath(options.config.source) : undefined;
+	const { ssg, nonIgnoredFilePaths, source } = ensureOptions(filePaths, {
+		ssg: options?.buildConfig?.ssg,
+		source: options?.config?.source,
+	});
 
-	const ssg = options?.buildConfig?.ssg
-		? ssgs[options.buildConfig.ssg]
-		: guessSsg(filterPaths(filePaths, source));
-
-	source = source ?? ssg.getSource(filePaths);
-
-	const files = ssg.groupFiles(filePaths);
-
+	const files = ssg.groupFiles(nonIgnoredFilePaths);
 	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
 	const config = options?.readFile
 		? await ssg.parseConfig(configFilePaths, options.readFile)
 		: undefined;
 
-	return ssg.generateBuildCommands(filePaths, { config, source, readFile: options?.readFile });
+	return ssg.generateBuildCommands(nonIgnoredFilePaths, {
+		config,
+		source,
+		readFile: options?.readFile,
+	});
 }

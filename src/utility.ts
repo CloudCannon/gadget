@@ -1,6 +1,6 @@
-import { parse as tomlParse } from '@iarna/toml';
 import htmlEntities from 'he';
-import yaml from 'js-yaml';
+import { parse as tomlParse } from 'smol-toml';
+import { parse as yamlParse } from 'yaml';
 
 export function extname(path: string): string {
 	const base = basename(path);
@@ -77,8 +77,8 @@ export async function parseDataFile(
 	}
 
 	const parsers: Record<string, (contents: string) => unknown> = {
-		yml: yaml.load,
-		yaml: yaml.load,
+		yml: yamlParse,
+		yaml: yamlParse,
 		json: JSON.parse,
 		toml: tomlParse,
 	};

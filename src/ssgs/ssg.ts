@@ -239,6 +239,10 @@ export default class Ssg {
 		];
 	}
 
+	nonSuggestionFolders(): string[] {
+		return ['components/', 'component-library/', 'component-docs/'];
+	}
+
 	ignoredFolders(): string[] {
 		return [
 			'.git/',
@@ -320,6 +324,21 @@ export default class Ssg {
 	 */
 	isInIgnoredFolder(filePath: string): boolean {
 		const ignoredFolders = this.ignoredFolders();
+
+		for (let i = 0; i < ignoredFolders.length; i++) {
+			if (filePath.startsWith(ignoredFolders[i]) || filePath.includes(`/${ignoredFolders[i]}`)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if a file at this path in inside a folder that should not be a suggested collection.
+	 */
+	isInNonSuggestionFolder(filePath: string): boolean {
+		const ignoredFolders = this.nonSuggestionFolders();
 
 		for (let i = 0; i < ignoredFolders.length; i++) {
 			if (filePath.startsWith(ignoredFolders[i]) || filePath.includes(`/${ignoredFolders[i]}`)) {
@@ -506,6 +525,10 @@ export default class Ssg {
 		options: GenerateCollectionsConfigOptions
 	): boolean {
 		path = join(options.source, path);
+
+		if (this.isInNonSuggestionFolder(path)) {
+			return false;
+		}
 
 		const isDecapFolderCollectionPath = options.externalConfig.decap?.collections?.some(
 			(decapCollection: unknown) =>
