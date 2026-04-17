@@ -40,8 +40,6 @@ jobs:
         run: npm run build
       - name: Publish package on npm
         run: npm publish --tag ${{ steps.npm_tag.outputs.value }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - uses: actions/setup-node@v6
         with:
           registry-url: https://npm.pkg.github.com
