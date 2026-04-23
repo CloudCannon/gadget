@@ -1,0 +1,55 @@
+name: Hugo content resources in source
+
+steps:
+  - step: I have a "src/sauce/hugo.yaml" file with the content ""
+  - step: I have a "src/sauce/resources/_index.md" file with the content ""
+  - step: I have a "src/sauce/content/resources/_index.md" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "hugo",
+      ╎  "config": {
+      ╎    "paths": {
+      ╎      "static": "static",
+      ╎      "uploads": "static/uploads"
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "commonmark",
+      ╎      "options": {
+      ╎        "gfm": true,
+      ╎        "linkify": false,
+      ╎        "table": false,
+      ╎        "strikethrough": false,
+      ╎        "subscript": false,
+      ╎        "superscript": false,
+      ╎        "heading_ids": false,
+      ╎        "breaks": false,
+      ╎        "xhtml": false,
+      ╎        "attributes": false,
+      ╎        "typographer": false,
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    },
+      ╎    "source": "sauce",
+      ╎    "_snippets_imports": {
+      ╎      "hugo": {
+      ╎        "exclude": [
+      ╎          "hugo_instagram"
+      ╎        ]
+      ╎      }
+      ╎    }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "resources",
+      ╎      "suggested": true,
+      ╎      "config": {
+      ╎        "path": "content/resources",
+      ╎        "icon": "gesture"
+      ╎      },
+      ╎      "collections": []
+      ╎    }
+      ╎  ]
+      ╎}

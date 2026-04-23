@@ -51,10 +51,6 @@ export default class Hugo extends Ssg {
 		]);
 	}
 
-	ignoredFiles(): string[] {
-		return super.ignoredFiles().concat(this.secondaryConfigPaths());
-	}
-
 	ignoredFolders(): string[] {
 		return super.ignoredFolders().concat([
 			'static/', // passthrough asset folder

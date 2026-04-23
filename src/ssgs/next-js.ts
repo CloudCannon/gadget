@@ -25,8 +25,8 @@ export default class NextJs extends Ssg {
 		]);
 	}
 
-	isIgnoredFile(filePath: string): boolean {
-		return super.isIgnoredFile(filePath) || filePath.includes('[');
+	isIgnoredPath(filePath: string, source?: string): boolean {
+		return super.isIgnoredPath(filePath, source) || filePath.includes('[');
 	}
 
 	/**

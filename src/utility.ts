@@ -3,9 +3,17 @@ import { parse as tomlParse } from 'smol-toml';
 import { parse as yamlParse } from 'yaml';
 
 export function extname(path: string): string {
-	const base = basename(path);
-	const index = base.lastIndexOf('.');
-	return index >= 1 ? base.substring(index) : '';
+	for (let i = path.length - 1; i >= 0; i--) {
+		if (path[i] === '/') {
+			return '';
+		}
+
+		if (path[i] === '.' && i > 0 && path[i - 1] !== '/') {
+			return path.substring(i);
+		}
+	}
+
+	return '';
 }
 
 export function basename(path: string): string {
@@ -70,17 +78,16 @@ export async function parseDataFile(
 	path: string,
 	readFile: (path: string) => Promise<string | undefined>
 ): Promise<Record<string, any> | undefined> {
-	const lastDot = path.lastIndexOf('.');
-	const extension = (lastDot < 0 ? '' : path.substring(lastDot + 1)).toLowerCase();
+	const extension = extname(path).toLowerCase();
 	if (!extension) {
 		return;
 	}
 
 	const parsers: Record<string, (contents: string) => unknown> = {
-		yml: yamlParse,
-		yaml: yamlParse,
-		json: JSON.parse,
-		toml: tomlParse,
+		'.yml': yamlParse,
+		'.yaml': yamlParse,
+		'.json': JSON.parse,
+		'.toml': tomlParse,
 	};
 
 	const parser = parsers[extension];

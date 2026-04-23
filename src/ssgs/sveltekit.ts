@@ -29,9 +29,9 @@ export default class Sveltekit extends Ssg {
 		]);
 	}
 
-	isIgnoredFile(filePath: string): boolean {
+	isIgnoredPath(filePath: string, source?: string): boolean {
 		return (
-			super.isIgnoredFile(filePath) ||
+			super.isIgnoredPath(filePath, source) ||
 			filePath.includes('[') ||
 			filePath.includes('/+error') ||
 			filePath.includes('/+layout') ||

@@ -91,9 +91,20 @@ export function addBuildSuggestion(
 	}
 }
 
-function isInFilePaths(filePath: string, filePaths: string[]): boolean {
+function inFilePaths(filePath: string, filePaths: string[]): boolean {
 	for (let i = 0; i < filePaths.length; i++) {
 		if (filePath === filePaths[i] || filePath.endsWith(`/${filePaths[i]}`)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function inFolders(filePath: string, folders: string[], source?: string): boolean {
+	for (let i = 0; i < folders.length; i++) {
+		const prefix = source ? `${source}/${folders[i]}` : folders[i];
+		if (filePath.startsWith(prefix)) {
 			return true;
 		}
 	}
@@ -111,7 +122,7 @@ export default class Ssg {
 	/**
 	 * Provides a summary of files.
 	 */
-	groupFiles(filePaths: string[]): GroupedFileSummaries {
+	groupFiles(filePaths: string[], source?: string): GroupedFileSummaries {
 		const collectionPathCounts: Record<string, number> = {};
 
 		const groups: Record<FileType, FileSummary[]> = {
@@ -126,10 +137,11 @@ export default class Ssg {
 		for (let i = 0; i < filePaths.length; i++) {
 			const summary = {
 				filePath: filePaths[i],
-				type: this.getFileType(filePaths[i]),
+				type: this.getFileType(filePaths[i], source),
 			};
 
-			if (summary.type === 'content' || summary.type === 'template') {
+			const inSource = !source || filePaths[i].startsWith(`${source}/`);
+			if (inSource && (summary.type === 'content' || summary.type === 'template')) {
 				const lastPath = last(getCollectionPaths(filePaths[i]));
 				if (lastPath || lastPath === '') {
 					collectionPathCounts[lastPath] = collectionPathCounts[lastPath] || 0;
@@ -137,9 +149,7 @@ export default class Ssg {
 				}
 			}
 
-			if (summary.type !== 'ignored') {
-				groups[summary.type].push(summary);
-			}
+			groups[summary.type].push(summary);
 		}
 
 		return { collectionPathCounts, groups };
@@ -290,82 +300,42 @@ export default class Ssg {
 	 * Checks if the file at this path is an SSG configuration file.
 	 */
 	isConfigPath(filePath: string): boolean {
-		return isInFilePaths(filePath, this.configPaths());
+		return inFilePaths(filePath, this.configPaths());
 	}
 
 	/**
 	 * Checks if the file at this path is a supporting SSG configuration file.
 	 */
 	isSecondaryConfigPath(filePath: string): boolean {
-		return isInFilePaths(filePath, this.secondaryConfigPaths());
+		return inFilePaths(filePath, this.secondaryConfigPaths());
 	}
 
 	/**
 	 * Returns a score for how likely a file path relates to this SSG.
 	 */
 	getPathScore(filePath: string): number {
-		if (this.isInIgnoredFolder(filePath)) {
-			return 0;
+		switch (this.getFileType(filePath)) {
+			case 'config':
+				return this.isSecondaryConfigPath(filePath) ? 1 : 50;
+			default:
+				return 0;
 		}
-
-		if (this.isConfigPath(filePath)) {
-			return 50;
-		}
-
-		if (this.isSecondaryConfigPath(filePath)) {
-			return 1;
-		}
-
-		return 0;
-	}
-
-	/**
-	 * Checks if a file at this path in inside an ignored folder.
-	 */
-	isInIgnoredFolder(filePath: string): boolean {
-		const ignoredFolders = this.ignoredFolders();
-
-		for (let i = 0; i < ignoredFolders.length; i++) {
-			if (filePath.startsWith(ignoredFolders[i]) || filePath.includes(`/${ignoredFolders[i]}`)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
 	 * Checks if a file at this path in inside a folder that should not be a suggested collection.
 	 */
-	isInNonSuggestionFolder(filePath: string): boolean {
-		const ignoredFolders = this.nonSuggestionFolders();
-
-		for (let i = 0; i < ignoredFolders.length; i++) {
-			if (filePath.startsWith(ignoredFolders[i]) || filePath.includes(`/${ignoredFolders[i]}`)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if a file at this path is ignored.
-	 */
-	isIgnoredFile(filePath: string): boolean {
-		return isInFilePaths(filePath, this.ignoredFiles());
+	inNonSuggestionFolder(filePath: string, source?: string): boolean {
+		return inFolders(filePath, this.nonSuggestionFolders(), source);
 	}
 
 	/**
 	 * Checks if we should skip a file at this path.
 	 */
-	isIgnoredPath(filePath: string): boolean {
+	isIgnoredPath(filePath: string, source?: string): boolean {
 		return (
-			filePath.includes('.config.') ||
-			filePath.includes('/.') ||
-			filePath.startsWith('.') ||
-			this.isInIgnoredFolder(filePath) ||
-			this.isIgnoredFile(filePath)
+			inFolders(filePath, this.ignoredFolders(), source) ||
+			inFilePaths(filePath, this.ignoredFiles())
 		);
 	}
 
@@ -373,26 +343,17 @@ export default class Ssg {
 	 * Checks if the file at this path is a contains Markdown or structured content.
 	 */
 	isContentPath(filePath: string): boolean {
-		return this.contentExtensions().includes(extname(filePath));
+		return (
+			this.contentExtensions().includes(extname(filePath)) &&
+			!(filePath.includes('.config.') || filePath.includes('/.') || filePath.startsWith('.'))
+		);
 	}
 
 	/**
 	 * Checks if the file at this path is an include, partial or layout file.
 	 */
-	isPartialPath(filePath: string): boolean {
-		const partialFolders = this.partialFolders();
-
-		for (let i = 0; i < partialFolders.length; i++) {
-			if (
-				filePath === partialFolders[i] ||
-				filePath.includes(`/${partialFolders[i]}`) ||
-				filePath.startsWith(partialFolders[i])
-			) {
-				return true;
-			}
-		}
-
-		return false;
+	isPartialPath(filePath: string, source?: string): boolean {
+		return inFolders(filePath, this.partialFolders(), source);
 	}
 
 	/**
@@ -405,16 +366,16 @@ export default class Ssg {
 	/**
 	 * Finds the likely type of the file at this path.
 	 */
-	getFileType(filePath: string): FileType {
+	getFileType(filePath: string, source?: string): FileType {
+		if (this.isIgnoredPath(filePath, source)) {
+			return 'ignored';
+		}
+
 		if (this.isConfigPath(filePath) || this.isSecondaryConfigPath(filePath)) {
 			return 'config';
 		}
 
-		if (this.isIgnoredPath(filePath)) {
-			return 'ignored';
-		}
-
-		if (this.isPartialPath(filePath)) {
+		if (this.isPartialPath(filePath, source)) {
 			return 'partial';
 		}
 
@@ -526,7 +487,7 @@ export default class Ssg {
 	): boolean {
 		path = join(options.source, path);
 
-		if (this.isInNonSuggestionFolder(path)) {
+		if (this.inNonSuggestionFolder(path, options.source)) {
 			return false;
 		}
 

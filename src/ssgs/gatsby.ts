@@ -15,8 +15,8 @@ export default class Gatsby extends Ssg {
 			.concat(['gatsby-config.js', 'gatsby-config.mjs', 'gatsby-config.ts']);
 	}
 
-	isIgnoredFile(filePath: string): boolean {
-		return super.isIgnoredFile(filePath) || filePath.includes('{');
+	isIgnoredPath(filePath: string, source?: string): boolean {
+		return super.isIgnoredPath(filePath, source) || filePath.includes('{');
 	}
 
 	templateExtensions(): string[] {

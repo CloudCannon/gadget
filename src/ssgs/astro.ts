@@ -33,8 +33,8 @@ export default class Astro extends Ssg {
 		return super.partialFolders().concat(['src/components', 'src/layouts']);
 	}
 
-	isIgnoredFile(filePath: string): boolean {
-		return super.isIgnoredFile(filePath) || filePath.includes('[');
+	isIgnoredPath(filePath: string, source?: string): boolean {
+		return super.isIgnoredPath(filePath, source) || filePath.includes('[');
 	}
 
 	templateExtensions(): string[] {

@@ -44,10 +44,8 @@ function filterPathsInSource(filePaths: string[], source: string | undefined): s
 /**
  * Filters out ignored file paths.
  */
-function filterPathsIgnored(filePaths: string[], ssg: Ssg): string[] {
-	return filePaths.filter(
-		(filePath) => !ssg.isInIgnoredFolder(filePath) && !ssg.isIgnoredFile(filePath)
-	);
+function filterPathsIgnored(filePaths: string[], ssg: Ssg, source?: string): string[] {
+	return filePaths.filter((filePath) => !ssg.isIgnoredPath(filePath, source));
 }
 
 function ensureOptions(
@@ -79,8 +77,9 @@ function ensureOptions(
 		}
 	}
 
-	const nonIgnoredFilePaths = filterPathsIgnored(filePaths, ssg);
-	const source = normalisePath(options?.source ?? ssg.getSource(filePaths) ?? '');
+	const preFilteredFilePaths = filterPathsIgnored(filePaths, ssg);
+	const source = normalisePath(options?.source ?? ssg.getSource(preFilteredFilePaths) ?? '');
+	const nonIgnoredFilePaths = filterPathsIgnored(filePaths, ssg, source);
 	const filteredFilePaths = filterPathsInSource(nonIgnoredFilePaths, source);
 
 	return {
@@ -98,12 +97,12 @@ export async function generateConfiguration(
 	filePaths: string[],
 	options?: GenerateOptions
 ): Promise<GenerateResult> {
-	const { ssg, filteredFilePaths, source } = ensureOptions(filePaths, {
+	const { ssg, filteredFilePaths, nonIgnoredFilePaths, source } = ensureOptions(filePaths, {
 		ssg: options?.buildConfig?.ssg,
 		source: options?.config?.source,
 	});
 
-	const files = ssg.groupFiles(filteredFilePaths);
+	const files = ssg.groupFiles(nonIgnoredFilePaths, source);
 
 	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
 	const ssgConfig = options?.readFile
@@ -113,7 +112,7 @@ export async function generateConfiguration(
 	const collectionPaths = Object.keys(files.collectionPathCounts);
 
 	const externalConfig: ExternalConfig = {
-		decap: await parseDecapConfigFile(filteredFilePaths, options?.readFile),
+		decap: await parseDecapConfigFile(filePaths, options?.readFile),
 	};
 
 	const configuration: Configuration = {
@@ -157,7 +156,7 @@ export async function generateBuildCommands(
 		source: options?.config?.source,
 	});
 
-	const files = ssg.groupFiles(filePaths);
+	const files = ssg.groupFiles(filePaths, source);
 	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
 	const config = options?.readFile
 		? await ssg.parseConfig(configFilePaths, options.readFile)
