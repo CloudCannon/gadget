@@ -13,8 +13,8 @@ export default class NuxtJs extends Ssg {
 		return super.configPaths().concat(['nuxt.config.ts']);
 	}
 
-	isIgnoredFile(filePath: string): boolean {
-		return super.isIgnoredFile(filePath) || filePath.includes('[');
+	isIgnoredPath(filePath: string, source?: string): boolean {
+		return super.isIgnoredPath(filePath, source) || filePath.includes('[');
 	}
 
 	templateExtensions(): string[] {

@@ -1,0 +1,242 @@
+name: Jekyll with config outside source
+
+steps:
+  - step: I have a "src/_config.yml" file with the content {yaml}
+    yaml: |-
+      source: sauce
+      collections:
+        animals:
+          sort_by: woof
+  - step: I have a "src/sauce/_animals/dog.md" file with the content ""
+  - step: I have a "src/sauce/_posts/1999-12-31-partying.md" file with the content ""
+  - step: I have a "src/sauce/news/_posts/2000-01-01-a-new-age.md" file with the content ""
+  - step: I have a "src/sauce/index.html" file with the content ""
+  - step: I have a "src/sauce/_data/tags.yml" file with the content ""
+  - step: I have a "src/sauce/_data/animals/cat.yml" file with the content ""
+  - ref: ./../core/run_gadget.toolproof.yml
+  - snapshot: stdout
+    snapshot_content: |-
+      ╎{
+      ╎  "ssg": "jekyll",
+      ╎  "config": {
+      ╎    "paths": {
+      ╎      "static": "",
+      ╎      "uploads": "uploads"
+      ╎    },
+      ╎    "timezone": "Pacific/Auckland",
+      ╎    "markdown": {
+      ╎      "engine": "kramdown",
+      ╎      "options": {
+      ╎        "heading_ids": false,
+      ╎        "gfm": false,
+      ╎        "breaks": false,
+      ╎        "typographer": false,
+      ╎        "attributes": true,
+      ╎        "attribute_elements": {
+      ╎          "inline": "right",
+      ╎          "block": "below",
+      ╎          "tr": "none",
+      ╎          "td": "none",
+      ╎          "li": "right-of-prefix"
+      ╎        },
+      ╎        "treat_indentation_as_code": true
+      ╎      }
+      ╎    },
+      ╎    "source": "sauce",
+      ╎    "_snippets_imports": {
+      ╎      "jekyll": true
+      ╎    }
+      ╎  },
+      ╎  "collections": [
+      ╎    {
+      ╎      "key": "pages",
+      ╎      "suggested": true,
+      ╎      "config": {
+      ╎        "path": "",
+      ╎        "icon": "wysiwyg"
+      ╎      },
+      ╎      "collections": [
+      ╎        {
+      ╎          "key": "news",
+      ╎          "suggested": false,
+      ╎          "config": {
+      ╎            "path": "news",
+      ╎            "icon": "newsmode",
+      ╎            "disable_url": true
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "news_posts",
+      ╎              "suggested": true,
+      ╎              "config": {
+      ╎                "path": "news/_posts",
+      ╎                "icon": "newsmode",
+      ╎                "create": {
+      ╎                  "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎                },
+      ╎                "_inputs": {
+      ╎                  "categories": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.news_posts[*].categories",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  },
+      ╎                  "tags": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.news_posts[*].tags",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  }
+      ╎                },
+      ╎                "add_options": [
+      ╎                  {
+      ╎                    "name": "Add Post"
+      ╎                  },
+      ╎                  {
+      ╎                    "name": "Add Draft",
+      ╎                    "collection": "news_drafts"
+      ╎                  }
+      ╎                ]
+      ╎              },
+      ╎              "collections": []
+      ╎            },
+      ╎            {
+      ╎              "key": "news_drafts",
+      ╎              "suggested": true,
+      ╎              "config": {
+      ╎                "path": "news/_drafts",
+      ╎                "icon": "drafts",
+      ╎                "create": {
+      ╎                  "publish_to": "news_posts"
+      ╎                },
+      ╎                "_inputs": {
+      ╎                  "categories": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.news_posts[*].categories",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  },
+      ╎                  "tags": {
+      ╎                    "type": "multiselect",
+      ╎                    "options": {
+      ╎                      "values": "collections.news_posts[*].tags",
+      ╎                      "allow_create": true
+      ╎                    }
+      ╎                  }
+      ╎                }
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "data",
+      ╎          "suggested": true,
+      ╎          "config": {
+      ╎            "path": "_data",
+      ╎            "icon": "data_usage",
+      ╎            "disable_url": true,
+      ╎            "disable_add": true,
+      ╎            "disable_add_folder": true,
+      ╎            "disable_file_actions": true
+      ╎          },
+      ╎          "collections": [
+      ╎            {
+      ╎              "key": "data_animals",
+      ╎              "suggested": true,
+      ╎              "config": {
+      ╎                "path": "_data/animals",
+      ╎                "icon": "data_array",
+      ╎                "disable_url": true
+      ╎              },
+      ╎              "collections": []
+      ╎            }
+      ╎          ]
+      ╎        },
+      ╎        {
+      ╎          "key": "posts",
+      ╎          "suggested": true,
+      ╎          "config": {
+      ╎            "path": "_posts",
+      ╎            "icon": "event_available",
+      ╎            "create": {
+      ╎              "path": "[relative_base_path]/{date|year}-{date|month}-{date|day}-{title|slugify}.[ext]"
+      ╎            },
+      ╎            "_inputs": {
+      ╎              "categories": {
+      ╎                "type": "multiselect",
+      ╎                "options": {
+      ╎                  "values": "collections.posts[*].categories",
+      ╎                  "allow_create": true
+      ╎                }
+      ╎              },
+      ╎              "tags": {
+      ╎                "type": "multiselect",
+      ╎                "options": {
+      ╎                  "values": "collections.posts[*].tags",
+      ╎                  "allow_create": true
+      ╎                }
+      ╎              }
+      ╎            },
+      ╎            "add_options": [
+      ╎              {
+      ╎                "name": "Add Post"
+      ╎              },
+      ╎              {
+      ╎                "name": "Add Draft",
+      ╎                "collection": "drafts"
+      ╎              }
+      ╎            ]
+      ╎          },
+      ╎          "collections": []
+      ╎        },
+      ╎        {
+      ╎          "key": "drafts",
+      ╎          "suggested": true,
+      ╎          "config": {
+      ╎            "path": "_drafts",
+      ╎            "icon": "event",
+      ╎            "create": {
+      ╎              "publish_to": "posts"
+      ╎            },
+      ╎            "_inputs": {
+      ╎              "categories": {
+      ╎                "type": "multiselect",
+      ╎                "options": {
+      ╎                  "values": "collections.posts[*].categories",
+      ╎                  "allow_create": true
+      ╎                }
+      ╎              },
+      ╎              "tags": {
+      ╎                "type": "multiselect",
+      ╎                "options": {
+      ╎                  "values": "collections.posts[*].tags",
+      ╎                  "allow_create": true
+      ╎                }
+      ╎              }
+      ╎            }
+      ╎          },
+      ╎          "collections": []
+      ╎        },
+      ╎        {
+      ╎          "key": "animals",
+      ╎          "suggested": true,
+      ╎          "config": {
+      ╎            "path": "_animals",
+      ╎            "icon": "animation",
+      ╎            "disable_url": true,
+      ╎            "sort_options": [
+      ╎              {
+      ╎                "key": "woof"
+      ╎              }
+      ╎            ]
+      ╎          },
+      ╎          "collections": []
+      ╎        }
+      ╎      ]
+      ╎    }
+      ╎  ]
+      ╎}

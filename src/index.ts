@@ -45,9 +45,7 @@ function filterPathsInSource(filePaths: string[], source: string | undefined): s
  * Filters out ignored file paths.
  */
 function filterPathsIgnored(filePaths: string[], ssg: Ssg, source?: string): string[] {
-	return filePaths.filter(
-		(filePath) => !ssg.isInIgnoredFolder(filePath, source) && !ssg.isIgnoredFile(filePath)
-	);
+	return filePaths.filter((filePath) => !ssg.isIgnoredPath(filePath, source));
 }
 
 function ensureOptions(
@@ -99,12 +97,12 @@ export async function generateConfiguration(
 	filePaths: string[],
 	options?: GenerateOptions
 ): Promise<GenerateResult> {
-	const { ssg, filteredFilePaths, source } = ensureOptions(filePaths, {
+	const { ssg, filteredFilePaths, nonIgnoredFilePaths, source } = ensureOptions(filePaths, {
 		ssg: options?.buildConfig?.ssg,
 		source: options?.config?.source,
 	});
 
-	const files = ssg.groupFiles(filteredFilePaths, source);
+	const files = ssg.groupFiles(nonIgnoredFilePaths, source);
 
 	const configFilePaths = files.groups.config.map((fileSummary) => fileSummary.filePath);
 	const ssgConfig = options?.readFile
