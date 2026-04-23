@@ -70,17 +70,16 @@ export async function parseDataFile(
 	path: string,
 	readFile: (path: string) => Promise<string | undefined>
 ): Promise<Record<string, any> | undefined> {
-	const lastDot = path.lastIndexOf('.');
-	const extension = (lastDot < 0 ? '' : path.substring(lastDot + 1)).toLowerCase();
+	const extension = extname(path);
 	if (!extension) {
 		return;
 	}
 
 	const parsers: Record<string, (contents: string) => unknown> = {
-		yml: yamlParse,
-		yaml: yamlParse,
-		json: JSON.parse,
-		toml: tomlParse,
+		'.yml': yamlParse,
+		'.yaml': yamlParse,
+		'.json': JSON.parse,
+		'.toml': tomlParse,
 	};
 
 	const parser = parsers[extension];

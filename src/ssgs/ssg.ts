@@ -111,7 +111,7 @@ export default class Ssg {
 	/**
 	 * Provides a summary of files.
 	 */
-	groupFiles(filePaths: string[]): GroupedFileSummaries {
+	groupFiles(filePaths: string[], source?: string): GroupedFileSummaries {
 		const collectionPathCounts: Record<string, number> = {};
 
 		const groups: Record<FileType, FileSummary[]> = {
@@ -126,7 +126,7 @@ export default class Ssg {
 		for (let i = 0; i < filePaths.length; i++) {
 			const summary = {
 				filePath: filePaths[i],
-				type: this.getFileType(filePaths[i]),
+				type: this.getFileType(filePaths[i], source),
 			};
 
 			if (summary.type === 'content' || summary.type === 'template') {
@@ -322,11 +322,12 @@ export default class Ssg {
 	/**
 	 * Checks if a file at this path in inside an ignored folder.
 	 */
-	isInIgnoredFolder(filePath: string): boolean {
+	isInIgnoredFolder(filePath: string, source?: string): boolean {
 		const ignoredFolders = this.ignoredFolders();
 
 		for (let i = 0; i < ignoredFolders.length; i++) {
-			if (filePath.startsWith(ignoredFolders[i]) || filePath.includes(`/${ignoredFolders[i]}`)) {
+			const prefix = source ? `${source}/${ignoredFolders[i]}` : ignoredFolders[i];
+			if (filePath.startsWith(prefix)) {
 				return true;
 			}
 		}
@@ -337,11 +338,12 @@ export default class Ssg {
 	/**
 	 * Checks if a file at this path in inside a folder that should not be a suggested collection.
 	 */
-	isInNonSuggestionFolder(filePath: string): boolean {
+	isInNonSuggestionFolder(filePath: string, source?: string): boolean {
 		const ignoredFolders = this.nonSuggestionFolders();
 
 		for (let i = 0; i < ignoredFolders.length; i++) {
-			if (filePath.startsWith(ignoredFolders[i]) || filePath.includes(`/${ignoredFolders[i]}`)) {
+			const prefix = source ? `${source}/${ignoredFolders[i]}` : ignoredFolders[i];
+			if (filePath.startsWith(prefix)) {
 				return true;
 			}
 		}
@@ -359,12 +361,12 @@ export default class Ssg {
 	/**
 	 * Checks if we should skip a file at this path.
 	 */
-	isIgnoredPath(filePath: string): boolean {
+	isIgnoredPath(filePath: string, source?: string): boolean {
 		return (
 			filePath.includes('.config.') ||
 			filePath.includes('/.') ||
 			filePath.startsWith('.') ||
-			this.isInIgnoredFolder(filePath) ||
+			this.isInIgnoredFolder(filePath, source) ||
 			this.isIgnoredFile(filePath)
 		);
 	}
@@ -405,12 +407,12 @@ export default class Ssg {
 	/**
 	 * Finds the likely type of the file at this path.
 	 */
-	getFileType(filePath: string): FileType {
+	getFileType(filePath: string, source?: string): FileType {
 		if (this.isConfigPath(filePath) || this.isSecondaryConfigPath(filePath)) {
 			return 'config';
 		}
 
-		if (this.isIgnoredPath(filePath)) {
+		if (this.isIgnoredPath(filePath, source)) {
 			return 'ignored';
 		}
 
@@ -526,7 +528,7 @@ export default class Ssg {
 	): boolean {
 		path = join(options.source, path);
 
-		if (this.isInNonSuggestionFolder(path)) {
+		if (this.isInNonSuggestionFolder(path, options.source)) {
 			return false;
 		}
 
