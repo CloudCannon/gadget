@@ -99,7 +99,7 @@ export async function generateConfiguration(
 ): Promise<GenerateResult> {
 	const { ssg, filteredFilePaths, nonIgnoredFilePaths, source } = ensureOptions(filePaths, {
 		ssg: options?.buildConfig?.ssg,
-		source: options?.config?.source,
+		source: options?.config?.source || undefined,
 	});
 
 	const files = ssg.groupFiles(nonIgnoredFilePaths, source);
@@ -153,7 +153,7 @@ export async function generateBuildCommands(
 ): Promise<BuildCommands> {
 	const { ssg, source } = ensureOptions(filePaths, {
 		ssg: options?.buildConfig?.ssg,
-		source: options?.config?.source,
+		source: options?.config?.source || undefined,
 	});
 
 	const files = ssg.groupFiles(filePaths, source);
