@@ -30,7 +30,8 @@ test('reads config', async () => {
 	const jekyll = new Jekyll();
 	const filePaths = ['_config.toml'];
 	const config = await jekyll.parseConfig(filePaths, readFileMock);
-	assert.deepStrictEqual(config, { path: '_config.toml' });
+	// smol-toml returns null-prototype objects
+	assert.deepStrictEqual(config, Object.assign(Object.create(null), { path: '_config.toml' }));
 });
 
 test('prefers yaml over toml config', async () => {
