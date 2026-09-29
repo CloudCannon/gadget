@@ -24,7 +24,11 @@ async function parseConfigFromMultipleCandidates(
 ): Promise<void> {
 	const hugo = new Hugo();
 	const config = await hugo.parseConfig(filePaths, readFileMock);
-	assert.deepStrictEqual(config, { path: expectedFile });
+	// smol-toml returns null-prototype objects
+	const expected = expectedFile.endsWith('toml')
+		? Object.assign(Object.create(null), { path: expectedFile })
+		: { path: expectedFile };
+	assert.deepStrictEqual(config, expected);
 }
 
 test('reads config', async () => {
