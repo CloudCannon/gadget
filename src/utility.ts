@@ -1,4 +1,4 @@
-import htmlEntities from 'he';
+import * as htmlEntities from 'he';
 import { parse as tomlParse } from 'smol-toml';
 import { parse as yamlParse } from 'yaml';
 
