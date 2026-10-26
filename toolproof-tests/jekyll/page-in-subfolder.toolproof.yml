@@ -2,7 +2,7 @@ name: Jekyll with one page in a subfolder of root
 
 steps:
   - step: I have a "src/_config.yml" file with the content {yaml}
-    yaml: ''
+    yaml: ""
   - step: I have a "src/webpages/index.html" file with the content {html}
     html: |-
       ---
