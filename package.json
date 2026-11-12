@@ -55,7 +55,7 @@
 	},
 	"license": "ISC",
 	"dependencies": {
-		"@sindresorhus/slugify": "4.0.0",
+		"@sindresorhus/slugify": "4.0.1",
 		"fastest-levenshtein": "1.0.16",
 		"he": "2.0.0",
 		"smol-toml": "1.9.1",
